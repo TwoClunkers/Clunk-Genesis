@@ -1,3 +1,4 @@
+// Ross Edited this 6/27/2013  ...
 var itemID : int;
 var itemQty : int;
 var destroyAtThisTime : float;
