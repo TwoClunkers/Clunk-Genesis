@@ -26,7 +26,7 @@ var positionRect : Rect = Rect(25,25,160,80); //this should hold our adjusted fo
 //var selectedSlot : int = 0;
 
 function Start () {
-	items = GameObject.FindGameObjectWithTag("gui").GetComponent(guiScript).items;
+	items = GameObject.FindGameObjectWithTag("mc").GetComponent(ItemController).items; //get pointer to main item library
 	mouseItem = setItem;
 }
 

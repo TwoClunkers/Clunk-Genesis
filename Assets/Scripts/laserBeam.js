@@ -47,7 +47,7 @@ function Update () {
 		if(hitSomething){
 			if(trueHit.collider.gameObject.tag.Equals("breakable")) {
 				//start breaking
-				if(wasActive && lastHitViewID.Equals(trueHit.collider.gameObject.networkView.viewID) & Time.time > tickEndTime) {
+				if(wasActive && lastHitViewID.Equals(trueHit.collider.gameObject.networkView.viewID) && Time.time > tickEndTime) {
 					doTick(trueHit.collider.gameObject, trueHit.point);
 				}
 				lastHitViewID = trueHit.collider.gameObject.networkView.viewID;
@@ -91,7 +91,8 @@ function doTick(hitBlock : GameObject, hitPosition : Vector3){
 	GameObject.FindGameObjectWithTag("gui").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);
 	hitBlock.networkView.RPC("setBlockValues",RPCMode.All, hitBlock.networkView.viewID,1,Vector3(.0,.0,.3));
 	tickEndTime = Time.time + tickLength - Time.deltaTime;
-	hitBlock.GetComponent(blockClick).createPickUpBlock(hitPosition);
+	//this needs to be part of a block.damage routine
+	//hitBlock.GetComponent(blockClick).createPickUpBlock(hitPosition);
 }
 
 function destroyMe(){

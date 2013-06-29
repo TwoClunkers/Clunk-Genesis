@@ -57,7 +57,7 @@ private var processLevel = 0.00;
 var distance : float;
 
 function Start () {
-	items = GameObject.FindGameObjectWithTag("gui").GetComponent(guiScript).items;
+	items = GameObject.FindGameObjectWithTag("mc").GetComponent(ItemController).items;
 	containers = gameObject.GetComponents.<Container>();
 	inputContainer = containers[0];
 	outputContainer = containers[1];

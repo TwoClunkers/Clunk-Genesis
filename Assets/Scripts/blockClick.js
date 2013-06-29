@@ -19,24 +19,27 @@ function Awake(){
 function Update(){
 	if(blockHealth <= 0){
 		//destroy block, create pickup
-		createPickUpBlock(transform.position);
+		GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController).createPickUpBlock(blockMaterial, transform.position);
+		
 		try{
 			Network.RemoveRPCs(networkView.viewID);
 			Network.Destroy(networkView.viewID);
 		} catch(e){}
-		GameObject.FindGameObjectWithTag("gui").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "blockDestroyed", transform.position);
+		GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "blockDestroyed", transform.position);
 	}
 }
 
-function createPickUpBlock(atPosition : Vector3){
-	var popDirection : Vector3;
-	var oBlock : GameObject = Network.Instantiate(pickupblock, atPosition, Quaternion.identity, 0);
-	popDirection = (GameObject.FindGameObjectWithTag("Player").transform.position - atPosition) * 3;
-	oBlock.GetComponent(pickUpBlock).itemID = blockMaterial;
-	oBlock.GetComponent(MeshFilter).mesh = GameObject.FindGameObjectWithTag("gui").GetComponent(guiScript).items.library[blockMaterial].mesh;
-	oBlock.rigidbody.AddForce(popDirection,UnityEngine.ForceMode.VelocityChange);
-	//Debug.Log("PickUpBlock ID: " + oBlock.networkView.viewID);
-	GameObject.FindGameObjectWithTag("gui").GetComponent(NetworkView).RPC("setBlockMat", RPCMode.AllBuffered, oBlock.networkView.viewID, blockMaterial);
+@RPC
+function setBlockMat(viewID : NetworkViewID, mat : int){
+	var newitem : Item = GameObject.FindGameObjectWithTag("mc").GetComponent(ItemController).items.library[mat];
+	try{
+	var oBlockView : NetworkView = networkView.Find(viewID);
+		oBlockView.renderer.material = newitem.material;
+		oBlockView.GetComponent(blockClick).blockMaterial = mat;
+		oBlockView.GetComponent(blockClick).blockHealth = newitem.maxHealth;
+		oBlockView.GetComponent(blockClick).maxHealth = newitem.maxHealth;
+		oBlockView.GetComponent(MeshFilter).mesh = newitem.mesh;
+	}catch(e){}
 }
 
 @RPC 
@@ -82,7 +85,7 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 		//rotate x,y, or z by setTo.y
 		if(setTo.x > 0.66){
 			networkView.Find(viewID).transform.eulerAngles.x = setTo.y;
-			if(setTo.y/90 == 1 | setTo.y/90 == 3) {
+			if(setTo.y/90 == 1 || setTo.y/90 == 3) {
 				//90|270 = y
 				tickScaleAxis = 1;
 			} else {
@@ -91,7 +94,7 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 			}
 		} else if(setTo.x > 0.33){
 			networkView.Find(viewID).transform.eulerAngles.y = setTo.y;
-			if(setTo.y/90 == 1 | setTo.y/90 == 3) {
+			if(setTo.y/90 == 1 || setTo.y/90 == 3) {
 				//90|270 = y
 				tickScaleAxis = 0;
 			} else {

@@ -6,7 +6,7 @@ var activeOverlayTexture : Texture;
 var inventory : Container;
 
 function Start(){
-	items = GameObject.FindGameObjectWithTag("gui").GetComponent(guiScript).items;
+	items = GameObject.FindGameObjectWithTag("mc").GetComponent(ItemController).items;
 	inventory = transform.GetComponent(Container);
 	inventory.origenPos = Vector3(10,80,0);
 	inventory.size = 10;
@@ -22,7 +22,7 @@ function Update() {
 function OnGUI(){
 	if(Event.current.isKey){
 		if(Input.GetKeyUp("i")){
-			if(!GameObject.FindGameObjectWithTag("gui").GetComponent(guiScript).chatInputOpen){
+			if(!GameObject.FindGameObjectWithTag("mc").GetComponent(MasterScript).chatInputOpen){
 				inventory.isOpen = !inventory.isOpen;
 			}
 		}
