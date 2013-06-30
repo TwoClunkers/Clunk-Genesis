@@ -116,7 +116,7 @@ function OnConnectedToServer() {
 function startServer(){
 	Debug.Log("starting server");
 	Network.InitializeServer(32,25001,!Network.HavePublicAddress);
-	MasterServer.RegisterHost(myGameName,"Orthos","Orthos game host");
+	MasterServer.RegisterHost(myGameName,"Clunk","Clunk game host");
 }
 
 function OnServerInitialized(){

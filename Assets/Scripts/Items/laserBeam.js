@@ -1,24 +1,24 @@
 #pragma strict
-var startPoint : Vector3;
-var endPoint : Vector3;
-var laserDamageAmount : int;
+private var startPoint : Vector3;
+private var endPoint : Vector3;
+private var laserDamageAmount : int;
 var sparks : GameObject;
-var range : float;
-var ray : Ray;
-var line : LineRenderer;
-var trueHit : RaycastHit;
-var lastHitViewID : NetworkViewID;
-var tickLength : float = 0.6;
+private var range : float;
+private var ray : Ray;
+private var line : LineRenderer;
+private var trueHit : RaycastHit;
+private var lastHitViewID : NetworkViewID;
+private var tickLength : float = 0.6;
 var laserMaterial : Material;
-var isFiring : boolean;
-var durationOfLaser : float;
-var lifeEndTime : float;
-var hitSomething : boolean;
-var wasActive : boolean;
-var tickEndTime : float;
-var halfTick : boolean;
-var sparksDestroyed : boolean;
-var sparksViewID : NetworkViewID;
+private var isFiring : boolean;
+private var durationOfLaser : float;
+private var lifeEndTime : float;
+private var hitSomething : boolean;
+private var wasActive : boolean;
+private var tickEndTime : float;
+private var halfTick : boolean;
+private var sparksDestroyed : boolean;
+private var sparksViewID : NetworkViewID;
 
 function Start () {
 	lifeEndTime = Time.time + 3.0;
