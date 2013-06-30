@@ -2,6 +2,7 @@ var myGUI : GUISkin;
 var playerPrefab : GameObject;
 var spawnObject: Transform;
 var myGameName : String;
+var worldgen : int;
 
 //audio
 var audioBlockDestroyed : AudioClip;
@@ -120,7 +121,7 @@ function startServer(){
 
 function OnServerInitialized(){
 	Debug.Log("Server Initialized");
-	//buildWorld(); //we need to contruct a new building routine
+	transform.GetComponent(WorldController).buildWorld(worldgen); //we need to contruct a new building routine
 	spawnPlayer();
 }
 
