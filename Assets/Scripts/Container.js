@@ -19,7 +19,7 @@ var buttonsData : GUIContent[] = new GUIContent[12]; //this holds the button inf
 var items : AllItems;
 
 var origenPos : Vector3 = Vector3(0,0,0); //this should be set by the controller script 
-var offsetPos : Vector3 = Vector3(-50,50,0); //we need to set this to relative to origen
+var offsetPos : Vector3 = Vector3(0,0,0); //we need to set this to relative to origen
 var positionRect : Rect = Rect(25,25,160,80); //this should hold our adjusted footprint
 
 

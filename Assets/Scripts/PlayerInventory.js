@@ -10,6 +10,8 @@ function Start(){
 	inventory = transform.GetComponent(Container);
 	inventory.origenPos = Vector3(10,80,0);
 	inventory.size = 10;
+	inventory.width = 10;
+	
 }
 
 function Update() {
