@@ -60,7 +60,15 @@ function Start () {
 	items = GameObject.FindGameObjectWithTag("mc").GetComponent(ItemController).items;
 	containers = gameObject.GetComponents.<Container>();
 	inputContainer = containers[0];
+	inputContainer.containerName = "Input";
+	inputContainer.size = 1;
+	inputContainer.width = 1;
+	inputContainer.offsetPos = Vector3(-65,48,0);
 	outputContainer = containers[1];
+	outputContainer.containerName = "Output";
+	outputContainer.size = 2;
+	outputContainer.width = 2;
+	outputContainer.offsetPos = Vector3(-15,48,0);
 }
 
 function OnMouseUpAsButton () { //toggle whether this object is selected
@@ -72,34 +80,7 @@ function OnMouseUpAsButton () { //toggle whether this object is selected
 
 function Update () {
 
-	if(contIsSelected) { //we only need to calculate this is we are going to show it in GUI layer
-		//below variables and calculations to find screen origen for Gui Display
-		//this is based on the containing object position and the direction to player
-		var screenPos : Vector3;
-		var heading : Vector3;
-		var playerHandle : GameObject = GameObject.FindGameObjectWithTag("Player");
-		
-		if(playerHandle) { //offset for player position
-			
-			heading = (this.gameObject.transform.position - playerHandle.transform.position);
-			heading.z = 0;
-			distance = heading.magnitude;
-			if(distance > 3) { //out of range, so turn off our GUI
-				contIsSelected = false;
-				inputContainer.show = false;
-				outputContainer.show = false;
-			}
-			else screenPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position+(heading/distance));
-		}
-		else screenPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position);
-	
-		inputContainer.origenPos = screenPos;
-		outputContainer.origenPos = screenPos;
-		//offset from origen point of control display
-		screenPos += offsetPos;
-		positionRect.x = screenPos.x;
-		positionRect.y = Screen.height - screenPos.y;
-	}
+
 
 	
 	//act if someone opened us - make the graphical changes
@@ -246,7 +227,34 @@ function finishProcess (recipe : Split) {
 }			
 
 function OnGUI() {
-
+	if(contIsSelected) { //we only need to calculate this is we are going to show it in GUI layer
+		//below variables and calculations to find screen origen for Gui Display
+		//this is based on the containing object position and the direction to player
+		var screenPos : Vector3;
+		var heading : Vector3;
+		var playerHandle : GameObject = GameObject.FindGameObjectWithTag("Player");
+		
+		if(playerHandle) { //offset for player position
+			
+			heading = (this.gameObject.transform.position - playerHandle.transform.position);
+			heading.z = 0;
+			distance = heading.magnitude;
+			if(distance > 3) { //out of range, so turn off our GUI
+				contIsSelected = false;
+				inputContainer.show = false;
+				outputContainer.show = false;
+			}
+			else screenPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position+(heading/distance));
+		}
+		else screenPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position);
+	
+		inputContainer.originPos = screenPos;
+		outputContainer.originPos = screenPos;
+		//offset from origen point of control display
+		screenPos += offsetPos;
+		positionRect.x = screenPos.x;
+		positionRect.y = Screen.height - screenPos.y;
+	}
 	if(contIsSelected){ //our parent is selected, so we need to draw
 	
 	    //Name and Type

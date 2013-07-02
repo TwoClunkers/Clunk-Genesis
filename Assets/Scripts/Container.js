@@ -1,7 +1,7 @@
 #pragma strict
 
 var containerName : String = "Generic";
-var block : GameObject;
+//var block : GameObject;
 
 static var mouseItem : InventoryItem; //this is to hold the mouse drag
 static var mouseRect : Rect = Rect(0,0,-30,-30);
@@ -18,7 +18,7 @@ var contents : InventoryItem[] = new InventoryItem[12]; //this holds the item da
 var buttonsData : GUIContent[] = new GUIContent[12]; //this holds the button info...
 var items : AllItems;
 
-var origenPos : Vector3 = Vector3(0,0,0); //this should be set by the controller script 
+var originPos : Vector3 = Vector3(0,0,0); //this should be set by the controller script 
 var offsetPos : Vector3 = Vector3(0,0,0); //we need to set this to relative to origen
 var positionRect : Rect = Rect(25,25,160,80); //this should hold our adjusted footprint
 
@@ -32,21 +32,7 @@ function Start () {
 
 function Update () {
 	countEmptySlots();
-	//offset from origen of control display
-	if(show&&isOpen) {
-		if(Input.GetKeyDown(KeyCode.R)) {
-			dropItem(mouseItem);
-			mouseItem = InventoryItem(0,0);
-		}
-		origenPos += offsetPos;
-		positionRect.x = origenPos.x;
-		positionRect.y = Screen.height - origenPos.y;
-		
-	    size = Mathf.Min(size,contents.Length,buttonsData.Length); //cut our size to max of array length
-	  	for(var i = 0; i < contents.Length; i++){
-	  		buttonsData[i] = items.library[contents[i].id].buttonContent; //get textures and tooltips	
-	  	}
-  	}
+
   
 }
 
@@ -145,25 +131,40 @@ function dropItem(itemstack : InventoryItem) {
 	
 	if(itemstack.id > 0) {
 		//create instance of this material in world
-		var position : Vector3 = transform.position+Vector3(0,0,-1);
-		var popDirection : Vector3 = Vector3(0,0,0);
-		var pickupblock : GameObject;
+		//var position : Vector3 = transform.position+Vector3(0,0,-1);
+		//var popDirection : Vector3 = Vector3(0,0,0);
+		//var pickupblock : GameObject;
 		
-		var oBlock : GameObject = Network.Instantiate(block, position, Quaternion.identity, 0);
-		popDirection = Vector3(1,1,0); //(GameObject.FindGameObjectWithTag("Player").transform.position - position) * 3;
-		oBlock.rigidbody.AddForce(popDirection,UnityEngine.ForceMode.VelocityChange);
+		//Got to move this to our World controller and do it right...
+		//var oBlock : GameObject = Network.Instantiate(aBlock, position, Quaternion.identity, 0);
+		//popDirection = Vector3(1,1,0); //(GameObject.FindGameObjectWithTag("Player").transform.position - position) * 3;
+		//oBlock.rigidbody.AddForce(popDirection,UnityEngine.ForceMode.VelocityChange);
 		
-		oBlock.GetComponent(pickUpBlock).itemID = itemstack.id;
-		oBlock.GetComponent(pickUpBlock).itemQty = 5;//itemstack.quantity;
-		oBlock.GetComponent(MeshFilter).mesh = items.library[itemstack.id].mesh;
+		//oBlock.GetComponent(pickUpBlock).itemID = itemstack.id;
+		//oBlock.GetComponent(pickUpBlock).itemQty = 5;//itemstack.quantity;
+		//oBlock.GetComponent(MeshFilter).mesh = items.library[itemstack.id].mesh;
 		
 		//Debug.Log("PickUpBlock ID: " + oBlock.networkView.viewID);
-		GameObject.FindGameObjectWithTag("gui").GetComponent(NetworkView).RPC("setBlockMat", RPCMode.AllBuffered, oBlock.networkView.viewID, itemstack.id);
+		//GameObject.FindGameObjectWithTag("gui").GetComponent(NetworkView).RPC("setBlockMat", RPCMode.AllBuffered, oBlock.networkView.viewID, itemstack.id);
 	}
 }
 
 function OnGUI() {
-
+	//offset from origen of control display
+	if(show&&isOpen) {
+		if(Input.GetKeyDown(KeyCode.R)) {
+			dropItem(mouseItem);
+			mouseItem = InventoryItem(0,0);
+		}
+		originPos += offsetPos;
+		positionRect.x = originPos.x;
+		positionRect.y = Screen.height - originPos.y;
+		
+	    size = Mathf.Min(size,contents.Length,buttonsData.Length); //cut our size to max of array length
+	  	for(var a = 0; a < contents.Length; a++){
+	  		buttonsData[a] = items.library[contents[a].id].buttonContent; //get textures and tooltips	
+	  	}
+  	}
 	if(show&&isOpen) {
 		var e : Event = Event.current;
 		var maxtosend : int = 0;
@@ -247,32 +248,3 @@ function OnGUI() {
 		GUI.Label(Rect(mouseRect.x+10,mouseRect.y+10,100,20),GUI.tooltip);
 	}
 }
-	/*
-	if( Event.current.type == EventType.MouseDown && PointIsWithinRect( Event.current.MousePosition, myDraggableObject.rect ) )
-    {
-        currentlyDragged = myDraggableObject;
-    }
-    else if( Event.current.type == EventType.MouseDrag && currentlyDragged != null )
-    {
-        currentlyDragged.rect = new Rect( currentlyDragged.rect.x + Event.current.mousePosition.x, currentlyDragged.rect.y + Event.current.mousePosition.y, currentlyDragged.rect.width, currentlyDragged.rect.height );
-    }
-    else if( Event.current.type == EventType.MouseUp )
-    {
-        currentlyDragged = null;
-    }
- 
-    
-    //	
-			if(contIsOpen){ //draw inventory window and contents
-				GUI.Box(Rect(Screen.width/2+100, Screen.height/2-22,73,73)," ");
-				GUI.Box(Rect(Screen.width/2+177, Screen.height/2-22,73,73)," ");
-				GUI.SelectionGrid(Rect(Screen.width/2+177, Screen.height/2-22,73,73),0,selStrings,2, "box");
-				//draw items in the inventory
-				for(var i : int = 0; i < contents.Length; i++){
-					if(contents[i].quantity > 0 ){ //draw items in the inventory
-						GUI.DrawTexture(Rect(Screen.width/2+100+(i*35),Screen.height/2-22,30,30),items.library[contents[i].id].material.mainTexture);
-						if( activeContainerSlot != -1 && i == activeContainerSlot) { //mark the selected slot
-							GUI.DrawTexture(Rect(Screen.width/2+95+(i*35),Screen.height/2-22,40,40),activeOverlayTexture);
-						}
-						GUI.Label(Rect(Screen.width/2+100+(i*35),Screen.height/2-18,30,20),contents[i].quantity + "");	
- */
