@@ -111,9 +111,9 @@ function createPickUpBlock(id : int, position : Vector3){
 	var popDirection : Vector3;
 	var oBlock : GameObject = Network.Instantiate(pickupblock, position, Quaternion.identity, 0);
 	popDirection = (GameObject.FindGameObjectWithTag("Player").transform.position - position) * 3;
-	oBlock.GetComponent(pickUpBlock).itemID = id;
+	oBlock.GetComponent(pickUpBlock).invItem.id = id;
 	oBlock.GetComponent(MeshFilter).mesh = GameObject.FindGameObjectWithTag("mc").GetComponent(ItemController).items.library[id].mesh;
 	oBlock.rigidbody.AddForce(popDirection,UnityEngine.ForceMode.VelocityChange);
 	//Debug.Log("PickUpBlock ID: " + oBlock.networkView.viewID);
-	GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("setBlockMat", RPCMode.AllBuffered, oBlock.networkView.viewID, id);
+	//TODO:      oBlock.GetComponent(NetworkView).RPC("setBlockMat", RPCMode.AllBuffered, oBlock.networkView.viewID, id);
 }

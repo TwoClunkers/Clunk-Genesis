@@ -1,6 +1,7 @@
 // This makes the character turn to face the current movement speed per default.
 var autoRotate : boolean = true;
 var maxRotationSpeed : float = 360;
+var laserNade : GameObject;
 
 private var motor : CharacterMotor;
 private var worldController : WorldController;
@@ -64,6 +65,9 @@ function Update () {
 		if (Input.GetButtonDown("Fire2")){
 			//Debug.Log("Fire2 was just released.");
 			//TODO: worldController.placeBlock();
+		}
+		if(Input.GetKeyUp(KeyCode.G)){
+			Network.Instantiate(laserNade,transform.position,Quaternion.identity,0);
 		}
 	}else{
 		enabled = false;

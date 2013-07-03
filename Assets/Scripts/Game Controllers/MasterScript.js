@@ -70,10 +70,6 @@ function OnGUI() {
 			}
 		}
 	}
-
-	
-	
-	
 }
 
 function spawnPlayer(){
@@ -105,6 +101,12 @@ function Update(){
 	}
 	if(Input.GetKeyUp(KeyCode.C)){
 		Camera.main.orthographic = !Camera.main.orthographic;
+	}
+	if(Input.GetKeyUp(KeyCode.KeypadPlus)){
+		Camera.main.GetComponent(PlatformCam).zoomCamera(0.5);
+	}
+	if(Input.GetKeyUp(KeyCode.KeypadMinus)){
+		Camera.main.GetComponent(PlatformCam).zoomCamera(-0.5);
 	}
 }
 

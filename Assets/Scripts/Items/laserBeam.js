@@ -55,10 +55,10 @@ function Update () {
 			}
 			Debug.DrawLine(startPoint, trueHit.point, Color.green,2.0);	
 			if(halfTick){
-				if(!sparksDestroyed) {
+				/*if(!sparksDestroyed) {
 					Network.RemoveRPCs(sparksViewID);
 					Network.Destroy(sparksViewID);
-				}
+				}*/
 				sparksDestroyed = true;
 				var fxObj : GameObject = Network.Instantiate(sparks, trueHit.point, Quaternion.LookRotation((Vector3(transform.position.x,transform.position.y) - Vector3(trueHit.point.x,trueHit.point.y)).normalized),0);
 				sparksViewID = fxObj.networkView.viewID;
@@ -87,9 +87,9 @@ function InitLaser(laserStartPoint : Vector3, towardsPoint : Vector3, damagePerT
 }
 
 function doTick(hitBlock : GameObject, hitPosition : Vector3){
-	hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, laserDamageAmount);
-	GameObject.FindGameObjectWithTag("gui").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);
 	hitBlock.networkView.RPC("setBlockValues",RPCMode.All, hitBlock.networkView.viewID,1,Vector3(.0,.0,.3));
+	hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, laserDamageAmount);
+	GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);
 	tickEndTime = Time.time + tickLength - Time.deltaTime;
 	//this needs to be part of a block.damage routine
 	//hitBlock.GetComponent(blockClick).createPickUpBlock(hitPosition);

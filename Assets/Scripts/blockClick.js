@@ -45,10 +45,11 @@ function setBlockMat(viewID : NetworkViewID, mat : int){
 @RPC 
 function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3){
 	var vScale : Vector3;
+	try {var nv : NetworkView = networkView.Find(viewID); } catch(e) {}
 	if( varToSet == 1){
 		//set z scale to blockHealth/maxHealth
 		try{
-			if(networkView.Find(viewID) == null) return;
+			if(nv == null) return;
 			var zSc : float = 0.25;
 			if((1.0 * blockHealth) / (1.0 * maxHealth) > 0.25){
 				zSc = (1.0 * blockHealth) / (1.0 * maxHealth);
@@ -56,15 +57,15 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 			zSc *= startingZScale;
 			if(tickScaleAxis == 0){
 				//scale on x axis
-				vScale = Vector3(zSc,networkView.Find(viewID).transform.localScale.y, networkView.Find(viewID).transform.localScale.z);
+				vScale = Vector3(zSc,nv.transform.localScale.y, nv.transform.localScale.z);
 			} else if(tickScaleAxis == 1) {
 				//scale on y axis
-				vScale = Vector3(networkView.Find(viewID).transform.localScale.x, zSc, networkView.Find(viewID).transform.localScale.z);
+				vScale = Vector3(nv.transform.localScale.x, zSc, nv.transform.localScale.z);
 			} else {
 				//scale on z axis
-				vScale = Vector3(networkView.Find(viewID).transform.localScale.x, networkView.Find(viewID).transform.localScale.y, zSc);
+				vScale = Vector3(nv.transform.localScale.x, nv.transform.localScale.y, zSc);
 			}
-			networkView.Find(viewID).transform.localScale = vScale;
+			nv.transform.localScale = vScale;
 		}catch(e){}
 	} else if(varToSet == 2) {
 		//replace depth scale based tickScaleAxis
@@ -76,15 +77,15 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 			vScale = Vector3(setTo.x,setTo.z, setTo.x);
 		} else {
 			//scale on z axis
-			//vScale = Vector3(networkView.Find(viewID).transform.localScale.x,networkView.Find(viewID).transform.localScale.y, setTo.z);
+			//vScale = Vector3(nv.transform.localScale.x,nv.transform.localScale.y, setTo.z);
 			vScale = Vector3(setTo.x,setTo.x, setTo.z);
 		}
-		networkView.Find(viewID).transform.localScale = vScale;
+		nv.transform.localScale = vScale;
 		startingZScale = setTo.z;
 	} else if(varToSet == 3) {
 		//rotate x,y, or z by setTo.y
 		if(setTo.x > 0.66){
-			networkView.Find(viewID).transform.eulerAngles.x = setTo.y;
+			nv.transform.eulerAngles.x = setTo.y;
 			if(setTo.y/90 == 1 || setTo.y/90 == 3) {
 				//90|270 = y
 				tickScaleAxis = 1;
@@ -93,7 +94,7 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 				tickScaleAxis = 2;
 			}
 		} else if(setTo.x > 0.33){
-			networkView.Find(viewID).transform.eulerAngles.y = setTo.y;
+			nv.transform.eulerAngles.y = setTo.y;
 			if(setTo.y/90 == 1 || setTo.y/90 == 3) {
 				//90|270 = y
 				tickScaleAxis = 0;
@@ -102,7 +103,7 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 				tickScaleAxis = 2;
 			}
 		} else {
-			networkView.Find(viewID).transform.eulerAngles.z = setTo.y;
+			nv.transform.eulerAngles.z = setTo.y;
 			tickScaleAxis = 2;
 		}
 	}
@@ -110,7 +111,8 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 
 @RPC
 function DamageBlock( viewID : NetworkViewID ,hp : int) {
+	try{ var nv : NetworkView = networkView.Find(viewID); } catch(e) {}
 	try{
-		networkView.Find(viewID).GetComponent(blockClick).blockHealth -= hp;
+		nv.GetComponent(blockClick).blockHealth -= hp;
 	}catch(e){}
 }

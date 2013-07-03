@@ -1,29 +1,28 @@
 // Ross Edited this 6/27/2013  ...
-var itemID : int;
-var itemQty : int;
 var destroyAtThisTime : float;
 var blockLifeTime : float;
+var invItem : InventoryItem;
 
 function Start(){
 	blockLifeTime = 300.0;
 	destroyAtThisTime = Time.time + blockLifeTime; //seconds of lifetime for the pickup
-	itemQty = 1;
+	invItem.quantity = 1;
 }
 
 function OnTriggerStay(other : Collider){
 	if(other.tag.Equals("Player")){
-		GameObject.FindGameObjectWithTag("gui").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "pickupBlock", transform.position);
+		GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "pickupBlock", transform.position);
 		destroyMe();
 		//TODO: turn into RPC?:
-		other.GetComponent(PlayerInventory).giveItem(itemID,itemQty);
+		other.GetComponent(PlayerInventory).inventory.addItem(invItem);
 	} else if(other.tag.Equals("pickup")){
-		if(itemQty > 0 && other.GetComponent(pickUpBlock).itemQty > 0 ){ //if both blocks contain items
-			if(other.GetComponent(pickUpBlock).itemID.Equals(itemID)){ //if the blocks are the same
+		if(invItem.quantity > 0 && other.GetComponent(pickUpBlock).invItem.quantity > 0 ){ //if both blocks contain items
+			if(other.GetComponent(pickUpBlock).invItem.id.Equals(invItem.id)){ //if the blocks are the same
 				var bCombineToOther : boolean;
 				bCombineToOther = true;
-				if(other.GetComponent(pickUpBlock).itemQty > itemQty){ //other block has more
+				if(other.GetComponent(pickUpBlock).invItem.quantity > invItem.quantity){ //other block has more
 					bCombineToOther = true;
-				} else if(other.GetComponent(pickUpBlock).itemQty < itemQty) { //this block has more
+				} else if(other.GetComponent(pickUpBlock).invItem.quantity < invItem.quantity) { //this block has more
 					bCombineToOther = false;
 				} else {
 					// blocks have equal quantity, combine to the one dying later
@@ -35,13 +34,13 @@ function OnTriggerStay(other : Collider){
 				}
 				
 				if(bCombineToOther) {
-					other.GetComponent(pickUpBlock).itemQty += itemQty;
-					itemQty = 0;
+					other.GetComponent(pickUpBlock).invItem.quantity += invItem.quantity;
+					invItem.quantity = 0;
 					other.GetComponent(pickUpBlock).destroyAtThisTime = Time.time + blockLifeTime;
 					destroyAtThisTime = Time.time + 1.0;
 				} else {
-					itemQty += other.GetComponent(pickUpBlock).itemQty;
-					other.GetComponent(pickUpBlock).itemQty = 0;
+					invItem.quantity += other.GetComponent(pickUpBlock).invItem.quantity;
+					other.GetComponent(pickUpBlock).invItem.quantity = 0;
 					other.GetComponent(pickUpBlock).destroyAtThisTime = Time.time + 1.0;
 					destroyAtThisTime = Time.time + blockLifeTime;
 				}

@@ -8,3 +8,7 @@ function Update () {
 		transform.position.z = zpos;
 	}
 }
+
+function zoomCamera(zoomAmount : float) {
+	zpos += zoomAmount;
+}
