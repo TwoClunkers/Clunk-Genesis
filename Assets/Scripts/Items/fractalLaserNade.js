@@ -39,11 +39,11 @@ function Start () {
 	}
 
 	for( i = 0; i < laserCount ; i++){ // randomize laser start and end points
-		laserTargetNow[i].x = Random.RandomRange(-50.0,50.0);
-		laserTargetNow[i].y = Random.RandomRange(-50.0,50.0);
+		laserTargetNow[i].x = Random.Range(-50.0,50.0);
+		laserTargetNow[i].y = Random.Range(-50.0,50.0);
 		laserTargetNow[i].z = 0.0;
-		laserTargetEnd[i].x = Random.RandomRange(-50.0,50.0);
-		laserTargetEnd[i].y = Random.RandomRange(-50.0,50.0);
+		laserTargetEnd[i].x = Random.Range(-50.0,50.0);
+		laserTargetEnd[i].y = Random.Range(-50.0,50.0);
 		laserTargetEnd[i].z = 0.0;
 	}
 }

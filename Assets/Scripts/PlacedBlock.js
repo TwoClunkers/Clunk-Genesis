@@ -9,6 +9,8 @@ var blockMaterial : int;
 var tickScaleAxis : int;
 @System.NonSerializedAttribute
 var startingZScale : float;
+@System.NonSerializedAttribute
+var forceDirection : Vector3;
 
 function Awake(){
 	blockHealth = 100;
@@ -19,7 +21,7 @@ function Awake(){
 function Update(){
 	if(blockHealth <= 0){
 		//destroy block, create pickup
-		GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController).createPickUpBlock(blockMaterial, transform.position);
+		GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController).createPickUpBlock(blockMaterial, transform.position, forceDirection);
 		
 		try{
 			Network.RemoveRPCs(networkView.viewID);
@@ -27,6 +29,7 @@ function Update(){
 		} catch(e){}
 		GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "blockDestroyed", transform.position);
 	}
+	else forceDirection = Vector3(0,0,0);
 }
 
 @RPC
@@ -108,11 +111,12 @@ function setBlockValues(viewID : NetworkViewID, varToSet : int, setTo : Vector3)
 }
 
 @RPC
-function DamageBlock( viewID : NetworkViewID ,hp : int) {
+function DamageBlock( viewID : NetworkViewID ,hp : int, direction : Vector3) {
 	if( !viewID.isMine ) return;
 	/*try{ var nv : NetworkView = networkView.Find(viewID); } catch(e) {}
 	try{
 		nv.GetComponent(PlacedBlock).blockHealth -= hp;
 	}catch(e){}*/
 	blockHealth -= hp;
+	forceDirection = (forceDirection + (direction*(hp/10)));
 }

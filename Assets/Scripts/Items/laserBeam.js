@@ -88,7 +88,7 @@ function InitLaser(laserStartPoint : Vector3, towardsPoint : Vector3, damagePerT
 
 function doTick(hitBlock : GameObject, hitPosition : Vector3){
 	hitBlock.networkView.RPC("setBlockValues",RPCMode.All, hitBlock.networkView.viewID,1,Vector3(.0,.0,.3));
-	hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, laserDamageAmount);
+	hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, laserDamageAmount, (transform.position-trueHit.point).normalized);
 	GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);
 	tickEndTime = Time.time + tickLength - Time.deltaTime;
 	//this needs to be part of a block.damage routine
