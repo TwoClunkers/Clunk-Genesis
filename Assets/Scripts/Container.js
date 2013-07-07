@@ -150,29 +150,33 @@ function dropItem(itemstack : InventoryItem) {
 }
 
 function OnGUI() {
-	//offset from origen of control display
-	if(show&&isOpen) {
-		if(Input.GetKeyDown(KeyCode.R)) {
-			dropItem(mouseItem);
-			mouseItem = InventoryItem(0,0);
-		}
-		originPos += offsetPos;
-		positionRect.x = originPos.x;
-		positionRect.y = Screen.height - originPos.y;
-		
-	    size = Mathf.Min(size,contents.Length,buttonsData.Length); //cut our size to max of array length
-	  	for(var a = 0; a < contents.Length; a++){
-	  		buttonsData[a] = items.library[contents[a].id].buttonContent; //get textures and tooltips	
-	  	}
-  	}
+
 	if(show&&isOpen) {
 		var e : Event = Event.current;
 		var maxtosend : int = 0;
 		var tempItem : InventoryItem;
+		
+		//offset from origen of control display
+		if(EventType.Repaint) {
+			if(Input.GetKeyDown(KeyCode.R)) {
+				dropItem(mouseItem);
+				mouseItem = InventoryItem(0,0);
+			}
+			originPos += offsetPos;
+			positionRect.x = originPos.x;
+			positionRect.y = Screen.height - originPos.y;
+			
+		    size = Mathf.Min(size,contents.Length,buttonsData.Length); //cut our size to max of array length
+		  	for(var a = 0; a < contents.Length; a++){
+		  		buttonsData[a] = items.library[contents[a].id].buttonContent; //get textures and tooltips	
+		  	}
+	  	}		
+		
+		//draw a box and label for our container
 		GUI.Box(Rect(positionRect.x-5,positionRect.y,width*40+10, Mathf.Ceil(size/width)*40+25), "");
 		GUI.Label(Rect(positionRect.x,positionRect.y,100, 50), containerName);
 		
-		
+		//creates the buttons in the grid
 		var i=0;
 		for(var r = 0;(i<size) && (r<20);r++) {
 			for(var w = 0;w < width;w++) {
@@ -238,13 +242,17 @@ function OnGUI() {
 		 		}
 		 	}
 		} 
-		var screenPos : Vector2 = Event.current.mousePosition;
-	    mouseRect.x = screenPos.x;
-	    mouseRect.y = screenPos.y;
-		if(mouseItem.quantity>0) {
-		    GUI.DrawTexture(mouseRect,items.library[mouseItem.id].buttonContent.image);
-		    GUI.Label(Rect(mouseRect.x-20,mouseRect.y-20,30,30),mouseItem.quantity+"");
-	    }
-		GUI.Label(Rect(mouseRect.x+10,mouseRect.y+10,100,20),GUI.tooltip);
+		if(EventType.Repaint) {
+			//draw only the mouse-carried itemstack
+			var screenPos : Vector2 = Event.current.mousePosition;
+		    mouseRect.x = screenPos.x;
+		    mouseRect.y = screenPos.y;
+			if(mouseItem.quantity>0) {
+			    GUI.DrawTexture(mouseRect,items.library[mouseItem.id].buttonContent.image);
+			    GUI.Label(Rect(mouseRect.x-20,mouseRect.y-20,30,30),mouseItem.quantity+"");
+		    }
+		    //draw the tooltip
+			GUI.Label(Rect(mouseRect.x+10,mouseRect.y+10,100,20),GUI.tooltip);
+		}
 	}
 }

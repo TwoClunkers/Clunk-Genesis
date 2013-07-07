@@ -13,7 +13,7 @@ function Update () {
 	var mouseWorldPosition : Vector3 = Camera.main.ScreenToWorldPoint(Vector3(Input.mousePosition.x,Input.mousePosition.y,-Camera.main.transform.position.z));
 	 mouseWorldPosition.z = transform.position.z;
 	transform.LookAt(mouseWorldPosition); //for this purpose, put the gun on same plane as target
-	if(Input.GetMouseButtonDown(0)) {
+	if(Input.GetMouseButtonDown(0)) { //!!!Warning, we should also check to see there is a parent, right?
 		Blast();
 	}
 }
