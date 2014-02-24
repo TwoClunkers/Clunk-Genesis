@@ -1,4 +1,9 @@
 var pickupblock : GameObject;
+var mychunk : int;
+var myx : int;
+var myy : int;
+var mydata : int[];
+
 @System.NonSerializedAttribute
 var blockHealth : int;
 @System.NonSerializedAttribute

@@ -1,0 +1,3 @@
+<ListOfTask>
+  <Task file="" description="Create Chunk object as container for multiple blocks. Chunk is parent and holds variables defining area as well as randomization and serialization interface." />
+</ListOfTask>

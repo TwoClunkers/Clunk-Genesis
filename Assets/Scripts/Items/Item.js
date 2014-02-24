@@ -9,4 +9,5 @@ class Item {
 	var buttonContent : GUIContent;
 	var maxHealth : int;
 	var construct : Split;
+	var attributes : ItemAttribute[];
 }

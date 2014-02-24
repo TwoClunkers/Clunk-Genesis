@@ -7,6 +7,7 @@ var driveplan : GameObject;
 var connectedDrive : GameObject;
 var mountDrive : Vector3 = Vector3(0,-1,0);
 var controller : CharacterController;
+var spotlight : GameObject;
 
 function Start () {
 	leftplan = Resources.Load("Gun");
@@ -18,8 +19,11 @@ function Start () {
 	controller = transform.GetComponent(CharacterController);
 	controller.height = 2;
 	controller.center = Vector3(0,-0.5,0);
+	spotlight = transform.Find("NarrowLight").gameObject;
 }
 
 function Update () {
-
+	var mouseWorldPosition : Vector3 = Camera.main.ScreenToWorldPoint(Vector3(Input.mousePosition.x,Input.mousePosition.y,-Camera.main.transform.position.z));
+	mouseWorldPosition.z = transform.position.z;
+	spotlight.transform.LookAt(mouseWorldPosition);
 }
