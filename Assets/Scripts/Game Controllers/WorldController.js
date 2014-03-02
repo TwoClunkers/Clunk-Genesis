@@ -16,8 +16,6 @@ var ySeed : float;
 var bSeed : float;
 var iSeed : float;
 
-
-
 function Awake () {
 	globalBlockScale = 0.5;
 }
@@ -28,11 +26,11 @@ function Start () {
 	
 	cordx = 0;
 	cordy = 0;
-	seed = Mathf.RoundToInt(Random.value*1000000);
-	xSeed = Mathf.RoundToInt(Random.value*1000000);
-	ySeed = Mathf.RoundToInt(Random.value*1000000);
-	bSeed = Mathf.RoundToInt(Random.value*1000000);
-	iSeed = Mathf.RoundToInt(Random.value*1000000);
+	seed = Mathf.RoundToInt(Random.value*100000000);
+	xSeed = Mathf.RoundToInt(Random.value*100000000);
+	ySeed = Mathf.RoundToInt(Random.value*100000000);
+	bSeed = Mathf.RoundToInt(Random.value*100000000);
+	iSeed = Mathf.RoundToInt(Random.value*100000000);
 	
 }
 
@@ -40,48 +38,73 @@ function Update () {
 
 }
 
-function buildWorld(type : int){
-	var r : float;
-	var c : float;
+function expandZones(start : Vector2, end : Vector2) {
+	var r_start : int;
+	var r_length : int;
+	var c_start : int;
+	var c_length : int;
+	var existingzones : GameObject[];
+	var zoneframe : int[];
 	var oZone : GameObject;
-	var zonescript : ZoneChunk;
-	var newzone : Chunk;
-	newzone = new Chunk();
-	zoneMap = new Chunk[80];
-	var top : int;
-	var bottom : int;
-	var right : int;
-	var left : int;
-	var z_count : int;
-	var c_count : int;
-	var r_count : int;
-	var map_width : int;
-	var map_height : int;
+	var zonescript : ZoneChunk;	
 	
-	z_count = 0;
-	c_count = 0;
-	r_count = 0;
-	map_width = 4;
-	map_height = 10;
 	
-	for (r = 0; r < 120; r += (globalBlockScale*16)) {
-		if((z_count/map_width) > (map_height+1)) continue;
-		c_count = 0;
-		
-		for (c = 0; c < 30; c += (globalBlockScale*16)) {
-			if(c_count > map_width) continue;
-			//newzone = zoneMap[z_count];
-			newzone.strata = (Mathf.RoundToInt(r/10));
-			oZone = createZone(Vector3(c-(2*globalBlockScale*16),r-(5*globalBlockScale*16),0));
+	//lets convert this into chunk units
+	r_start = Mathf.FloorToInt(start.x/(globalBlockScale*16));
+	r_length = Mathf.FloorToInt(end.x/(globalBlockScale*16))-r_start;
+	c_start = Mathf.FloorToInt(start.y/(globalBlockScale*16));
+	c_length = Mathf.FloorToInt(end.y/(globalBlockScale*16))-c_start;
+	zoneframe = new int[r_length+((c_length)*(r_length))];
+	
+	//first lets scan to see what is already made
+	existingzones = GameObject.FindGameObjectsWithTag("chunk");
+	for (var zo : GameObject in existingzones)  { 
+		var posx : int = Mathf.FloorToInt((zo.transform.position.x/(globalBlockScale*16))-r_start);
+		if(posx < 0) continue;
+		if(posx > (r_length-1)) continue;
+		var posy : int = Mathf.FloorToInt((zo.transform.position.y/(globalBlockScale*16))-c_start);
+		if(posy < 0) continue;
+		if(posy > (c_length-1)) continue;
+		zoneframe[(posx) + (posy)*r_length] = 1; 
+	} 
+
+	//now, if it is not in the array, we will make it.
+	for (var a : int = 0; a < r_length; a += 1) {
+		for (var b : int = 0; b < c_length; b += 1) {
+			if(zoneframe[a+b*r_length] == 1) continue; //it already exists
+			Debug.Log("NEW");
+			oZone = createZone(Vector3((r_start+a)*(globalBlockScale*16),(c_start+b)*(1*globalBlockScale*16),0));
 			zonescript = oZone.GetComponent("ZoneChunk");
-			zonescript.initialize(c, r);
+			zonescript.initialize(r_start+a, c_start+b);
 			zonescript.show();
-			
-			z_count += 1;
-			c_count += 1;
 		}
-		r_count += 1;
-	}
+	}	
+	
+}
+
+function buildWorld(type : int){
+
+	
+	
+	expandZones(Vector2(-32,-32),Vector2(32,32));
+//	for (r = 0; r < 24; r += (globalBlockScale*16)) {
+//		if((z_count/map_width) > (map_height+1)) continue;
+//		c_count = 0;
+//		
+//		for (c = 0; c < 24; c += (globalBlockScale*16)) {
+//			if(c_count > map_width) continue;
+//			//newzone = zoneMap[z_count];
+//			newzone.strata = (Mathf.RoundToInt(r/10));
+//			oZone = createZone(Vector3(c-(1*globalBlockScale*16),r-(1*globalBlockScale*16),0));
+//			zonescript = oZone.GetComponent("ZoneChunk");
+//			zonescript.initialize(c, r);
+//			zonescript.show();
+//			
+//			z_count += 1;
+//			c_count += 1;
+//		}
+//		r_count += 1;
+//	}
 }
 
 function getShape(row : int, column : int) {

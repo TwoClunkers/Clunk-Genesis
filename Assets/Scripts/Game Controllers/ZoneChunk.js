@@ -58,7 +58,7 @@ function initialize (posx : int, posy : int) {
 			bordertype = Mathf.Min(bordertype,chunk.feature); //the lesser feature is drawn
 			end = GetPointFromSeed(chunk.id+1);
 			if(bordertype > 2) drawCavity(start,end,1,1);
-			else if(bordertype > 1) w = 5;
+			if(bordertype > 1) w = 5;
 			else w = 1;
 			drawRift(start, end, 1, w);
 		}
@@ -67,7 +67,7 @@ function initialize (posx : int, posy : int) {
 			bordertype = Mathf.Min(bordertype,chunk.feature);
 			end = GetPointFromSeed(chunk.id-1);
 			if(bordertype > 2) drawCavity(start, end, -1, 1);
-			else if(bordertype > 1) w = 5;
+			if(bordertype > 1) w = 5;
 			else w = 1;		
 			drawRift(start, end, -1, w);
 		}
@@ -76,7 +76,7 @@ function initialize (posx : int, posy : int) {
 			bordertype = Mathf.Min(bordertype,chunk.feature);
 			end = GetPointFromSeed(chunk.id+16);
 			if(bordertype > 2) drawCavity(start, end, 16, 1);
-			else if(bordertype > 1) w = 5;
+			if(bordertype > 1) w = 5;
 			else w = 1;	
 			drawRift(start, end, 16, w);
 		}
@@ -85,7 +85,7 @@ function initialize (posx : int, posy : int) {
 			bordertype = Mathf.Min(bordertype,chunk.feature);
 			end = GetPointFromSeed(chunk.id-16);
 			if(bordertype > 2) drawCavity(start, end, -16, 1);
-			else if(bordertype > 1) w = 5;
+			if(bordertype > 1) w = 5;
 			else w = 1;	
 			drawRift(start, end, -16, w);
 		}
@@ -94,7 +94,7 @@ function initialize (posx : int, posy : int) {
 }
 
 function GetIntFromSeed(number : float, limit : int) : int {
-	var answer : int = ((Mathf.FloorToInt(control.iSeed)>>(Mathf.FloorToInt(number-(Mathf.FloorToInt(number/7)*7))))&limit);
+	var answer : int = Mathf.FloorToInt((control.iSeed)/(number+1))&limit;//((Mathf.FloorToInt(control.iSeed)>>(Mathf.FloorToInt(number-(Mathf.FloorToInt(number/7)*7))))&limit);
 	return answer;
 }
 
@@ -107,8 +107,10 @@ function GetBoolFromSeed(number : float) : int {
 function GetPointFromSeed(number : int) : Vector2 {
 	var temp1 : int;
 	var temp2 : int;
-	temp1 = ((Mathf.FloorToInt(control.xSeed)>>(Mathf.FloorToInt(number-(Mathf.FloorToInt(number/7)*7))))&15);
-	temp2 = ((Mathf.FloorToInt(control.ySeed)>>(Mathf.FloorToInt(number-(Mathf.FloorToInt(number/7)*7))))&15);
+	temp1 = Mathf.FloorToInt((control.xSeed)/(number+1))&15;
+	temp2 = Mathf.FloorToInt((control.ySeed)/(number+1))&15;
+	//temp1 = ((Mathf.FloorToInt(control.xSeed)>>(Mathf.FloorToInt(number-(Mathf.FloorToInt(number/13)*13))))&15);
+	//temp2 = ((Mathf.FloorToInt(control.ySeed)>>(Mathf.FloorToInt(number-(Mathf.FloorToInt(number/13)*13))))&15);
 	return Vector2(temp1,temp2);
 }
 
@@ -133,10 +135,11 @@ function drawRift(startRift : Vector2, endRift : Vector2, direction : int, maxWi
 		endRift.x = 16;
 		length = Mathf.RoundToInt(endRift.x-startRift.x); //length to the border
 		for(a=0; a < length; a += 1) {
-			width = (Random.Range(1,maxWidth));
 			posx = startRift.x+a;
 			posy = Mathf.RoundToInt(Mathf.Lerp(startRift.y,endRift.y,a/length));
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy+b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy-b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
 		}
 	}
@@ -146,10 +149,11 @@ function drawRift(startRift : Vector2, endRift : Vector2, direction : int, maxWi
 		temp = endRift; endRift = startRift; startRift = temp; //we are gonna still draw from left to right
 		length = endRift.x; //length to the border
 		for(a=0; a < length; a += 1) {
-			width = (Random.Range(1,maxWidth));
 			posx = startRift.x+a;
 			posy = Mathf.RoundToInt(Mathf.Lerp(startRift.y,endRift.y,a/length));
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy+b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy-b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
 		}
 	}
@@ -158,10 +162,11 @@ function drawRift(startRift : Vector2, endRift : Vector2, direction : int, maxWi
 		endRift.y = 16;
 		length = Mathf.RoundToInt(endRift.y-startRift.y); //length to the border 
 		for(a=0; a < length; a += 1) {
-			width = (Random.Range(1,maxWidth));
 			posx = Mathf.RoundToInt(Mathf.Lerp(startRift.x,endRift.x,a/length));
 			posy = startRift.y+a;
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx+b,0,15)] = 0;
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx-b,0,15)] = 0;
 		}		
 	}
@@ -171,10 +176,11 @@ function drawRift(startRift : Vector2, endRift : Vector2, direction : int, maxWi
 		temp = endRift; endRift = startRift; startRift = temp; //we are gonna still draw from bottom to top
 		length = endRift.y; //length to the border 
 		for(a=0; a < length; a += 1) {
-			width = (Random.Range(1,maxWidth));
 			posx = Mathf.RoundToInt(Mathf.Lerp(startRift.x,endRift.x,a/length));
 			posy = startRift.y+a;
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx+b,0,15)] = 0;
+			width = (Random.Range(1,maxWidth));
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx-b,0,15)] = 0;
 		}		
 	}
@@ -192,45 +198,49 @@ function drawCavity(startRift : Vector2, endRift : Vector2, direction : int, max
 	
 	if(direction == 1) { //end is in the frame to our right
 		endRift.x = 16;
-		length = 15; //length to the border
+		length = 9; //length to the border
 		for(a=0; a < length; a += 1) {
-			width = Mathf.Clamp(Random.Range(2,4+a),2,7);
-			posx = 2+a;
+			width = Mathf.Clamp(Random.Range(a/2,2+a/2),2,7);
+			posx = 7+a;
 			posy = 7;
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy+b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
+			width = Mathf.Clamp(Random.Range(a/2,2+a/2),2,7);
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy-b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
 		}
 	}
 	if(direction == -1) { //end is in the frame to our left
 		endRift.x = 0;
-		length = 15; //length to the border
+		length = 9; //length to the border
 		for(a=0; a < length; a += 1) {
-			width = Mathf.Clamp(Random.Range(7,5-a),2,7);
+			width = Mathf.Clamp(Random.Range(7-a/2,5-a/2),2,7);
 			posx = 0+a;
 			posy = 7;
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy+b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
+			width = Mathf.Clamp(Random.Range(7-a/2,5-a/2),2,7);
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy-b,0,15)*16+Mathf.Clamp(posx,0,15)] = 0;
 		}
 	}
 	if(direction == 16) { //end is in the frame above?
 		endRift.y = 16;
-		length = 15; //length to the border 
+		length = 9; //length to the border 
 		for(a=0; a < length; a += 1) {
-			width = Mathf.Clamp(Random.Range(2,4+a),2,7);
+			width = Mathf.Clamp(Random.Range(a/2,2+a/2),2,7);
 			posx = 7;
-			posy = 2+a;
+			posy = 7+a;
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx+b,0,15)] = 0;
+			width = Mathf.Clamp(Random.Range(a/2,2+a/2),2,7);
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx-b,0,15)] = 0;
 		}		
 	}
 	if(direction == -16) { //end is in the frame below?
 		endRift.y = 0;
-		length = 15; //length to the border 
+		length = 9; //length to the border 
 		for(a=0; a < length; a += 1) {
-			width = Mathf.Clamp(Random.Range(7,5-a),2,7);
+			width = Mathf.Clamp(Random.Range(7-a/2,5-a/2),2,7);
 			posx = 7;
 			posy = 0+a;
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx+b,0,15)] = 0;
+			width = Mathf.Clamp(Random.Range(7-a/2,5-a/2),2,7);
 			for(b=0; b < width; b += 1) chunk.data[Mathf.Clamp(posy,0,15)*16+Mathf.Clamp(posx-b,0,15)] = 0;
 		}		
 	}

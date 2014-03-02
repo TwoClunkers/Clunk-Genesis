@@ -2,6 +2,7 @@
 var autoRotate : boolean = true;
 var maxRotationSpeed : float = 360;
 var laserNade : GameObject;
+var oldPosition : Vector3;
 
 private var motor : CharacterMotor;
 private var worldController : WorldController;
@@ -13,10 +14,16 @@ function Awake () {
 function Start() {
 	//reference to the world controller for placing blocks
 	worldController = GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController);
+	oldPosition = transform.position;
 }
 
 // Update is called once per frame
 function Update () {
+	var dist = Vector3.Distance(oldPosition, transform.position);
+	if(dist > 5) {
+		oldPosition = transform.position;
+		worldController.expandZones(Vector2(transform.position.x-32,transform.position.y-32),Vector2(transform.position.x+32,transform.position.y+32));
+	}
 	if(networkView.isMine){
 		// Get the input vector from kayboard or analog stick
 		var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, 0); // removed Vertical (Z axis) - RDM // Input.GetAxis("Vertical")
