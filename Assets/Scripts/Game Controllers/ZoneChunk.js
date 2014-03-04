@@ -5,7 +5,10 @@ var control : WorldController;
 
 function Awake () {
 	chunk.data = new int[256];
-	clear(); //clears the layout to zeros
+	//clear(); //clears the layout to zeros
+}
+function Start () {
+
 }
 
 function Update () {
@@ -16,7 +19,6 @@ function show () { //this creates the objects to allow interaction
 	var boxtype : int;
 	var thisbox : GameObject;
 	var boxscript : PlacedBlock;
-	control = transform.parent.GetComponent("WorldController");
 	
 	for(var b : int = 0; b < 16; b += 1) {
 		for(var a : int = 0; a < 16; a += 1) {
@@ -41,7 +43,7 @@ function initialize (posx : int, posy : int) {
 	chunk.strata = 0;  //NOT IMPLEMENTED
 	chunk.zone = 0; //NOT IMPLEMENTED
 	chunk.feature = GetIntFromSeed(chunk.id, 3);  //used for drawing shapes that match up across chunks
-	clear(); //clears the layout to zeros
+	clear(); //clears the layout to ones
 	
 	
 	//TO DO: use chunk strata and zone to draw our chunk

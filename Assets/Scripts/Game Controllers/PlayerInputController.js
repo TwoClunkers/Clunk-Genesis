@@ -22,7 +22,7 @@ function Update () {
 	var dist = Vector3.Distance(oldPosition, transform.position);
 	if(dist > 5) {
 		oldPosition = transform.position;
-		worldController.expandZones(Vector2(transform.position.x-32,transform.position.y-32),Vector2(transform.position.x+32,transform.position.y+32));
+		worldController.expandZones(Vector2(transform.position.x-16,transform.position.y-16),Vector2(transform.position.x+32,transform.position.y+32));
 	}
 	if(networkView.isMine){
 		// Get the input vector from kayboard or analog stick

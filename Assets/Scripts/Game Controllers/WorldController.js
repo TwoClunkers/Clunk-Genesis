@@ -17,7 +17,7 @@ var bSeed : float;
 var iSeed : float;
 
 function Awake () {
-	globalBlockScale = 0.5;
+	globalBlockScale = 1;
 }
 
 function Start () {
@@ -72,7 +72,6 @@ function expandZones(start : Vector2, end : Vector2) {
 	for (var a : int = 0; a < r_length; a += 1) {
 		for (var b : int = 0; b < c_length; b += 1) {
 			if(zoneframe[a+b*r_length] == 1) continue; //it already exists
-			Debug.Log("NEW");
 			oZone = createZone(Vector3((r_start+a)*(globalBlockScale*16),(c_start+b)*(1*globalBlockScale*16),0));
 			zonescript = oZone.GetComponent("ZoneChunk");
 			zonescript.initialize(r_start+a, c_start+b);
@@ -86,7 +85,7 @@ function buildWorld(type : int){
 
 	
 	
-	expandZones(Vector2(-32,-32),Vector2(32,32));
+	expandZones(Vector2(-48,-48),Vector2(64,64));
 //	for (r = 0; r < 24; r += (globalBlockScale*16)) {
 //		if((z_count/map_width) > (map_height+1)) continue;
 //		c_count = 0;
