@@ -11,33 +11,49 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace PathologicalGames
+[CustomEditor(typeof(SmoothLookAtConstraint)), CanEditMultipleObjects]
+public class SmoothLookAtConstraintInspector : LookAtConstraintInspector
 {
+	protected SerializedProperty interpolation;
+	protected SerializedProperty output;
+	protected SerializedProperty speed;
 
-    [CustomEditor(typeof(SmoothLookAtConstraint))]
-    public class SmoothLookAtConstraintInspector : LookAtBaseClassInspector
+    protected override void OnEnable()
+	{
+		base.OnEnable();
+
+		this.interpolation = this.serializedObject.FindProperty("interpolation");
+		this.output = this.serializedObject.FindProperty("output");
+		this.speed  = this.serializedObject.FindProperty("speed");
+    }
+	
+    protected override void OnInspectorGUIUpdate()
     {
-        protected override void OnInspectorGUIUpdate()
-        {
-            base.OnInspectorGUIUpdate();
+        base.OnInspectorGUIUpdate();	
+		
+		GUIContent content;
 
-            var script = (SmoothLookAtConstraint)target;
-
-            script.upTarget = PGEditorUtils.ObjectField<Transform>("Up Target (Optional)", script.upTarget);
-
-            script.interpolation = PGEditorUtils.EnumPopup<UnityConstraints.INTERP_OPTIONS>
-            (
-                "Interpolation",
-                script.interpolation
-            );
-
-            script.speed = EditorGUILayout.FloatField("Speed", script.speed);
-
-            script.output = PGEditorUtils.EnumPopup<UnityConstraints.OUTPUT_ROT_OPTIONS>
-            (
-                "Output",
-                script.output
-            );
-        }
+		content = new GUIContent
+		(
+			"Interpolation", 
+			"The rotation interpolation solution to use."
+		);
+		EditorGUILayout.PropertyField(this.interpolation, content);	
+		
+        
+		content = new GUIContent
+		(
+			"Speed", 
+			"How fast the constrant can rotate. The result depends on the interpolation chosen."
+		);
+		EditorGUILayout.PropertyField(this.speed, content);	
+		
+		
+		content = new GUIContent
+		(
+			"Output", 
+			"What axes and space to output the result to."
+		);
+		EditorGUILayout.PropertyField(this.output, content);			
     }
 }

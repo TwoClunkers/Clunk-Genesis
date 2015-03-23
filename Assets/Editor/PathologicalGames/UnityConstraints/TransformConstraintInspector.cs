@@ -14,39 +14,72 @@ using System.Collections;
 namespace PathologicalGames
 {
 
-    [CustomEditor(typeof(TransformConstraint))]
+    [CustomEditor(typeof(TransformConstraint)), CanEditMultipleObjects]
     public class TransformConstraintInspector : ConstraintBaseInspector
     {
-        protected override void OnInspectorGUIUpdate()
-        {
-            base.OnInspectorGUIUpdate();
+		protected SerializedProperty position;
+		protected SerializedProperty outputPosX;
+		protected SerializedProperty outputPosY;
+		protected SerializedProperty outputPosZ;
+		
+		protected SerializedProperty rotation;
+		protected SerializedProperty output;
+		
+		protected SerializedProperty scale;
+		
 
-            var script = (TransformConstraint)target;
-
+	    protected override void OnEnable()
+		{
+			base.OnEnable();
+	
+			this.position   = this.serializedObject.FindProperty("constrainPosition");
+			this.outputPosX = this.serializedObject.FindProperty("outputPosX");
+			this.outputPosY = this.serializedObject.FindProperty("outputPosY");
+			this.outputPosZ = this.serializedObject.FindProperty("outputPosZ");
+			
+			this.rotation = this.serializedObject.FindProperty("constrainRotation");
+			this.output   = this.serializedObject.FindProperty("output");
+			
+			this.scale = this.serializedObject.FindProperty("constrainScale");
+	    }
+	
+		protected override void OnInspectorGUIUpdate()
+	    {
+	        base.OnInspectorGUIUpdate();
+			
+			GUIContent content;
+			
             GUILayout.BeginHorizontal();
 
-            script.constrainPosition = EditorGUILayout.Toggle("Position", script.constrainPosition);
-
-            if (script.constrainPosition)
-            {
-                GUIStyle style = EditorStyles.toolbarButton;
-                style.alignment = TextAnchor.MiddleCenter;
-                style.stretchWidth = true;
-
-                script.outputPosX = GUILayout.Toggle(script.outputPosX, "X", style);
-                script.outputPosY = GUILayout.Toggle(script.outputPosY, "Y", style);
-                script.outputPosZ = GUILayout.Toggle(script.outputPosZ, "Z", style);
-            }
+			content = new GUIContent("Position", "Option to match the target's position.");
+			EditorGUILayout.PropertyField(this.position, content);
+			
+            if (this.position.boolValue)
+			{
+				PGEditorUtils.ToggleButton(this.outputPosX, new GUIContent("X", "Toggle Costraint for this axis."), 24);
+				PGEditorUtils.ToggleButton(this.outputPosY, new GUIContent("Y", "Toggle Costraint for this axis."), 24);
+				PGEditorUtils.ToggleButton(this.outputPosZ, new GUIContent("Z", "Toggle Costraint for this axis."), 24);
+			}
+			
             GUILayout.EndHorizontal();
+			
+			content = new GUIContent("Rotation", "Option to match the target's rotation.");
+			EditorGUILayout.PropertyField(this.rotation, content);
 
+            if (this.rotation.boolValue)
+			{
+			    EditorGUI.indentLevel += 1;
 
-            GUILayout.BeginHorizontal();
-            script.constrainRotation = EditorGUILayout.Toggle("Rotation", script.constrainRotation);
-            if (script.constrainRotation)
-                script.output = PGEditorUtils.EnumPopup<UnityConstraints.OUTPUT_ROT_OPTIONS>(script.output);
-            GUILayout.EndHorizontal();
-
-            script.constrainScale = EditorGUILayout.Toggle("Scale", script.constrainScale);
-        }
+				content = new GUIContent("Output", "Used to alter the way the rotations are set.");
+				EditorGUILayout.PropertyField(this.output, content);
+				
+				EditorGUI.indentLevel -= 1;
+			}
+			
+			content = new GUIContent("Scale", "Option to match the target's scale.");
+			EditorGUILayout.PropertyField(this.scale, content);
+			
+		}
+		
     }
 }

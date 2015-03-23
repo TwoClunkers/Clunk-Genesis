@@ -3,25 +3,42 @@
 var target : Vector3;
 var range : float;
 var laserNade : GameObject;
+var selector : GameObject;
 //private var line : LineRenderer;
+
+private var TerrainScript : Terra;
 
 function Start () {
 	range = 20;
+	selector = GameObject.FindGameObjectWithTag("selector");
 	//line = GetComponent(LineRenderer);
 }
 
 function Update () {
-	var mouseWorldPosition : Vector3 = Camera.main.ScreenToWorldPoint(Vector3(Input.mousePosition.x,Input.mousePosition.y,-Camera.main.transform.position.z));
-	 mouseWorldPosition.z = transform.position.z;
-	transform.LookAt(mouseWorldPosition); //for this purpose, put the gun on same plane as target
+
+	//transform.LookAt(selector.transform); 
+	
 	if(Input.GetMouseButtonDown(0)) { //!!!Warning, we should also check to see there is a parent, right?
-		Blast();
+		//Laser();
+		//Blast();
 		//var thisone : GameObject;
 		//thisone = Network.Instantiate(laserNade,transform.position,Quaternion.identity,0);
 		//thisone.GetComponent(Rigidbody).AddForce(transform.forward * 20, ForceMode.Impulse );
 		//thisone.transform.position.z = 0;
 		//Physics.IgnoreCollision(thisone.transform.collider, transform.parent.collider);
 	}
+}
+
+function Laser () {
+    var hit : RaycastHit;
+	var raystart : Vector3 = transform.position;
+	//raystart.z = selector.z;
+	transform.LookAt(selector.transform); 
+    if (Physics.Raycast(raystart , transform.forward, hit, 100))
+    {
+    	Debug.DrawLine (raystart, hit.point, Color.red, 1, false);
+        TerrainScript.SetBlock(hit, new BlockAir(),false);
+    }
 }
 
 function Blast () {
@@ -44,7 +61,7 @@ function Blast () {
         	hitBlock = hitColliders[i].gameObject;
 			if(hitBlock.tag.Equals("breakable")) {
 				hitBlock.networkView.RPC("setBlockValues",RPCMode.All, hitBlock.networkView.viewID,1,Vector3(.0,.0,.3));
-				hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, 200, transform.forward);
+				hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, 50, transform.forward);
 				GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);	
 			}
         }

@@ -11,19 +11,45 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace PathologicalGames
+[CustomEditor(typeof(LookAtConstraint)), CanEditMultipleObjects]
+public class LookAtConstraintInspector : LookAtBaseClassInspector
 {
+	protected SerializedProperty upTarget;
+	protected SerializedProperty upVectPointAt;
 
-    [CustomEditor(typeof(LookAtConstraint))]
-    public class LookAtConstraintInspector : LookAtBaseClassInspector
-    {
-        protected override void OnInspectorGUIUpdate()
-        {
-            base.OnInspectorGUIUpdate();
+    protected override void OnEnable()
+	{
+		base.OnEnable();
 
-            var script = (LookAtConstraint)target;
-
-            script.upTarget = PGEditorUtils.ObjectField<Transform>("Up Target (Optional)", script.upTarget);
-        }
+		this.upTarget = this.serializedObject.FindProperty("upTarget");
+		this.upVectPointAt = this.serializedObject.FindProperty("upVectPointAt");
     }
+	
+    protected override void OnInspectorGUIUpdate()
+    {
+        base.OnInspectorGUIUpdate();
+		
+		GUIContent content;
+		
+		content = new GUIContent
+		(
+			"Up Target (Optional)", 
+			"An optional target just for the upAxis. The upAxis may not point directly at this. " +
+				"See the online docs for more info"
+		);
+		EditorGUILayout.PropertyField(this.upTarget, content);	
+		
+		if (this.upTarget.objectReferenceValue == null)
+		{
+			content = new GUIContent
+			(
+				"Up Axis Point Direction", 
+				"The world direction the upAxis will point at. For 3D games it is commong to have " +
+					"the object's Y axis point at world Y. For 2D games it is common to have the " +
+					"objects Z axis point at the world Z axis"
+			);
+			EditorGUILayout.PropertyField(this.upVectPointAt, content);	
+		}
+		
+	}
 }

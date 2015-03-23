@@ -11,21 +11,43 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace PathologicalGames
+[CustomEditor(typeof(TurntableConstraint)), CanEditMultipleObjects]
+public class TurntableConstraintInspector : ConstraintFrameworkBaseInspector
 {
+	protected SerializedProperty randomStart;
+	protected SerializedProperty speed;
 
-    [CustomEditor(typeof(TurntableConstraint))]
-    public class TurntableConstraintInspector : ConstraintFrameworkBaseInspector
+    protected override void OnEnable()
+	{
+		base.OnEnable();
+
+		this.randomStart = this.serializedObject.FindProperty("randomStart");
+		this.speed  = this.serializedObject.FindProperty("speed");
+    }
+	
+    protected override void OnInspectorGUIUpdate()
     {
-        protected override void OnInspectorGUIUpdate()
-        {
-            base.OnInspectorGUIUpdate();
+        base.OnInspectorGUIUpdate();	
 
-            var script = (TurntableConstraint)target;
+        GUIContent content;
 
-            script.speed = EditorGUILayout.FloatField("Speed", script.speed);
-            script.randomStart = EditorGUILayout.Toggle("Random Start", script.randomStart);
-
-        }
+		content = new GUIContent
+		(
+			"Speed", 
+			"How fast the constrant can rotate."
+		);
+		EditorGUILayout.PropertyField(this.speed, content);	
+		
+		
+		content = new GUIContent
+		(
+			"Random Start", 
+			"If true, each time the constraint is enabled it will start from a new and random " +
+				"angle of rotation. This is helpful when several objects start rotating on the " +
+				"same frame but you do not want them to all rotate insync with each other " +
+				"visually." 
+		);
+		EditorGUILayout.PropertyField(this.randomStart, content);			
+		
     }
 }

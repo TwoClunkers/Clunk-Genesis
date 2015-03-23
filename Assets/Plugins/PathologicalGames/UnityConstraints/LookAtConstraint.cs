@@ -9,54 +9,55 @@
 using UnityEngine;
 using System.Collections;
 
-
-namespace PathologicalGames
+/// <summary>
+///	The base class for all constraints that use a target and mode
+/// </summary>
+[AddComponentMenu("Path-o-logical/UnityConstraints/Constraint - Look At")]
+public class LookAtConstraint : LookAtBaseClass 
 {
+    /// <summary>
+    /// An optional target just for the upAxis. The upAxis may not point directly 
+    /// at this. See the online docs for more info
+    /// </summary>
+    public Transform upTarget;
+
+	/// <summary>
+	/// The world direction the upAxis will point at. For 3D games it is commong to have the 
+	/// object's Y axis point at world Y. For 2D games it is common to have the objects Z axis 
+	/// point at the world Z axis.
+	/// </summary>
+	public Vector3 upVectPointAt = Vector3.up;
+
+    // Get the lookVector
+    protected virtual Vector3 lookVect 
+    {
+        get { return this.target.position - this.xform.position;  }
+    }
+
+    // Get the upvector. Factors in any options.
+    protected Vector3 upVect
+    {
+        get
+        {
+            Vector3 upVect;
+            if (this.upTarget == null)
+				upVect = this.upVectPointAt;
+            else
+                upVect = this.upTarget.position - this.xform.position;
+
+            return upVect;
+        }
+    }
+
 
     /// <summary>
-    ///	The base class for all constraints that use a target and mode
+    /// Runs each frame while the constraint is active
     /// </summary>
-    [AddComponentMenu("Path-o-logical/UnityConstraints/Constraint - Look At")]
-    public class LookAtConstraint : LookAtBaseClass
+    protected override void OnConstraintUpdate()
     {
-        /// <summary>
-        /// An optional target just for the upAxis. The upAxis may not point directly 
-        /// at this. See the online docs for more info
-        /// </summary>
-        public Transform upTarget;
+        // Note: Do not run base.OnConstraintUpdate. It is not implimented
 
-
-        // Get the lookVector
-        protected virtual Vector3 lookVect
-        {
-            get { return this.target.position - this.xform.position; }
-        }
-
-        // Get the upvector. Factors in any options.
-        protected Vector3 upVect
-        {
-            get
-            {
-                Vector3 upVect;
-                if (this.upTarget == null)
-                    upVect = Vector3.up;
-                else
-                    upVect = this.upTarget.position - this.xform.position;
-
-                return upVect;
-            }
-        }
-
-
-        /// <summary>
-        /// Runs each frame while the constraint is active
-        /// </summary>
-        protected override void OnConstraintUpdate()
-        {
-            // Note: Do not run base.OnConstraintUpdate. It is not implimented
-
-            var lookRot = Quaternion.LookRotation(this.lookVect, this.upVect);
-            this.xform.rotation = this.GetUserLookRotation(lookRot);
-        }
+        var lookRot = Quaternion.LookRotation(this.lookVect, this.upVect);
+        this.xform.rotation = this.GetUserLookRotation(lookRot);
     }
 }

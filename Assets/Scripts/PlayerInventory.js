@@ -1,7 +1,7 @@
 #pragma strict
 
 var items : AllItems;
-var activeInventorySlot : int = -1;
+var activeInventorySlot : int = 0;
 var activeOverlayTexture : Texture;
 var inventory : Container;
 
@@ -19,6 +19,23 @@ function Update() {
 	
 	
 	
+}
+
+function PlaceCurrent (size : int) : InventoryItem {
+	//if our currently selected slot has an item that will fit in size
+	// then we will return that item and remove it from the slot
+	
+	//NOTE the "size" will be used later to place larger objects
+	var item : InventoryItem = InventoryItem(0, 0);
+	if(activeInventorySlot > -1) {
+		item.id = inventory.Look(activeInventorySlot).id;
+		if(item.id > 0) { //not air
+			//our new item contains what we pulled
+			item.quantity = inventory.PullSingle(activeInventorySlot, 1);
+			if(item.quantity < 1) item.id = 0;
+		}
+	}
+	return item;
 }
 
 function OnGUI(){

@@ -1,6 +1,6 @@
 Please visit...
 
-http://support.path-o-logical.com 
+http://packages.path-o-logical.com 
 
 ...for documentation and support information.
 

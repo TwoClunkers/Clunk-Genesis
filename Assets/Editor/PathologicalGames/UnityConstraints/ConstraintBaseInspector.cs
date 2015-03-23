@@ -10,41 +10,57 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections;
 
-
-namespace PathologicalGames
+[CustomEditor(typeof(ConstraintBaseClass)), CanEditMultipleObjects]
+public class ConstraintBaseInspector : ConstraintFrameworkBaseInspector
 {
+	protected SerializedProperty constraintTarget;
+	protected SerializedProperty mode;
+	protected SerializedProperty noTargetMode;
 
-    [CustomEditor(typeof(ConstraintBaseClass))]
-    public class ConstraintBaseInspector : ConstraintFrameworkBaseInspector
+    protected override void OnEnable()
+	{
+		base.OnEnable();
+		
+		this.constraintTarget = this.serializedObject.FindProperty("_target");
+		this.mode 			  = this.serializedObject.FindProperty("_mode");
+		this.noTargetMode 	  = this.serializedObject.FindProperty("_noTargetMode");		
+    }
+	
+    protected override void OnInspectorGUIHeader()
     {
-        protected override void OnInspectorGUIHeader()
-        {
-            base.OnInspectorGUIHeader();
-            var script = (ConstraintBaseClass)target;
-            script.target = PGEditorUtils.ObjectField<Transform>("Target", script.target);
-        }
-
-
-        protected override void OnInspectorGUIFooter()
-        {
-
-            var script = (ConstraintBaseClass)target;
-
-            // For backwards compatibility. I removed an option and it moved these two
-            //   Options back, so Once is now Constrain and Constrain is out of bounds.
-            //   Unfortunatly I can't fix the old Once back to once.
-            if (script._mode != UnityConstraints.MODE_OPTIONS.Align &&
-                script._mode != UnityConstraints.MODE_OPTIONS.Constrain)
-            {
-                script._mode = UnityConstraints.MODE_OPTIONS.Constrain;
-            }
-
-            script._mode = PGEditorUtils.EnumPopup<UnityConstraints.MODE_OPTIONS>("Mode", script._mode);
-
-            script._noTargetMode = PGEditorUtils.EnumPopup<UnityConstraints.NO_TARGET_OPTIONS>("No-Target Mode", script._noTargetMode);
-
-            base.OnInspectorGUIFooter();
-        }
+        base.OnInspectorGUIHeader();
+		
+        var content = new GUIContent
+		(
+			"Target", 
+			"The constraining object for this constraint."
+		);
+		EditorGUILayout.PropertyField(this.constraintTarget, content);		
 
     }
+
+    protected override void OnInspectorGUIFooter()
+    {
+
+        GUIContent content;
+
+		content = new GUIContent
+		(
+			"Mode", 
+			"The current mode of the constraint. Setting the mode will start or stop the " +
+				"constraint coroutine, so if 'Align' is chosen, the constraint will align " +
+				"once then go to sleep."
+		);
+		EditorGUILayout.PropertyField(this.mode, content);	
+		
+		content = new GUIContent
+		(
+			"No-Target Mode", 
+			"Determines the behavior when no target is available."
+		);
+		EditorGUILayout.PropertyField(this.noTargetMode, content);	
+
+        base.OnInspectorGUIFooter();
+    }
+
 }

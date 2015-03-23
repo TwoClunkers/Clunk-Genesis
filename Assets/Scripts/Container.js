@@ -36,6 +36,21 @@ function Update () {
   
 }
 
+function PullSingle (slot : int, amount : int) : int {
+	if(size > slot) { //slot is in range
+		var thisStack : InventoryItem = contents[slot];
+		//if(thisStack.IsEmpty) return 0;
+		return thisStack.Remove(amount);
+	}
+	return 0;
+}
+
+function Look(slot : int) : InventoryItem {
+	if(size > slot) {
+		return contents[slot];
+	}
+}
+
 function countEmptySlots () {
 	empty = 0;
 	for(var i=0;i<size;i++) {
@@ -130,6 +145,9 @@ function subtractItem(itemstack : InventoryItem) {
 function dropItem(itemstack : InventoryItem) {
 	
 	if(itemstack.id > 0) {
+	
+		//this is NOT correct. dropItem should be handled by whoever is taking the item out of the container
+	
 		//create instance of this material in world
 		//var position : Vector3 = transform.position+Vector3(0,0,-1);
 		//var popDirection : Vector3 = Vector3(0,0,0);

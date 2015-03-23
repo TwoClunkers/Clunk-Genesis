@@ -14,17 +14,29 @@ using System.Collections;
 namespace PathologicalGames
 {
 
-    [CustomEditor(typeof(BillboardConstraint))]
+    [CustomEditor(typeof(BillboardConstraint)), CanEditMultipleObjects]
     public class BillboardConstraintInspector : LookAtBaseClassInspector
     {
-        // Singleton cache to set some defaults on inspection
+		protected SerializedProperty vertical;
+		
+		// Singleton cache to set some defaults on inspection
         private Camera[] cameras;
+		
+	    protected override void OnEnable()
+		{
+			base.OnEnable();
+	
+			this.vertical = this.serializedObject.FindProperty("vertical");
+
+	    }		
+
 
         protected override void OnInspectorGUIUpdate()
         {
             var script = (BillboardConstraint)target;
-
-            script.vertical = EditorGUILayout.Toggle("Vertical", script.vertical);
+			
+			var content = new GUIContent("Vertical", "If false, the billboard will only rotate along the upAxis.");
+			EditorGUILayout.PropertyField(this.vertical, content);
 
             base.OnInspectorGUIUpdate();
 

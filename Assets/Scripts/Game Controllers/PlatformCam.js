@@ -9,11 +9,11 @@ function Start () {
 function Update () {
 	if(target){
 		transform.position.x = target.position.x;
-		transform.position.y = target.position.y;
+		transform.position.y = target.position.y+(zpos/(-6));
 		transform.position.z = zpos;
 		//light.position.x = target.position.x;
 		//light.position.y = target.position.y;
-		vlight.position.z = (-5);
+		//vlight.position.z = (-25);
 	}
 }
 

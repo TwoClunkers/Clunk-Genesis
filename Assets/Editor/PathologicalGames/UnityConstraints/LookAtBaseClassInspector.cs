@@ -11,20 +11,40 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace PathologicalGames
+[CustomEditor(typeof(LookAtBaseClass)), CanEditMultipleObjects]
+public class LookAtBaseClassInspector : ConstraintBaseInspector
 {
+	protected SerializedProperty pointAxis;
+	protected SerializedProperty upAxis;
 
-    [CustomEditor(typeof(LookAtBaseClass))]
-    public class LookAtBaseClassInspector : ConstraintBaseInspector
+    protected override void OnEnable()
+	{
+		base.OnEnable();
+
+		this.pointAxis = this.serializedObject.FindProperty("pointAxis");
+		this.upAxis    = this.serializedObject.FindProperty("upAxis");
+    }
+
+	protected override void OnInspectorGUIUpdate()
     {
-        protected override void OnInspectorGUIUpdate()
-        {
-            base.OnInspectorGUIUpdate();
-            var script = (LookAtBaseClass)target;
+        base.OnInspectorGUIUpdate();
+		
+		GUIContent content;
+			
+		content = new GUIContent
+		(
+			"Point Axis", 
+			"The axis used to point at the target."
+		);
+		EditorGUILayout.PropertyField(this.pointAxis, content);
 
-            script.pointAxis = EditorGUILayout.Vector3Field("Point Axis", script.pointAxis);
-            script.upAxis = EditorGUILayout.Vector3Field("Up Axis", script.upAxis);
+		content = new GUIContent
+		(
+			"Up Axis", 
+			"The axis to stabalize the look-at result so it does roll on the point axis. This should never be the " +
+			"same as the point axis."
+		);
+		EditorGUILayout.PropertyField(this.upAxis, content);		
 
-        }
     }
 }

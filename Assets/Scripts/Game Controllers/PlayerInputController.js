@@ -20,10 +20,8 @@ function Start() {
 // Update is called once per frame
 function Update () {
 	var dist = Vector3.Distance(oldPosition, transform.position);
-	if(dist > 5) {
-		oldPosition = transform.position;
-		worldController.expandZones(Vector2(transform.position.x-16,transform.position.y-16),Vector2(transform.position.x+32,transform.position.y+32));
-	}
+	transform.position.z = 2; 
+	
 	if(networkView.isMine){
 		// Get the input vector from kayboard or analog stick
 		var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, 0); // removed Vertical (Z axis) - RDM // Input.GetAxis("Vertical")

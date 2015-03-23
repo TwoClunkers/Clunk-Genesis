@@ -1,5 +1,5 @@
 /// <Licensing>
-/// © 2011 (Copyright) Path-o-logical Games, LLC
+/// ï¿½ 2011 (Copyright) Path-o-logical Games, LLC
 /// If purchased from the Unity Asset Store, the following license is superseded 
 /// by the Asset Store license.
 /// Licensed under the Unity Asset Package Product License (the "License");
@@ -17,8 +17,8 @@ using UnityEngine;
 public class KeyValueList<K, V> : IList 
 {
     // Backing data - seperate key and value lists
-    private List<K> keyList = new List<K>();
-    private List<V> valList = new List<V>();
+    protected List<K> keyList = new List<K>();
+    protected List<V> valList = new List<V>();
 
 
     #region Constructors

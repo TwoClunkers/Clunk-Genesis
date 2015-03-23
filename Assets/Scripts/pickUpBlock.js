@@ -1,10 +1,23 @@
 // Ross Edited this 6/27/2013  ...
+import PathologicalGames;
+
 var destroyAtThisTime : float;
 var blockLifeTime : float;
 var invItem : InventoryItem;
+var targetable : Targetable;
+var testit : boolean;
 
+function Awake()
+{
+	targetable = this.GetComponent("Targetable");
+}
 function Start(){
-	blockLifeTime = 300.0;
+	blockLifeTime = 100.0;
+	destroyAtThisTime = Time.time + blockLifeTime; //seconds of lifetime for the pickup
+	invItem.quantity = 1;
+}
+function InitializeBlock(){
+	blockLifeTime = 100.0;
 	destroyAtThisTime = Time.time + blockLifeTime; //seconds of lifetime for the pickup
 	invItem.quantity = 1;
 }
@@ -50,10 +63,13 @@ function OnTriggerStay(other : Collider){
 }
 
 function Update(){
+	if(invItem.quantity < 1) destroyMe();
 	if(Time.time >= destroyAtThisTime) destroyMe();
 }
 
 function destroyMe(){
-	try{ Network.RemoveRPCs(networkView.viewID); } catch(e){}
-	try{ Network.Destroy(networkView.viewID); } catch(e){}
+	blockLifeTime = 300.0;
+	PoolManager.Pools["drops"].Despawn(transform);
+//	try{ Network.RemoveRPCs(networkView.viewID); } catch(e){}
+//	try{ Network.Destroy(networkView.viewID); } catch(e){}
 }

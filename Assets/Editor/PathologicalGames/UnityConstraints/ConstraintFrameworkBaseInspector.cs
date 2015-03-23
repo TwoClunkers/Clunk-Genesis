@@ -11,45 +11,49 @@ using UnityEngine;
 using System.Collections;
 
 
-namespace PathologicalGames
+public class ConstraintFrameworkBaseInspector : Editor
 {
+    protected virtual void OnEnable()
+	{
+		
+	}
+		
+    // This is Unity's. Block from sub-classes - Use header, update and footer callbacks callbacks
+	public override void OnInspectorGUI()
+    {		
+        // Used like a header to set a global label width
+        EditorGUI.indentLevel = 0;
+        PGEditorUtils.SetLabelWidth();
+		
+		this.serializedObject.Update();
 
-    [CustomEditor(typeof(ConstraintFrameworkBaseClass))]
-    public class ConstraintFrameworkBaseInspector : Editor
-    {
-        // This is Unity's. Block from children - use Start and End callbacks
-        public override sealed void OnInspectorGUI()
-        {
-            // Used like a header to set a global label width
-            EditorGUI.indentLevel = 0;
-            //PGEditorUtils.LookLikeControls();
-            this.OnInspectorGUIHeader();
-            this.OnInspectorGUIUpdate();
+        this.OnInspectorGUIHeader();
+        this.OnInspectorGUIUpdate();
 
-            EditorGUILayout.Space();
+        EditorGUILayout.Space();
 
-            this.OnInspectorGUIFooter();
+        this.OnInspectorGUIFooter();
 
-            // Flag Unity to save the changes to to the prefab to disk
-            if (GUI.changed)
-                EditorUtility.SetDirty(target);
-        }
-
-        // Three functions to inherit instead of one for greater flexibility. 
-        protected virtual void OnInspectorGUIHeader()
-        {
-
-        }
-
-        protected virtual void OnInspectorGUIUpdate()
-        {
-
-        }
-
-        protected virtual void OnInspectorGUIFooter()
-        {
-
-        }
-
+        // Flag Unity to save the changes to to the prefab to disk
+		serializedObject.ApplyModifiedProperties();
+        if (GUI.changed)
+            EditorUtility.SetDirty(target);
     }
+
+    // Three functions to inherit instead of one for greater flexibility. 
+    protected virtual void OnInspectorGUIHeader()
+    {
+
+	}
+
+    protected virtual void OnInspectorGUIUpdate()
+    {
+
+	}
+
+    protected virtual void OnInspectorGUIFooter()
+    {
+
+	}
+
 }

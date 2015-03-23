@@ -50,14 +50,14 @@ function OnGUI() {
 	GUI.Label(Rect(0,0,300,20),chatLog[0]);
 	GUI.Label(Rect(0,20,300,20),chatLog[1]);
 	GUI.Label(Rect(0,40,300,20),chatLog[2]);
-	GUI.Label(Rect(Screen.width - 200,Screen.height - 20,200,20),"press c to toggle camera");
-	GUI.Label(Rect(Screen.width - 200,Screen.height - 40,200,40),"press i to toggle inventory");
+	GUI.Label(Rect(Screen.width - 300,Screen.height - 20,200,20),"press c to toggle camera");
+	GUI.Label(Rect(Screen.width - 300,Screen.height - 40,200,40),"press i to toggle inventory");
 	
 	if(!Network.isClient && !Network.isServer){
-		if(GUI.Button(Rect(0,Screen.height-50,100,20),"Start Server")) {
+		if(GUI.Button(Rect(20,Screen.height-50,100,20),"Start Server")) {
 			startServer();
 		}
-		if(GUI.Button(Rect(0,Screen.height-70,100,20),"Refresh Hosts")) {
+		if(GUI.Button(Rect(20,Screen.height-70,100,20),"Refresh Hosts")) {
 			refreshHostsList();
 		}
 		
@@ -102,11 +102,11 @@ function Update(){
 	if(Input.GetKeyUp(KeyCode.C)){
 		Camera.main.orthographic = !Camera.main.orthographic;
 	}
-	if(Input.GetKeyUp(KeyCode.KeypadPlus)){
-		Camera.main.GetComponent(PlatformCam).zoomCamera(0.5);
+	if(Input.GetKey(KeyCode.KeypadPlus)){
+		Camera.main.GetComponent(PlatformCam).zoomCamera(0.2);
 	}
-	if(Input.GetKeyUp(KeyCode.KeypadMinus)){
-		Camera.main.GetComponent(PlatformCam).zoomCamera(-0.5);
+	if(Input.GetKey(KeyCode.KeypadMinus)){
+		Camera.main.GetComponent(PlatformCam).zoomCamera(-0.2);
 	}
 }
 
@@ -123,7 +123,7 @@ function startServer(){
 
 function OnServerInitialized(){
 	Debug.Log("Server Initialized");
-	transform.GetComponent(WorldController).buildWorld(worldgen); //we need to contruct a new building routine
+	//transform.GetComponent(WorldController).buildWorld(worldgen); //we need to contruct a new building routine
 	spawnPlayer();
 }
 

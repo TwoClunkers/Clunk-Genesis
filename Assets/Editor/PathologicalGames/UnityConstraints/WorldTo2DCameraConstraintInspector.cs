@@ -14,7 +14,7 @@ using System.Collections;
 namespace PathologicalGames
 {
 
-    [CustomEditor(typeof(WorldTo2DCameraConstraint))]
+    [CustomEditor(typeof(WorldTo2DCameraConstraint)), CanEditMultipleObjects]
     public class WorldTo2DCameraConstraintInspector : TransformConstraintInspector
     {
         // Singleton cache to set some defaults on inspection
