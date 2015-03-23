@@ -29,7 +29,7 @@ public class DemoEnemyMultiState : MonoBehaviour
 		
     protected void Awake()
     {
-        this.startingColor = this.renderer.material.color;
+        this.startingColor = this.GetComponent<Renderer>().material.color;
 			
         this.targetable = this.GetComponent<Targetable>();
         this.targetable.AddOnDetectedDelegate(this.OnDetected);
@@ -104,16 +104,16 @@ public class DemoEnemyMultiState : MonoBehaviour
 
 			case STATES.NotDetected:
 		        this.transform.localScale = Vector3.one;
-		        this.renderer.material.color = this.startingColor;
+		        this.GetComponent<Renderer>().material.color = this.startingColor;
 				break;
 
 			case STATES.Detected:
-				this.renderer.material.color = Color.yellow;
+				this.GetComponent<Renderer>().material.color = Color.yellow;
 				this.transform.localScale = this.activeTargetScale * 0.75f;
 				break;
 			
 			case STATES.ActiveTarget:
-				this.renderer.material.color = Color.green;
+				this.GetComponent<Renderer>().material.color = Color.green;
 				this.transform.localScale = this.activeTargetScale;
 				break;
 		}

@@ -22,7 +22,7 @@ function Update () {
 	var dist = Vector3.Distance(oldPosition, transform.position);
 	transform.position.z = 2; 
 	
-	if(networkView.isMine){
+	if(GetComponent.<NetworkView>().isMine){
 		// Get the input vector from kayboard or analog stick
 		var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, 0); // removed Vertical (Z axis) - RDM // Input.GetAxis("Vertical")
 		

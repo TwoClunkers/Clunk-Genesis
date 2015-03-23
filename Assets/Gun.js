@@ -60,8 +60,8 @@ function Blast () {
         for (var i = 0; i < hitColliders.Length; i++) {
         	hitBlock = hitColliders[i].gameObject;
 			if(hitBlock.tag.Equals("breakable")) {
-				hitBlock.networkView.RPC("setBlockValues",RPCMode.All, hitBlock.networkView.viewID,1,Vector3(.0,.0,.3));
-				hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, 50, transform.forward);
+				hitBlock.GetComponent.<NetworkView>().RPC("setBlockValues",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID,1,Vector3(.0,.0,.3));
+				hitBlock.GetComponent.<NetworkView>().RPC("DamageBlock",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID, 50, transform.forward);
 				GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);	
 			}
         }

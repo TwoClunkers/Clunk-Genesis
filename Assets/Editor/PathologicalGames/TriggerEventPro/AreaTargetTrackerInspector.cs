@@ -505,10 +505,10 @@ public class AreaTargetTrackerInspector : Editor
 				curArea = curEditTarget.area;
 				if (curArea)
 				{
-					if (curArea.collider != null)
-						undoObjs.Add(curArea.collider);
-					else if (curArea.collider2D != null)
-						undoObjs.Add(curArea.collider2D);
+					if (curArea.GetComponent<Collider>() != null)
+						undoObjs.Add(curArea.GetComponent<Collider>());
+					else if (curArea.GetComponent<Collider2D>() != null)
+						undoObjs.Add(curArea.GetComponent<Collider2D>());
 				}
 				
 				Undo.RecordObjects(undoObjs.ToArray(), undo_message);

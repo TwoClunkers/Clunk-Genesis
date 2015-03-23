@@ -35,7 +35,7 @@ function Start () {
 	
 	lasers = new Array();
 	for( i = 0;i < (laserCount );i++){
-		lasers.Add(Network.Instantiate(laserBeamObject, collider.bounds.center, Quaternion.identity, 0));
+		lasers.Add(Network.Instantiate(laserBeamObject, GetComponent.<Collider>().bounds.center, Quaternion.identity, 0));
 	}
 
 	for( i = 0; i < laserCount ; i++){ // randomize laser start and end points
@@ -58,7 +58,7 @@ function Update () {
 				//Debug.Log("index " + i);
 				laserTargetNow[i] = Vector3.Lerp(laserTargetNow[i],transform.position + laserTargetEnd[i], smooth * Time.deltaTime);
 				aLaser = lasers[i];
-				aLaser.GetComponent(laserBeam).InitLaser(transform.position, laserTargetNow[i], laserDamage, laserRange, laserTickDuration, laserDuration, aLaser.renderer.material);
+				aLaser.GetComponent(laserBeam).InitLaser(transform.position, laserTargetNow[i], laserDamage, laserRange, laserTickDuration, laserDuration, aLaser.GetComponent.<Renderer>().material);
 				aLaser.GetComponent(laserBeam).FireLaser();	
 			}
 		} else {
@@ -69,7 +69,7 @@ function Update () {
 	} else {
 		if(Time.time > laserStartTime){
 			fixedPosition = transform.position;
-			rigidbody.isKinematic = true;
+			GetComponent.<Rigidbody>().isKinematic = true;
 			isFiring = true;
 		}
 	}
@@ -77,6 +77,6 @@ function Update () {
 
 
 function destroyMe(){
-	try{ Network.RemoveRPCs(networkView.viewID); } catch(e){}
-	try{ Network.Destroy(networkView.viewID); } catch(e){}
+	try{ Network.RemoveRPCs(GetComponent.<NetworkView>().viewID); } catch(e){}
+	try{ Network.Destroy(GetComponent.<NetworkView>().viewID); } catch(e){}
 }

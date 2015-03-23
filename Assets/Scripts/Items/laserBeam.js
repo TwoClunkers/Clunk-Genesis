@@ -47,10 +47,10 @@ function Update () {
 		if(hitSomething){
 			if(trueHit.collider.gameObject.tag.Equals("breakable")) {
 				//start breaking
-				if(wasActive && lastHitViewID.Equals(trueHit.collider.gameObject.networkView.viewID) && Time.time > tickEndTime) {
+				if(wasActive && lastHitViewID.Equals(trueHit.collider.gameObject.GetComponent.<NetworkView>().viewID) && Time.time > tickEndTime) {
 					doTick(trueHit.collider.gameObject, trueHit.point);
 				}
-				lastHitViewID = trueHit.collider.gameObject.networkView.viewID;
+				lastHitViewID = trueHit.collider.gameObject.GetComponent.<NetworkView>().viewID;
 				wasActive = true;
 			}
 			Debug.DrawLine(startPoint, trueHit.point, Color.green,2.0);	
@@ -61,7 +61,7 @@ function Update () {
 				}*/
 				sparksDestroyed = true;
 				var fxObj : GameObject = Network.Instantiate(sparks, trueHit.point, Quaternion.LookRotation((Vector3(transform.position.x,transform.position.y) - Vector3(trueHit.point.x,trueHit.point.y)).normalized),0);
-				sparksViewID = fxObj.networkView.viewID;
+				sparksViewID = fxObj.GetComponent.<NetworkView>().viewID;
 				sparksDestroyed = false;
 			}
 			halfTick = !halfTick;
@@ -87,8 +87,8 @@ function InitLaser(laserStartPoint : Vector3, towardsPoint : Vector3, damagePerT
 }
 
 function doTick(hitBlock : GameObject, hitPosition : Vector3){
-	hitBlock.networkView.RPC("setBlockValues",RPCMode.All, hitBlock.networkView.viewID,1,Vector3(.0,.0,.3));
-	hitBlock.networkView.RPC("DamageBlock",RPCMode.All, hitBlock.networkView.viewID, laserDamageAmount, (transform.position-trueHit.point).normalized);
+	hitBlock.GetComponent.<NetworkView>().RPC("setBlockValues",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID,1,Vector3(.0,.0,.3));
+	hitBlock.GetComponent.<NetworkView>().RPC("DamageBlock",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID, laserDamageAmount, (transform.position-trueHit.point).normalized);
 	GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);
 	tickEndTime = Time.time + tickLength - Time.deltaTime;
 	//this needs to be part of a block.damage routine
@@ -96,7 +96,7 @@ function doTick(hitBlock : GameObject, hitPosition : Vector3){
 }
 
 function destroyMe(){
-	try{ Network.RemoveRPCs(networkView.viewID); } catch(e){}
-	try{ Network.Destroy(networkView.viewID); } catch(e){}
+	try{ Network.RemoveRPCs(GetComponent.<NetworkView>().viewID); } catch(e){}
+	try{ Network.Destroy(GetComponent.<NetworkView>().viewID); } catch(e){}
 }
 

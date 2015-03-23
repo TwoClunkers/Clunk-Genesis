@@ -256,12 +256,12 @@ namespace PathologicalGames
 //				throw new MissingComponentException(msg);
 //			}
 			
-			this.rbd2D = this.rigidbody2D;
-			this.coll2D = this.collider2D;  // Cache used by other components and Target
+			this.rbd2D = this.GetComponent<Rigidbody2D>();
+			this.coll2D = this.GetComponent<Collider2D>();  // Cache used by other components and Target
 #endif			
 			
-			this.rbd = this.rigidbody;
-			this.coll = this.collider;		// Cache used by other components and Target
+			this.rbd = this.GetComponent<Rigidbody>();
+			this.coll = this.GetComponent<Collider>();		// Cache used by other components and Target
         }
 
         protected override void OnEnable()

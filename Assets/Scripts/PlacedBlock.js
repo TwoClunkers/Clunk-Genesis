@@ -96,7 +96,7 @@ function setBlockMat(viewID : NetworkViewID, mat : int){
 	blockHealth = newitem.maxHealth;
 	maxHealth = newitem.maxHealth;
 	mymaterial = newitem.material;
-	this.renderer.material = newitem.material;
+	this.GetComponent.<Renderer>().material = newitem.material;
 	matchange += 2;
 //	try{
 //	var oBlockView : NetworkView = networkView.Find(viewID);

@@ -11,6 +11,6 @@ function Update () {
 }
 
 function destroyMe(){
-	try{ Network.RemoveRPCs(networkView.viewID); } catch(e){}
-	try{ Network.Destroy(networkView.viewID); } catch(e){}
+	try{ Network.RemoveRPCs(GetComponent.<NetworkView>().viewID); } catch(e){}
+	try{ Network.Destroy(GetComponent.<NetworkView>().viewID); } catch(e){}
 }

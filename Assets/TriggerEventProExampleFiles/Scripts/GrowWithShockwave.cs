@@ -22,9 +22,9 @@ public class GrowWithShockwave : MonoBehaviour
         this.xform.localScale = scl;
 
         // Blend the alpha channel of the color off as the range expands.
-        Color col = this.renderer.material.GetColor("_TintColor");
+        Color col = this.GetComponent<Renderer>().material.GetColor("_TintColor");
         col.a = Mathf.Lerp(0.7f, 0, this.eventTrigger.range.x / this.eventTrigger.endRange.x);
-        this.renderer.material.SetColor("_TintColor", col);
+        this.GetComponent<Renderer>().material.SetColor("_TintColor", col);
     }
 }
 	

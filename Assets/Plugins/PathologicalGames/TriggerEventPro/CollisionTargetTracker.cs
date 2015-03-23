@@ -92,9 +92,9 @@ namespace PathologicalGames
         {
             base.Awake();
 
-            this.coll = this.collider;
+            this.coll = this.GetComponent<Collider>();
 #if (!UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2)
-            this.coll2D = this.collider2D;
+            this.coll2D = this.GetComponent<Collider2D>();
 			if (this.coll == null && this.coll2D == null)
 			{
 				string msg = "No 2D or 3D collider or compound (child) collider found.";

@@ -100,11 +100,11 @@ namespace PathologicalGames
             // Cache
             this.xform = this.transform;
             this.go = this.gameObject;				
-			this.coll = this.collider;
+			this.coll = this.GetComponent<Collider>();
 #if (!UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2)
-			this.coll2D = this.collider2D;
+			this.coll2D = this.GetComponent<Collider2D>();
 			
-			if (this.rigidbody == null && this.rigidbody2D == null)
+			if (this.GetComponent<Rigidbody>() == null && this.GetComponent<Rigidbody2D>() == null)
 			{
 				string msg = "Targetables must have a Rigidbody or Rigidbody2D.";
 				throw new MissingComponentException(msg);

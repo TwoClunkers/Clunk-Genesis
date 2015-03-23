@@ -38,7 +38,7 @@ function OnGUI() {
 		if (Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return)){
 			chatInputOpen = false;
 			if(chatText != "" && chatText != " "){
-				networkView.RPC("chatMessage",RPCMode.All, chatText);
+				GetComponent.<NetworkView>().RPC("chatMessage",RPCMode.All, chatText);
 				chatText = " ";
 			}
 		}

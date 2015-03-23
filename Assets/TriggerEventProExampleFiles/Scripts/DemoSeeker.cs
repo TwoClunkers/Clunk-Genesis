@@ -28,10 +28,10 @@ public class DemoSeeker : MonoBehaviour
     protected void Awake()
     {
         this.xform = this.transform;
-		this.rbd = this.rigidbody;
+		this.rbd = this.GetComponent<Rigidbody>();
 
 #if (!UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2)
-		this.rbd2D = this.rigidbody2D;
+		this.rbd2D = this.GetComponent<Rigidbody2D>();
 #endif	
         this.projectile = this.GetComponent<EventTrigger>();
         this.projectile.AddOnListenStartDelegate(this.OnLaunched);

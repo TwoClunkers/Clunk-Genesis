@@ -62,19 +62,19 @@ namespace PathologicalGames
 				throw new MissingComponentException(msg);
 			}
 #else			
-			if (this.rigidbody == null && this.rigidbody2D == null)
+			if (this.GetComponent<Rigidbody>() == null && this.GetComponent<Rigidbody2D>() == null)
 			{
 				string msg = "Areas must have a Rigidbody or Rigidbody2D.";
 				throw new MissingComponentException(msg);
 			}
 
 			// Note: Coliders are set after Awake during creation by AreaTargetTrackers
-			this.rbd2D = this.rigidbody2D;
-			this.coll2D = this.collider2D;
+			this.rbd2D = this.GetComponent<Rigidbody2D>();
+			this.coll2D = this.GetComponent<Collider2D>();
 #endif			
 			
-			this.rbd = this.rigidbody;
-			this.coll = this.collider;
+			this.rbd = this.GetComponent<Rigidbody>();
+			this.coll = this.GetComponent<Collider>();
         }
 		
 		/// <summary>
@@ -106,7 +106,7 @@ namespace PathologicalGames
 				if (box2d != null)
 				{
 					var pos2D = new Vector2(this.xform.position.x, this.xform.position.y);
-					Vector2 worldPos2D = box2d.center + pos2D;
+					Vector2 worldPos2D = box2d.offset + pos2D;
 					Vector2 extents = box2d.size * 0.5f;
 
 					var pntA = worldPos2D + extents;

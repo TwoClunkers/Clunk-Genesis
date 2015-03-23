@@ -13,7 +13,7 @@ public class DemoEnemy : MonoBehaviour
 
     protected void Awake()
     {
-        this.startingColor = this.renderer.material.color;
+        this.startingColor = this.GetComponent<Renderer>().material.color;
 
         var targetable = this.GetComponent<Targetable>();
 
@@ -57,13 +57,13 @@ public class DemoEnemy : MonoBehaviour
     protected void MakeMeGreen(TargetTracker source)
     {
         if (this.isDead) return;
-        this.renderer.material.color = Color.green;
+        this.GetComponent<Renderer>().material.color = Color.green;
     }
 
     protected void ResetColor(TargetTracker source)
     {
         if (this.isDead) return;
-        this.renderer.material.color = this.startingColor;
+        this.GetComponent<Renderer>().material.color = this.startingColor;
     }
 
     protected void MakeMeBig(TargetTracker source)

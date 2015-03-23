@@ -203,10 +203,10 @@ function placeBlock(id : int, position : Vector3) {
 	var newBlock : Transform = PoolManager.Pools["blocks"].Spawn(block.transform, position, Quaternion.identity);
 	//var newBlock : Transform = Instantiate(block.transform, position, Quaternion.identity);
 	
-	newBlock.networkView.RPC("setBlockMat", RPCMode.AllBuffered,newBlock.networkView.viewID, id);
+	newBlock.GetComponent.<NetworkView>().RPC("setBlockMat", RPCMode.AllBuffered,newBlock.GetComponent.<NetworkView>().viewID, id);
 	randVal = Random.value;
 	if(randVal < 0.4) randVal+=0.5;
-	newBlock.networkView.RPC("setBlockValues", RPCMode.AllBuffered,newBlock.networkView.viewID,2,Vector3(globalBlockScale*1,globalBlockScale*1,randVal*1));
+	newBlock.GetComponent.<NetworkView>().RPC("setBlockValues", RPCMode.AllBuffered,newBlock.GetComponent.<NetworkView>().viewID,2,Vector3(globalBlockScale*1,globalBlockScale*1,randVal*1));
 	
 	return newBlock;
 }
@@ -217,8 +217,8 @@ function createPickUpBlock(id : int, position : Vector3, direction : Vector3){
 	oBlock.GetComponent(pickUpBlock).invItem.quantity = 1;
 	oBlock.GetComponent(pickUpBlock).InitializeBlock();
 	oBlock.GetComponent(MeshFilter).mesh = master.GetComponent(ItemController).items.library[1].mesh;
-	oBlock.rigidbody.AddForce(direction,UnityEngine.ForceMode.VelocityChange);
-	oBlock.renderer.material = master.GetComponent(ItemController).items.library[id].material;
+	oBlock.GetComponent.<Rigidbody>().AddForce(direction,UnityEngine.ForceMode.VelocityChange);
+	oBlock.GetComponent.<Renderer>().material = master.GetComponent(ItemController).items.library[id].material;
 	//Debug.Log("PickUpBlock ID: " + oBlock.networkView.viewID);
 	//TODO:      oBlock.GetComponent(NetworkView).RPC("setBlockMat", RPCMode.AllBuffered, oBlock.networkView.viewID, id);
 }

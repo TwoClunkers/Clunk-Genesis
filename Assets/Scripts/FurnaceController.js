@@ -99,7 +99,7 @@ function Update () {
 	processIntensity = Mathf.Lerp(processIntensity, processLevel, Time.deltaTime);
 	if(processIntensity < 0.01) processIntensity = 0;
 	else if(processIntensity > 1.99) processIntensity = 2;
-	transform.FindChild("FurnaceFire").light.intensity = processIntensity;
+	transform.FindChild("FurnaceFire").GetComponent.<Light>().intensity = processIntensity;
 	
 	if(cycleState == 1) { 
 		contCanActivate = true;
@@ -204,8 +204,8 @@ function Update () {
 
 function setIndicator() {
 	var indicator = transform.FindChild("Indicator");
-	indicator.renderer.material.color = newColor;
-	indicator.FindChild("Point light").light.color = newColor;
+	indicator.GetComponent.<Renderer>().material.color = newColor;
+	indicator.FindChild("Point light").GetComponent.<Light>().color = newColor;
 }
 
 function finishProcess (recipe : Split) {

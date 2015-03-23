@@ -271,13 +271,13 @@ namespace PathologicalGames
                 case AREA_SHAPES.Sphere:
                 case AREA_SHAPES.Box:
                 case AREA_SHAPES.Capsule:
-					if (areaGO.rigidbody2D != null)
+					if (areaGO.GetComponent<Rigidbody2D>() != null)
 					{
-						Destroy(areaGO.rigidbody2D);
+						Destroy(areaGO.GetComponent<Rigidbody2D>());
 						yield return null;
 					}
 				
-					if (areaGO.rigidbody == null)
+					if (areaGO.GetComponent<Rigidbody>() == null)
 					{
 						var rbd = areaGO.AddComponent<Rigidbody>();
 						rbd.isKinematic = true;
@@ -287,13 +287,13 @@ namespace PathologicalGames
 
                 case AREA_SHAPES.Box2D:
                 case AREA_SHAPES.Circle2D:
-					if (areaGO.rigidbody != null)
+					if (areaGO.GetComponent<Rigidbody>() != null)
 					{
-						Destroy(areaGO.rigidbody);
+						Destroy(areaGO.GetComponent<Rigidbody>());
 						yield return null;
 					}
 						
-					if (areaGO.rigidbody2D == null)
+					if (areaGO.GetComponent<Rigidbody2D>() == null)
 					{
 						var rbd2D = areaGO.AddComponent<Rigidbody2D>();
 						//rbd2D.isKinematic = true; BUG: http://issuetracker.unity3d.com/issues/rigidbody2d-with-kinematic-rigidbody-will-not-cause-ontriggerenter2d
