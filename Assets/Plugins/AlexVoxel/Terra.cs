@@ -29,14 +29,14 @@ public static class Terra
     {
         if (pos - (int)pos == 0.5f || pos - (int)pos == -0.5f)
         {
-            if (adjacent)
-            {
-                pos += (norm / 2);
-            }
-            else
-            {
-                pos -= (norm / 2);
-            }
+//            if (adjacent)
+//            {
+//                pos += (norm / 2);
+//            }
+//            else
+//            {
+//                pos -= (norm / 2);
+//            }
         }
 
         return (float)pos;
@@ -64,6 +64,20 @@ public static class Terra
 
         return true;
     }
+
+	public static bool DamageBlock(Chunk chunk, WorldPos pos, float amount, Vector3 direction)
+	{
+		if (chunk == null)
+			return false;
+		
+		Block block = chunk.world.GetBlock(pos.x, pos.y, pos.z);
+		if(block.DamageBlock(pos,amount,direction)) {
+			block = new BlockAir();
+			chunk.world.SetBlock(pos.x, pos.y, pos.z, block);
+			return true;
+		}
+		return false;
+	}
 
 	public static bool DamageBlock(RaycastHit hit, float amount, Vector3 direction)
 	{

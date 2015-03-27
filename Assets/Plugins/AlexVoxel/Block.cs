@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 
@@ -14,11 +14,12 @@ public class Block
 	public int material = 1;
 	public int varient = 0;
 	public float damage = 100;
+	public Vector3 offset;
 
     //Base block constructor
     public Block()
     {
-		varient = UnityEngine.Random.Range(0,3);
+		offset.Set (0.5f, 0.5f, 0.5f);
     }
 	public virtual Boolean DamageBlock (WorldPos pos, float amount, Vector3 direction)
 	{
@@ -69,13 +70,56 @@ public class Block
 
     }
 
+	//the getPoint# members should return a Vector3 that is a point relative to this block
+	protected Vector3 getPoint1 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3((x - 1.0f) + pos.x, pos.y + y + 0.0f, pos.z + z + 0.0f);
+	}
+
+	protected Vector3 getPoint2 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3((x + 0.0f) + pos.x, pos.y + y + 0.0f, pos.z + z + 0.0f);
+	}
+
+	protected Vector3 getPoint3 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3((x + 0.0f) + pos.x, pos.y + y + 0.0f, pos.z + z - 1.0f);
+	}
+	
+	protected Vector3 getPoint4 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3((x - 1.0f) + pos.x, pos.y + y + 0.0f, pos.z + z - 1.0f);
+	}
+
+	protected Vector3 getPoint5 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3(x - 1.0f + pos.x, pos.y + y - 1.0f, pos.z + z - 1.0f);
+	}
+	
+	protected Vector3 getPoint6 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3(x + 0.0f + pos.x, pos.y + y - 1.0f, pos.z + z - 1.0f);
+	}
+	
+	protected Vector3 getPoint7 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3(x + 0.0f + pos.x, pos.y + y - 1.0f, pos.z + z + 0.0f);
+	}
+	
+	protected Vector3 getPoint8 (int x, int y, int z, Vector3 pos)
+	{
+		return new Vector3(x - 1.0f + pos.x, pos.y + y - 1.0f, pos.z + z + 0.0f);
+	}
+
     protected virtual MeshData FaceDataUp
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z - 0.5f));
+		//Vector3 modified = getPoint1 (x, y, z, offset); 
+
+		meshData.AddVertex(getPoint1 (x, y, z, chunk.GetBlock(x - 1, y, z).offset));
+		meshData.AddVertex(getPoint2 (x, y, z, offset));
+		meshData.AddVertex(getPoint3 (x, y, z, chunk.GetBlock(x, y, z - 1).offset));
+		meshData.AddVertex(getPoint4 (x, y, z, chunk.GetBlock(x - 1, y, z - 1).offset));
 
         meshData.AddQuadTriangles();
         meshData.uv.AddRange(FaceUVs(Direction.up));
@@ -85,10 +129,10 @@ public class Block
     protected virtual MeshData FaceDataDown
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z + 0.5f));
+		meshData.AddVertex(getPoint5 (x, y, z, chunk.GetBlock(x - 1, y - 1, z - 1).offset));
+		meshData.AddVertex(getPoint6 (x, y, z, chunk.GetBlock(x, y - 1, z - 1).offset));
+		meshData.AddVertex(getPoint7 (x, y, z, chunk.GetBlock(x, y - 1, z).offset));
+		meshData.AddVertex(getPoint8 (x, y, z, chunk.GetBlock(x - 1, y - 1, z).offset));
 
         meshData.AddQuadTriangles();
         meshData.uv.AddRange(FaceUVs(Direction.down));
@@ -98,10 +142,14 @@ public class Block
     protected virtual MeshData FaceDataNorth
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z + 0.5f));
+		meshData.AddVertex(getPoint7 (x, y, z, chunk.GetBlock(x, y - 1, z).offset));
+		meshData.AddVertex(getPoint2 (x, y, z, offset));
+		meshData.AddVertex(getPoint1 (x, y, z, chunk.GetBlock(x - 1, y, z).offset));
+		meshData.AddVertex(getPoint8 (x, y, z, chunk.GetBlock(x - 1, y - 1, z).offset));
+//		meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z + 0.5f));
+//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f));
+//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z + 0.5f));
+//        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z + 0.5f));
 
         meshData.AddQuadTriangles();
         meshData.uv.AddRange(FaceUVs(Direction.north));
@@ -111,10 +159,14 @@ public class Block
     protected virtual MeshData FaceDataEast
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z + 0.5f));
+		meshData.AddVertex(getPoint6 (x, y, z, chunk.GetBlock(x, y - 1, z - 1).offset));
+		meshData.AddVertex(getPoint3 (x, y, z, chunk.GetBlock(x, y, z - 1).offset));
+		meshData.AddVertex(getPoint2 (x, y, z, offset));
+		meshData.AddVertex(getPoint7 (x, y, z, chunk.GetBlock(x, y - 1, z).offset));
+//		meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z - 0.5f));
+//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z - 0.5f));
+//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f));
+//        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z + 0.5f));
 
         meshData.AddQuadTriangles();
         meshData.uv.AddRange(FaceUVs(Direction.east));
@@ -124,10 +176,14 @@ public class Block
     protected virtual MeshData FaceDataSouth
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z - 0.5f));
+		meshData.AddVertex(getPoint5 (x, y, z, chunk.GetBlock(x - 1, y - 1, z - 1).offset));
+		meshData.AddVertex(getPoint4 (x, y, z, chunk.GetBlock(x - 1, y, z - 1).offset));
+		meshData.AddVertex(getPoint3 (x, y, z, chunk.GetBlock(x, y, z - 1).offset));
+		meshData.AddVertex(getPoint6 (x, y, z, chunk.GetBlock(x, y - 1, z - 1).offset));
+//		meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z - 0.5f));
+//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z - 0.5f));
+//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z - 0.5f));
+//        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z - 0.5f));
 
         meshData.AddQuadTriangles();
         meshData.uv.AddRange(FaceUVs(Direction.south));
@@ -136,11 +192,15 @@ public class Block
 
     protected virtual MeshData FaceDataWest
         (Chunk chunk, int x, int y, int z, MeshData meshData)
-    {
-        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z + 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z - 0.5f));
-        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z - 0.5f));
+	{
+		meshData.AddVertex(getPoint8 (x, y, z, chunk.GetBlock(x - 1, y - 1, z).offset));
+		meshData.AddVertex(getPoint1 (x, y, z, chunk.GetBlock(x - 1, y, z).offset));
+		meshData.AddVertex(getPoint4 (x, y, z, chunk.GetBlock(x - 1, y, z - 1).offset));
+		meshData.AddVertex(getPoint5 (x, y, z, chunk.GetBlock(x - 1, y - 1, z - 1).offset));
+//        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z + 0.5f));
+//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z + 0.5f));
+//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z - 0.5f));
+//        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z - 0.5f));
 
         meshData.AddQuadTriangles();
         meshData.uv.AddRange(FaceUVs(Direction.west));
@@ -193,5 +253,5 @@ public class Block
 
         return false;
     }
-
+	
 }

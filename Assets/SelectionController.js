@@ -63,9 +63,6 @@ function Update () {
 		
 	
 	if(Input.GetMouseButton(0)) {
-	
-		var ray : Ray;
-		ray.origin = transform.position;
 		
 		if(Input.GetKey(KeyCode.LeftShift)) {
 			depth = 3;
@@ -78,30 +75,30 @@ function Update () {
 		targetPosition.z = depth; //
 		
 		//point to our target
-		
+		var ray : Ray;
+		ray.origin = transform.position;
 		var rayLength : float = Vector3.Distance(targetPosition, transform.position);
 		ray.direction = targetPosition - ray.origin;
 		
 		//do a raycast
 		var hit : RaycastHit; 
 			if(toolmode == 1) {
-		        if(Physics.Raycast(ray, hit, Mathf.Min(rayLength,10))) {
-		        	positionhit = Terra.GetBlockPos(hit,false);
-		        	if(1) { //mining
-				    	Debug.DrawLine(transform.position, hit.point, Color.blue, 1, false);
-				        
-						blockhit = Terra.GetBlock(hit,false);
-						
-						if(Terra.DamageBlock(hit, 30.0, transform.forward)) {
+				if(Physics.Raycast(ray, hit, Mathf.Min(rayLength,6))) {
+		        	//positionhit = Terra.GetBlockPos(hit,false);
+		        	positionhit = Terra.GetBlockPos(targetPosition);
+		        	blockhit = scrWorld.GetBlock(positionhit.x,positionhit.y,positionhit.z);
+		        	
+		        	if(blockhit.material > 0) {
+						if(Terra.DamageBlock(scrWorld.GetChunk(positionhit.x,positionhit.y,positionhit.z), positionhit, 30.0, transform.forward)) {
 							GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController).createPickUpBlock(blockhit.material, Vector3(positionhit.x,positionhit.y,positionhit.z), transform.forward);
 							GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "blockDestroyed", Vector3(positionhit.x,positionhit.y,positionhit.z));
 						}
-						obMarker.transform.position = Vector3(positionhit.x, positionhit.y, positionhit.z);
 					}
+					obMarker.transform.position = Vector3(positionhit.x, positionhit.y, positionhit.z);
 				}
 			}
 			else if(toolmode == 2) { //we did not hit anything?
-				if(Physics.Raycast(ray, hit, Mathf.Min(rayLength,10))) { //placing we go the distance till we hit something
+				if(Physics.Raycast(ray, hit, Mathf.Min(rayLength,6))) { //placing we go the distance till we hit something
 					positionhit = Terra.GetBlockPos(hit,true);
 					Debug.DrawLine(transform.position, hit.point, Color.green, 1, false);
 					if(1) { //check for air

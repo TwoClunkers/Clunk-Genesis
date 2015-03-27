@@ -20,7 +20,7 @@ function Start() {
 // Update is called once per frame
 function Update () {
 	var dist = Vector3.Distance(oldPosition, transform.position);
-	transform.position.z = 2; 
+	transform.position.z = 1.5; 
 	
 	if(GetComponent.<NetworkView>().isMine){
 		// Get the input vector from kayboard or analog stick
