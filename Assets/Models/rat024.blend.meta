@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 469224f74da7cf549993fc84dfafdf2c
-timeCreated: 1427593933
+guid: 85d22683a23fe734c9b9287bb85d55b3
+timeCreated: 1427612779
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -73,8 +73,10 @@ ModelImporter:
     7400008: ratIdle1
     7400010: ratLaydown
     7400012: ratPoses
-    7400014: ratSniff
-    7400016: ratWalk
+    7400014: ratRun_001
+    7400016: ratSniff
+    7400018: ratWalk
+    7400020: ratRun
     9500000: //RootNode
     13700000: optRat
   materials:
@@ -698,8 +700,94 @@ ModelImporter:
     - serializedVersion: 16
       name: ratWalk
       takeName: ratWalk
-      firstFrame: 1
-      lastFrame: 29
+      firstFrame: 0
+      lastFrame: 28
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/pelvis
+        weight: 1
+      - path: Armature/pelvis/hip_L
+        weight: 1
+      - path: Armature/pelvis/hip_L/thigh_L
+        weight: 1
+      - path: Armature/pelvis/hip_L/thigh_L/shin_L
+        weight: 1
+      - path: Armature/pelvis/hip_L/thigh_L/shin_L/foot_L
+        weight: 1
+      - path: Armature/pelvis/hip_R
+        weight: 1
+      - path: Armature/pelvis/hip_R/thigh_R
+        weight: 1
+      - path: Armature/pelvis/hip_R/thigh_R/shin_R
+        weight: 1
+      - path: Armature/pelvis/hip_R/thigh_R/shin_R/foot_R
+        weight: 1
+      - path: Armature/pelvis/spine
+        weight: 1
+      - path: Armature/pelvis/spine/chest
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_L
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_L/arm_L
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_L/arm_L/wrist_L
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_L/arm_L/wrist_L/hand_L
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_R/arm_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_R/arm_R/wrist_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/shoulder_R/arm_R/wrist_R/hand_R
+        weight: 1
+      - path: Armature/pelvis/tail
+        weight: 1
+      - path: Armature/pelvis/tail/tail1
+        weight: 1
+      - path: Armature/pelvis/tail/tail1/tail1_001
+        weight: 1
+      - path: optRat
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    - serializedVersion: 16
+      name: ratRun
+      takeName: ratRun
+      firstFrame: 0
+      lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
