@@ -26,7 +26,7 @@ function PlaceCurrent (size : int) : InventoryItem {
 	// then we will return that item and remove it from the slot
 	
 	//NOTE the "size" will be used later to place larger objects
-	var item : InventoryItem = InventoryItem(0, 0);
+	var item : InventoryItem = new InventoryItem(0, 0);
 	if(activeInventorySlot > -1) {
 		item.id = inventory.Look(activeInventorySlot).id;
 		if(item.id > 0) { //not air

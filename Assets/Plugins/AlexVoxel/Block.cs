@@ -210,8 +210,15 @@ public class Block
     public virtual Tile TexturePosition(Direction direction)
     {
         Tile tile = new Tile();
-		tile.x = varient;
-		tile.y = material;
+
+		if(material < 8) {
+			tile.x = varient;
+			tile.y = material;
+		}
+		else {
+			tile.x = varient+4;
+			tile.y = material-8;
+		}
 
         return tile;
     }

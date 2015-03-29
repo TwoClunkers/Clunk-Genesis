@@ -43,10 +43,6 @@ function Start () {
 	toolmode = 1;
 	obTool.GetComponent.<UnityEngine.UI.Image>().sprite = spriteMine;
 	
-
-   
-
-
 }
 
 function Update () {
@@ -82,10 +78,9 @@ function Update () {
 		
 		//do a raycast
 		var hit : RaycastHit; 
+		if(Vector3.Distance(targetPosition, transform.position)<8) {
 			if(toolmode == 1) {
-				if(Physics.Raycast(ray, hit, Mathf.Min(rayLength,6))) {
-		        	//positionhit = Terra.GetBlockPos(hit,false);
-		        	positionhit = Terra.GetBlockPos(targetPosition);
+			    	positionhit = Terra.GetBlockPos(targetPosition);
 		        	blockhit = scrWorld.GetBlock(positionhit.x,positionhit.y,positionhit.z);
 		        	
 		        	if(blockhit.material > 0) {
@@ -95,29 +90,23 @@ function Update () {
 						}
 					}
 					obMarker.transform.position = Vector3(positionhit.x, positionhit.y, positionhit.z);
-				}
 			}
 			else if(toolmode == 2) { //we did not hit anything?
-				if(Physics.Raycast(ray, hit, Mathf.Min(rayLength,6))) { //placing we go the distance till we hit something
-					positionhit = Terra.GetBlockPos(hit,true);
-					Debug.DrawLine(transform.position, hit.point, Color.green, 1, false);
-					if(1) { //check for air
-						//Terra.SetBlock(hit, blockset, true);
+				    positionhit = Terra.GetBlockPos(targetPosition);
+		        	blockhit = scrWorld.GetBlock(positionhit.x,positionhit.y,positionhit.z);
+		        	
+		        	if(blockhit.material == 0) {
+						var pos : WorldPos = Terra.GetBlockPos(targetPosition);
+						var item : InventoryItem = inventory.PlaceCurrent(1);
+						if(item.id > 0) { //not an air block Yay!
+							blockset = new Block();
+							blockset.material = item.id;
+							//blockset.Tile.y = item.id;
+							Terra.SetBlock(scrWorld.GetChunk(pos.x,pos.y,pos.z), pos, blockset);
+						}
 					}
-				}
-				else {
-					Debug.DrawLine(transform.position, hit.point, Color.magenta, 1, false);
-					var pos : WorldPos = Terra.GetBlockPos(targetPosition);
-					var item : InventoryItem = inventory.PlaceCurrent(1);
-					if(item.id > 0) { //not an air block Yay!
-						blockset = new Block();
-						blockset.material = item.id;
-						//blockset.Tile.y = item.id;
-						Terra.SetBlock(scrWorld.GetChunk(pos.x,pos.y,pos.z), pos, blockset);
-					}
-				}
 			}
-    	//}
+    	}
 
 	}
 
