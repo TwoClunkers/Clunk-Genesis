@@ -1,7 +1,9 @@
 fileFormatVersion: 2
-guid: 449b9f8bd8935e044b0a2ddba36f5398
+guid: 469224f74da7cf549993fc84dfafdf2c
+timeCreated: 1427593933
+licenseType: Free
 ModelImporter:
-  serializedVersion: 15
+  serializedVersion: 18
   fileIDToRecycleName:
     100000: arm_L
     100002: arm_R
@@ -18,22 +20,21 @@ ModelImporter:
     100024: hip_R
     100026: jaw
     100028: neck
-    100030: neck_001
+    100030: optRat
     100032: pelvis
-    100034: rat
-    100036: //RootNode
-    100038: shin_L
-    100040: shin_R
-    100042: shoulder_L
-    100044: shoulder_R
-    100046: spine
-    100048: tail
-    100050: tail1
-    100052: tail1_001
-    100054: thigh_L
-    100056: thigh_R
-    100058: wrist_L
-    100060: wrist_R
+    100034: //RootNode
+    100036: shin_L
+    100038: shin_R
+    100040: shoulder_L
+    100042: shoulder_R
+    100044: spine
+    100046: tail
+    100048: tail1
+    100050: tail1_001
+    100052: thigh_L
+    100054: thigh_R
+    100056: wrist_L
+    100058: wrist_R
     400000: arm_L
     400002: arm_R
     400004: Armature
@@ -49,23 +50,22 @@ ModelImporter:
     400024: hip_R
     400026: jaw
     400028: neck
-    400030: neck_001
+    400030: optRat
     400032: pelvis
-    400034: rat
-    400036: //RootNode
-    400038: shin_L
-    400040: shin_R
-    400042: shoulder_L
-    400044: shoulder_R
-    400046: spine
-    400048: tail
-    400050: tail1
-    400052: tail1_001
-    400054: thigh_L
-    400056: thigh_R
-    400058: wrist_L
-    400060: wrist_R
-    4300000: rat
+    400034: //RootNode
+    400036: shin_L
+    400038: shin_R
+    400040: shoulder_L
+    400042: shoulder_R
+    400044: spine
+    400046: tail
+    400048: tail1
+    400050: tail1_001
+    400052: thigh_L
+    400054: thigh_R
+    400056: wrist_L
+    400058: wrist_R
+    4300000: optRat
     7400000: Default Take
     7400002: ratChomp
     7400004: ratDeath
@@ -76,7 +76,7 @@ ModelImporter:
     7400014: ratSniff
     7400016: ratWalk
     9500000: //RootNode
-    13700000: rat
+    13700000: optRat
   materials:
     importMaterials: 1
     materialName: 0
@@ -85,6 +85,7 @@ ModelImporter:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     optimizeGameObjects: 0
+    motionNodeName: 
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
@@ -96,7 +97,7 @@ ModelImporter:
       name: ratChomp
       takeName: ratChomp
       firstFrame: 0
-      lastFrame: 35
+      lastFrame: 28
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -144,15 +145,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -176,7 +175,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -184,7 +183,7 @@ ModelImporter:
       name: ratDeath
       takeName: ratDeath
       firstFrame: 0
-      lastFrame: 10
+      lastFrame: 1
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -232,15 +231,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -264,7 +261,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -320,15 +317,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -352,7 +347,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -408,15 +403,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -440,7 +433,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -496,15 +489,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -528,7 +519,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -584,15 +575,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -616,7 +605,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -672,15 +661,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -704,7 +691,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -760,15 +747,13 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/spine/chest/neck
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_L
-        weight: 1
-      - path: Armature/pelvis/spine/chest/neck/ear_R
-        weight: 1
       - path: Armature/pelvis/spine/chest/neck/head
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001
+      - path: Armature/pelvis/spine/chest/neck/head/ear_L
         weight: 1
-      - path: Armature/pelvis/spine/chest/neck/neck_001/jaw
+      - path: Armature/pelvis/spine/chest/neck/head/ear_R
+        weight: 1
+      - path: Armature/pelvis/spine/chest/neck/head/jaw
         weight: 1
       - path: Armature/pelvis/spine/chest/shoulder_L
         weight: 1
@@ -792,7 +777,7 @@ ModelImporter:
         weight: 1
       - path: Armature/pelvis/tail/tail1/tail1_001
         weight: 1
-      - path: rat
+      - path: optRat
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
@@ -807,11 +792,13 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
@@ -832,4 +819,7 @@ ModelImporter:
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  additionalBone: 0
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
