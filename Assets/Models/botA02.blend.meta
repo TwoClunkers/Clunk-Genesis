@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 3e27bea446fc96f44bcf4dba719d6d94
-timeCreated: 1427681128
+guid: 058d2cbd49cfbd44784732fc59c98ee4
+timeCreated: 1427859472
 licenseType: Free
 ModelImporter:
   serializedVersion: 18
@@ -8,25 +8,20 @@ ModelImporter:
     100000: //RootNode
     100002: botA_Body
     100004: botA_Drive
-    100006: botA_Head_001
-    100008: botA_Head
+    100006: botA_Head
     400000: //RootNode
     400002: botA_Body
     400004: botA_Drive
-    400006: botA_Head_001
-    400008: botA_Head
+    400006: botA_Head
     2300000: botA_Body
     2300002: botA_Drive
-    2300004: botA_Head_001
-    2300006: botA_Head
+    2300004: botA_Head
     3300000: botA_Body
     3300002: botA_Drive
-    3300004: botA_Head_001
-    3300006: botA_Head
-    4300000: botA_Head_001
+    3300004: botA_Head
+    4300000: botA_Head
     4300002: botA_Body
     4300004: botA_Drive
-    4300006: botA_Head
     7400000: Default Take
     9500000: //RootNode
   materials:

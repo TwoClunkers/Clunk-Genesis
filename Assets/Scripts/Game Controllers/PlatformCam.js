@@ -1,6 +1,7 @@
 var target : Transform;
 var zpos : float;
 var vlight : Transform;
+private var lastZ : float;
 
 function Start () {
 	vlight = transform.Find("ViewLight");
@@ -11,6 +12,7 @@ function Update () {
 		transform.position.x = target.position.x;
 		transform.position.y = (target.position.y+1)+(zpos/(-5));
 		transform.position.z = zpos;
+		vlight.position.z = lastZ;
 		//light.position.x = target.position.x;
 		//light.position.y = target.position.y;
 		//vlight.position.z = (-25);

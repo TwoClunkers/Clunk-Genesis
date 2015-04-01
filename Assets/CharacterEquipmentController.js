@@ -24,7 +24,7 @@ function Start () {
 	connectedLeft = Network.Instantiate(leftplan, (transform.position + mountLeft),Quaternion.identity, 0);
 	connectedLeft.transform.parent = transform;
 	
-	driveplan = Resources.Load("Drive");
+	driveplan = Resources.Load("botA_Drive");
 	connectedDrive = Network.Instantiate(driveplan, (transform.position + mountDrive),Quaternion.identity, 0);
 	connectedDrive.transform.parent = transform;
 	
