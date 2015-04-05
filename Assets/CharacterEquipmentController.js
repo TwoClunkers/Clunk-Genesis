@@ -20,7 +20,7 @@ static var controllerDefaultRadius : float = 0.49;
 
 
 function Start () {
-	leftplan = Resources.Load("Gun");
+	leftplan = Resources.Load("miningLaser09");
 	connectedLeft = Network.Instantiate(leftplan, (transform.position + mountLeft),Quaternion.identity, 0);
 	connectedLeft.transform.parent = transform;
 	
