@@ -85,7 +85,7 @@ function Update () {
 		        	
 		        	if(blockhit.material > 0) {
 						if(Terra.DamageBlock(scrWorld.GetChunk(positionhit.x,positionhit.y,positionhit.z), positionhit, 30.0, transform.forward)) {
-							GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController).createPickUpBlock(blockhit.material, Vector3(positionhit.x,positionhit.y,positionhit.z), transform.forward);
+							GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController).createPickUpBlock(blockhit.material, Vector3(positionhit.x,positionhit.y,1.5), transform.forward);
 							GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "blockDestroyed", Vector3(positionhit.x,positionhit.y,positionhit.z));
 						}
 					}

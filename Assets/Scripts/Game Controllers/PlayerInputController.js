@@ -18,9 +18,9 @@ function Start() {
 }
 
 // Update is called once per frame
-function Update () {
+function Update () { //RDM debugging - Update()
 	var dist = Vector3.Distance(oldPosition, transform.position);
-	transform.position.z = 1.5; 
+	//transform.position.z = 1.5; //RDM debugging- moved to end of characterMotor UpdateFunction()
 	
 	if(GetComponent.<NetworkView>().isMine){
 		// Get the input vector from kayboard or analog stick

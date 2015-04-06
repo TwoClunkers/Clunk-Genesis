@@ -310,6 +310,9 @@ private function UpdateFunction () {
         movingPlatform.activeGlobalRotation = tr.rotation;
         movingPlatform.activeLocalRotation = Quaternion.Inverse(movingPlatform.activePlatform.rotation) * movingPlatform.activeGlobalRotation; 
 	}
+	
+	//RDM: force z = 1.5;
+	tr.position.z = 1.5f;
 }
 
 function FixedUpdate () {
