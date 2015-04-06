@@ -12,7 +12,8 @@ public class Block
     public bool changed = true;
 
 	public int material = 1;
-	public int varient = 0;
+	public int varientx = 0;
+	public int varienty = 0;
 	public float damage = 100;
 	public Vector3 offset;
 
@@ -33,6 +34,7 @@ public class Block
     public virtual MeshData Blockdata
      (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
+
 
         meshData.useRenderDataForCol = true;
 
@@ -114,96 +116,132 @@ public class Block
     protected virtual MeshData FaceDataUp
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-		//Vector3 modified = getPoint1 (x, y, z, offset); 
-
-		meshData.AddVertex(getPoint1 (x, y, z, chunk.GetBlock(x - 1, y, z).offset));
-		meshData.AddVertex(getPoint2 (x, y, z, offset));
-		meshData.AddVertex(getPoint3 (x, y, z, chunk.GetBlock(x, y, z - 1).offset));
-		meshData.AddVertex(getPoint4 (x, y, z, chunk.GetBlock(x - 1, y, z - 1).offset));
+		Vector3[] points = new Vector3[4]; 
+		points [0] = chunk.GetBlock (x - 1, y, z).offset;
+		meshData.AddVertex(getPoint1 (x, y, z, points [0] ));
+		points [1] = offset;
+		meshData.AddVertex(getPoint2 (x, y, z, points [1] ));
+		points [2] = chunk.GetBlock(x, y, z - 1).offset;
+		meshData.AddVertex(getPoint3 (x, y, z, points [2] ));
+		points [3] = chunk.GetBlock(x - 1, y, z - 1).offset;
+		meshData.AddVertex(getPoint4 (x, y, z, points [3] ));
 
         meshData.AddQuadTriangles();
-        meshData.uv.AddRange(FaceUVs(Direction.up));
+		meshData.uv.AddRange(FaceUVs(Direction.up, new Vector2(points [0].x, points [0].z), 
+		                             new Vector2 (points [1].x, points [1].z), 
+		                             new Vector2 (points [2].x, points [2].z), 
+		                             new Vector2 (points [3].x, points [3].z)));
         return meshData;
     }
 
     protected virtual MeshData FaceDataDown
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-		meshData.AddVertex(getPoint5 (x, y, z, chunk.GetBlock(x - 1, y - 1, z - 1).offset));
-		meshData.AddVertex(getPoint6 (x, y, z, chunk.GetBlock(x, y - 1, z - 1).offset));
-		meshData.AddVertex(getPoint7 (x, y, z, chunk.GetBlock(x, y - 1, z).offset));
-		meshData.AddVertex(getPoint8 (x, y, z, chunk.GetBlock(x - 1, y - 1, z).offset));
+		Vector3[] points = new Vector3[4]; 
+		points [0] = chunk.GetBlock(x - 1, y - 1, z - 1).offset;
+		meshData.AddVertex(getPoint5 (x, y, z, points [0] ));
+		points [1] = chunk.GetBlock(x, y - 1, z - 1).offset;
+		meshData.AddVertex(getPoint6 (x, y, z, points [1] ));
+		points [2] = chunk.GetBlock(x, y - 1, z).offset;
+		meshData.AddVertex(getPoint7 (x, y, z, points [2] ));
+		points [3] = chunk.GetBlock(x - 1, y - 1, z).offset;
+		meshData.AddVertex(getPoint8 (x, y, z, points [3] ));
 
         meshData.AddQuadTriangles();
-        meshData.uv.AddRange(FaceUVs(Direction.down));
+		meshData.uv.AddRange(FaceUVs(Direction.down, new Vector2(points [0].x, points [0].z), 
+		                             new Vector2 (points [1].x, points [1].z), 
+		                             new Vector2 (points [2].x, points [2].z), 
+		                             new Vector2 (points [3].x, points [3].z)));
         return meshData;
     }
 
     protected virtual MeshData FaceDataNorth
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-		meshData.AddVertex(getPoint7 (x, y, z, chunk.GetBlock(x, y - 1, z).offset));
-		meshData.AddVertex(getPoint2 (x, y, z, offset));
-		meshData.AddVertex(getPoint1 (x, y, z, chunk.GetBlock(x - 1, y, z).offset));
-		meshData.AddVertex(getPoint8 (x, y, z, chunk.GetBlock(x - 1, y - 1, z).offset));
-//		meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z + 0.5f));
-//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f));
-//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z + 0.5f));
-//        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z + 0.5f));
-
-        meshData.AddQuadTriangles();
-        meshData.uv.AddRange(FaceUVs(Direction.north));
+//		Vector3[] points = new Vector3[4]; 
+//		points [0] = chunk.GetBlock(x, y - 1, z).offset;
+//		meshData.AddVertex(getPoint7 (x, y, z, points [0] ));
+//		points [1] = offset;
+//		meshData.AddVertex(getPoint2 (x, y, z, points [1] ));
+//		points [2] = chunk.GetBlock(x - 1, y, z).offset;
+//		meshData.AddVertex(getPoint1 (x, y, z, points [2] ));
+//		points [3] = chunk.GetBlock(x - 1, y - 1, z).offset;
+//		meshData.AddVertex(getPoint8 (x, y, z, points [3] ));
+//
+//        meshData.AddQuadTriangles();
+//		meshData.uv.AddRange(FaceUVs(Direction.north, new Vector2(points [0].x, points [0].y), 
+//		                             new Vector2 (points [1].x, points [1].y), 
+//		                             new Vector2 (points [2].x, points [2].y), 
+//		                             new Vector2 (points [3].x, points [3].y)));
         return meshData;
     }
 
     protected virtual MeshData FaceDataEast
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-		meshData.AddVertex(getPoint6 (x, y, z, chunk.GetBlock(x, y - 1, z - 1).offset));
-		meshData.AddVertex(getPoint3 (x, y, z, chunk.GetBlock(x, y, z - 1).offset));
-		meshData.AddVertex(getPoint2 (x, y, z, offset));
-		meshData.AddVertex(getPoint7 (x, y, z, chunk.GetBlock(x, y - 1, z).offset));
-//		meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z - 0.5f));
-//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z - 0.5f));
-//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z + 0.5f));
-//        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z + 0.5f));
+		Vector3[] points = new Vector3[4]; 
+		points [0] = chunk.GetBlock(x, y, z - 1).offset;
+		meshData.AddVertex(getPoint3 (x, y, z, points [0] ));
+		points [1] = offset;
+		meshData.AddVertex(getPoint2 (x, y, z, points [1] ));
+		points [2] = chunk.GetBlock(x, y - 1, z).offset;
+		meshData.AddVertex(getPoint7 (x, y, z, points [2] ));
+		points [3] = chunk.GetBlock(x, y - 1, z - 1).offset;
+		meshData.AddVertex(getPoint6 (x, y, z, points [3] ));
 
+		
         meshData.AddQuadTriangles();
-        meshData.uv.AddRange(FaceUVs(Direction.east));
+		meshData.uv.AddRange(FaceUVs(Direction.east, new Vector2(points [0].y, points [0].z), 
+		                             new Vector2 (points [1].y, points [1].z), 
+		                             new Vector2 (points [2].y, points [2].z), 
+		                             new Vector2 (points [3].y, points [3].z)));
         return meshData;
     }
 
     protected virtual MeshData FaceDataSouth
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-		meshData.AddVertex(getPoint5 (x, y, z, chunk.GetBlock(x - 1, y - 1, z - 1).offset));
-		meshData.AddVertex(getPoint4 (x, y, z, chunk.GetBlock(x - 1, y, z - 1).offset));
-		meshData.AddVertex(getPoint3 (x, y, z, chunk.GetBlock(x, y, z - 1).offset));
-		meshData.AddVertex(getPoint6 (x, y, z, chunk.GetBlock(x, y - 1, z - 1).offset));
-//		meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z - 0.5f));
-//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z - 0.5f));
-//        meshData.AddVertex(new Vector3(x + 0.5f, y + 0.5f, z - 0.5f));
-//        meshData.AddVertex(new Vector3(x + 0.5f, y - 0.5f, z - 0.5f));
+		Vector3[] points = new Vector3[4]; 
+
+		points [0] = chunk.GetBlock(x - 1, y, z - 1).offset;
+		meshData.AddVertex(getPoint4 (x, y, z, points [0] ));
+
+		points [1] = chunk.GetBlock(x, y, z - 1).offset;
+		meshData.AddVertex(getPoint3 (x, y, z, points [1] ));
+
+		points [2] = chunk.GetBlock(x, y - 1, z - 1).offset;
+		meshData.AddVertex(getPoint6 (x, y, z, points [2] ));
+
+		points [3] = chunk.GetBlock(x - 1, y - 1, z - 1).offset;
+		meshData.AddVertex(getPoint5 (x, y, z, points [3] ));
 
         meshData.AddQuadTriangles();
-        meshData.uv.AddRange(FaceUVs(Direction.south));
+		meshData.uv.AddRange(FaceUVs(Direction.south, new Vector2(points [0].x, points [0].y), 
+		                             new Vector2 (points [1].x, points [1].y), 
+		                             new Vector2 (points [2].x, points [2].y), 
+		                             new Vector2 (points [3].x, points [3].y)));
         return meshData;
     }
 
     protected virtual MeshData FaceDataWest
         (Chunk chunk, int x, int y, int z, MeshData meshData)
 	{
-		meshData.AddVertex(getPoint8 (x, y, z, chunk.GetBlock(x - 1, y - 1, z).offset));
-		meshData.AddVertex(getPoint1 (x, y, z, chunk.GetBlock(x - 1, y, z).offset));
-		meshData.AddVertex(getPoint4 (x, y, z, chunk.GetBlock(x - 1, y, z - 1).offset));
-		meshData.AddVertex(getPoint5 (x, y, z, chunk.GetBlock(x - 1, y - 1, z - 1).offset));
-//        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z + 0.5f));
-//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z + 0.5f));
-//        meshData.AddVertex(new Vector3(x - 0.5f, y + 0.5f, z - 0.5f));
-//        meshData.AddVertex(new Vector3(x - 0.5f, y - 0.5f, z - 0.5f));
+		Vector3[] points = new Vector3[4]; 
+		points [0] = chunk.GetBlock(x - 1, y, z).offset;
+		meshData.AddVertex(getPoint1 (x, y, z, points [0] ));
+		points [1] = chunk.GetBlock(x - 1, y, z - 1).offset;
+		meshData.AddVertex(getPoint4 (x, y, z, points [1] ));
+		points [2] = chunk.GetBlock(x - 1, y - 1, z - 1).offset;
+		meshData.AddVertex(getPoint5 (x, y, z, points [2] ));
+		points [3] = chunk.GetBlock(x - 1, y - 1, z).offset;
+		meshData.AddVertex(getPoint8 (x, y, z, points [3] ));
+
 
         meshData.AddQuadTriangles();
-        meshData.uv.AddRange(FaceUVs(Direction.west));
+		meshData.uv.AddRange(FaceUVs(Direction.west, new Vector2(points [0].z, points [0].y), 
+		                             new Vector2 (points [1].z, points [1].y), 
+		                             new Vector2 (points [2].z, points [2].y), 
+		                             new Vector2 (points [3].z, points [3].y)));
         return meshData;
     }
 
@@ -211,31 +249,39 @@ public class Block
     {
         Tile tile = new Tile();
 
-		if(material < 8) {
-			tile.x = varient;
-			tile.y = material;
+		//tile.x = varientx;
+		//tile.y = varienty;
+
+		if(material < 3) {
+			tile.x = varientx;
+			tile.y = varienty+(material-1)*4;
 		}
 		else {
-			tile.x = varient+4;
-			tile.y = material-8;
+			tile.x = varientx+4;
+			tile.y = varienty+(material-3)*4;
 		}
 
         return tile;
     }
 
-    public virtual Vector2[] FaceUVs(Direction direction)
+	public virtual Vector2[] FaceUVs(Direction direction, Vector2 point0, Vector2 point1, Vector2 point2, Vector2 point3)
     {
         Vector2[] UVs = new Vector2[4];
         Tile tilePos = TexturePosition(direction);
 
-        UVs[0] = new Vector2(tileSize * tilePos.x + tileSize,
-            tileSize * tilePos.y);
-        UVs[1] = new Vector2(tileSize * tilePos.x + tileSize,
-            tileSize * tilePos.y + tileSize);
-        UVs[2] = new Vector2(tileSize * tilePos.x,
-            tileSize * tilePos.y + tileSize);
-        UVs[3] = new Vector2(tileSize * tilePos.x,
-            tileSize * tilePos.y);
+
+
+		UVs[0] = new Vector2(tileSize * tilePos.x + tileSize*point0.x,
+		    tileSize * tilePos.y + tileSize*point0.y + tileSize);
+
+		UVs[1] = new Vector2(tileSize * tilePos.x + tileSize*point1.x + tileSize,
+		    tileSize * tilePos.y + tileSize*point1.y + tileSize);
+
+		UVs[2] = new Vector2(tileSize * tilePos.x + tileSize*point2.x + tileSize,
+		    tileSize * tilePos.y + tileSize*point2.y);
+
+		UVs[3] = new Vector2(tileSize * tilePos.x + tileSize*point3.x,
+		    tileSize * tilePos.y + tileSize*point3.y);
 
         return UVs;
     }
