@@ -31,8 +31,8 @@ class CharacterMotorMovement {
 	var slopeSpeedMultiplier : AnimationCurve = AnimationCurve(Keyframe(-90, 1), Keyframe(0, 1), Keyframe(90, 0));
 	
 	// How fast does the character change speeds?  Higher is faster.
-	var maxGroundAcceleration : float = 30.0;
-	var maxAirAcceleration : float = 20.0;
+	var maxGroundAcceleration : float = 20.0;
+	var maxAirAcceleration : float = 10.0;
 
 	// The gravity for the character
 	var gravity : float = 10.0;
@@ -78,7 +78,7 @@ class CharacterMotorJumping {
 	var baseHeight : float = 1.0;
 	
 	// We add extraHeight units (meters) on top when holding the button down longer while jumping
-	var extraHeight : float = 4.1;
+	var extraHeight : float = 3.0;
 	
 	// How much does the character jump out perpendicular to the surface on walkable surfaces?
 	// 0 means a fully vertical jump and 1 means fully perpendicular.
@@ -86,7 +86,7 @@ class CharacterMotorJumping {
 	
 	// How much does the character jump out perpendicular to the surface on too steep surfaces?
 	// 0 means a fully vertical jump and 1 means fully perpendicular.
-	var steepPerpAmount : float = 0.5;
+	var steepPerpAmount : float = 0.2;
 	
 	// For the next variables, @System.NonSerialized tells Unity to not serialize the variable or show it in the inspector view.
 	// Very handy for organization!

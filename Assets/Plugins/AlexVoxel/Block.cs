@@ -8,7 +8,7 @@ public class Block
     public enum Direction { north, east, south, west, up, down };
 
     public struct Tile { public int x; public int y;}
-    const float tileSize = 0.125f; //one eighth of the pic
+    const float tileSize = 0.03125f; //one 32th of the pic
     public bool changed = true;
 
 	public int material = 1;
@@ -252,13 +252,13 @@ public class Block
 		//tile.x = varientx;
 		//tile.y = varienty;
 
-		if(material < 3) {
+		if(material < 5) {
 			tile.x = varientx;
-			tile.y = varienty+(material-1)*4;
+			tile.y = varienty+(material-1)*8;
 		}
 		else {
-			tile.x = varientx+4;
-			tile.y = varienty+(material-3)*4;
+			tile.x = varientx+8;
+			tile.y = varienty+(material-5)*8;
 		}
 
         return tile;

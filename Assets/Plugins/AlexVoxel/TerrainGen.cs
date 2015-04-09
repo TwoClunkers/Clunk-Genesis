@@ -37,10 +37,10 @@ public class TerrainGen
         {
 			float noise = GetNoise( x, y, z, 0.03f, 6);
 			float remainder = (noise - (int)noise);
-			int vposx = (Mathf.FloorToInt (((x / 3.0f) - ((int)(x / 3.0f))) * 3.0f));
-			int vposy = (Mathf.FloorToInt (((y / 3.0f) - ((int)(y / 3.0f))) * 3.0f));
-			if(vposx<0) vposx += 3;
-			if(vposy<0) vposy += 3;
+			int vposx = (Mathf.FloorToInt (((x / 7.0f) - ((int)(x / 7.0f))) * 7.0f));
+			int vposy = (Mathf.FloorToInt (((y / 7.0f) - ((int)(y / 7.0f))) * 7.0f));
+			if(vposx<0) vposx += 7;
+			if(vposy<0) vposy += 7;
 
 			if(noise < 2) 
 			{
@@ -57,7 +57,7 @@ public class TerrainGen
 				Block block = new Block();
 				block.varientx = vposx;
 				block.varienty = vposy;
-				block.material = 1;//Mathf.FloorToInt(noise-1);
+				block.material = Mathf.FloorToInt(noise-1);
 				//block.varient = Random.Range(0 , 3);
 				//block.offset.Set (remainder,remainder,Random.value/4+0.38f);
 				//block.offset.Set (Random.value/4+0.38f,0.5f,Random.value/2+0.5f);
@@ -67,7 +67,7 @@ public class TerrainGen
 			else if(noise < 6)
 			{
 				Block block = new Block();
-				block.material = 2;//Mathf.FloorToInt(noise-1);
+				block.material = Mathf.FloorToInt(noise-1);
 				block.varientx = vposx;
 				block.varienty = vposy;
 				//block.varient = Random.Range(0 , 3);
