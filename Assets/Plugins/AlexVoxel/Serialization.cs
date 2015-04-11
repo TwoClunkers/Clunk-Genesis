@@ -32,7 +32,7 @@ public static class Serialization
         Save save = new Save(chunk);
         if (save.blocks.Count == 0)
             return;
-
+		Debug.Log ("saveattempt");
         string saveFile = SaveLocation(chunk.world.worldName);
         saveFile += FileName(chunk.pos);
 

@@ -73,6 +73,7 @@ public static class Terra
 		Block block = chunk.world.GetBlock(pos.x, pos.y, pos.z);
 		if(block.DamageBlock(pos,amount,direction)) {
 			block = new BlockAir();
+			block.changed = true;
 			chunk.world.SetBlock(pos.x, pos.y, pos.z, block);
 			return true;
 		}

@@ -148,11 +148,14 @@ public class LoadChunks : MonoBehaviour
             foreach (var chunk in world.chunks)
             {
                 float distance = Vector3.Distance(
-                    new Vector3(chunk.Value.pos.x, 0, chunk.Value.pos.z),
-                    new Vector3(transform.position.x, 0, transform.position.z));
+					new Vector3(chunk.Value.pos.x, chunk.Value.pos.y, 0),
+					new Vector3(transform.position.x, transform.position.y, 0));
 
-                if (distance > 256)
+
+                if (distance > 139) {
+					//Debug.Log(distance);
                     chunksToDelete.Add(chunk.Key);
+				}
             }
 
             foreach (var chunk in chunksToDelete)

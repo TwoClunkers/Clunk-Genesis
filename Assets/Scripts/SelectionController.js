@@ -101,6 +101,7 @@ function Update () {
 						if(item.id > 0) { //not an air block Yay!
 							blockset = new Block();
 							blockset.material = item.id;
+							blockset.changed = true;
 							//blockset.Tile.y = item.id;
 							Terra.SetBlock(scrWorld.GetChunk(pos.x,pos.y,pos.z), pos, blockset);
 						}
