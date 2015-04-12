@@ -1,7 +1,7 @@
 #pragma strict
 private var startPoint : Vector3;
 private var endPoint : Vector3;
-private var laserDamageAmount : int;
+private var laserDamageAmount : float;
 var sparks : GameObject;
 private var range : float;
 private var ray : Ray;
@@ -28,18 +28,23 @@ function Start () {
 function Update () {
 	if(isFiring){
 		/////////////////////////////////////////////start here 
-		ray = Ray(Vector3(startPoint.x,startPoint.y), (Vector3(endPoint.x,endPoint.y) - Vector3(startPoint.x,startPoint.y)).normalized);
+		ray = Ray(Vector3(startPoint.x,startPoint.y, startPoint.z), (Vector3(endPoint.x,endPoint.y, endPoint.z) - Vector3(startPoint.x,startPoint.y, startPoint.z)).normalized);
 		var layMask : LayerMask;
 		layMask = (1<<0);
+		//Debug.DrawLine(transform.position, startPoint, Color.yellow, 2.0);
+		//Debug.DrawLine(transform.position, endPoint, Color.magenta, 2.0);
 		if(Physics.Raycast(ray, trueHit, range, layMask)){
 			//hit something
 			hitSomething = true;
+			//Debug.Log("hitSomething.");
 		} else {
 			//didn't hit anything
 			hitSomething = false;
+			wasActive = false;
 			endPoint.Scale(Vector3(10.0,10.0,10.0));
 			trueHit.point = Vector3.MoveTowards(startPoint, endPoint, range);
 		}
+		
 		line.enabled = true;
 		line.SetPosition(0, transform.position);
 		line.SetPosition(1, trueHit.point);// + trueHit.normal);
@@ -48,7 +53,7 @@ function Update () {
 			if(trueHit.collider.gameObject.tag.Equals("breakable")) {
 				//start breaking
 				if(wasActive && lastHitViewID.Equals(trueHit.collider.gameObject.GetComponent.<NetworkView>().viewID) && Time.time > tickEndTime) {
-					doTick(trueHit.collider.gameObject, trueHit.point);
+					doTick(trueHit.collider.gameObject, trueHit.point, trueHit);
 				}
 				lastHitViewID = trueHit.collider.gameObject.GetComponent.<NetworkView>().viewID;
 				wasActive = true;
@@ -76,7 +81,7 @@ function FireLaser(){
 	isFiring = true;
 }
 
-function InitLaser(laserStartPoint : Vector3, towardsPoint : Vector3, damagePerTick : int, laserRange : float, tickDuration : float, lifeTime : float, material : Material){
+function InitLaser(laserStartPoint : Vector3, towardsPoint : Vector3, damagePerTick : float, laserRange : float, tickDuration : float, lifeTime : float, material : Material){
 	startPoint = laserStartPoint;
 	endPoint = towardsPoint;
 	laserDamageAmount = damagePerTick;
@@ -86,10 +91,14 @@ function InitLaser(laserStartPoint : Vector3, towardsPoint : Vector3, damagePerT
 	laserMaterial = material;
 }
 
-function doTick(hitBlock : GameObject, hitPosition : Vector3){
-	hitBlock.GetComponent.<NetworkView>().RPC("setBlockValues",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID,1,Vector3(.0,.0,.3));
-	hitBlock.GetComponent.<NetworkView>().RPC("DamageBlock",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID, laserDamageAmount, (transform.position-trueHit.point).normalized);
-	GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);
+function doTick(hitBlock : GameObject, hitPosition : Vector3, actualRayCastHit : RaycastHit){
+	//- legacy block system - hitBlock.GetComponent.<NetworkView>().RPC("setBlockValues",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID,1,Vector3(.0,.0,.3));
+	//- legacy block system - hitBlock.GetComponent.<NetworkView>().RPC("DamageBlock",RPCMode.All, hitBlock.GetComponent.<NetworkView>().viewID, laserDamageAmount, (transform.position-trueHit.point).normalized);
+	//Debug.Log("tick");
+	Terra.DamageBlock(actualRayCastHit, laserDamageAmount, transform.forward);  // RDM: It seems the correct block is not always found, possibly because of offsets
+	//var blockPos : WorldPos = Terra.GetBlockPos(actualRayCastHit,false);
+	//Debug.Log( blockPos.x + "," + blockPos.y + "," + blockPos.z );
+	//- legacy block system - GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);
 	tickEndTime = Time.time + tickLength - Time.deltaTime;
 	//this needs to be part of a block.damage routine
 	//hitBlock.GetComponent(blockClick).createPickUpBlock(hitPosition);

@@ -4,7 +4,7 @@ var laserDuration : float;
 private var laserStartTime : float;
 private var isFiring : boolean;
 var laserCount : int;
-var laserDamage : int;
+var laserDamage : float;
 var laserTickDuration : float;
 var laserRange : float;
 private var laserTargetEnd : Vector3[];
@@ -18,8 +18,8 @@ var smokePuff : GameObject;
 
 function Start () {
 	smooth = 1.0;
-	laserDamage = 200;
-	laserRange = 3.5;
+	laserDamage = 200f;
+	laserRange = 5.5;
 	laserTickDuration = 0.01;
 	laserCount = 5; // number of lasers to shoot
 	lifeEndTime = Time.time + 6.0; // life time of the grenade
@@ -41,10 +41,10 @@ function Start () {
 	for( i = 0; i < laserCount ; i++){ // randomize laser start and end points
 		laserTargetNow[i].x = Random.Range(-50.0,50.0);
 		laserTargetNow[i].y = Random.Range(-50.0,50.0);
-		laserTargetNow[i].z = 0.0;
+		laserTargetNow[i].z = transform.position.z;
 		laserTargetEnd[i].x = Random.Range(-50.0,50.0);
 		laserTargetEnd[i].y = Random.Range(-50.0,50.0);
-		laserTargetEnd[i].z = 0.0;
+		laserTargetEnd[i].z = transform.position.z;
 	}
 }
 
@@ -68,7 +68,7 @@ function Update () {
 		}
 	} else {
 		if(Time.time > laserStartTime){
-			fixedPosition = transform.position;
+			transform.position.Scale(Vector3(0,0.2f,0));
 			GetComponent.<Rigidbody>().isKinematic = true;
 			isFiring = true;
 		}

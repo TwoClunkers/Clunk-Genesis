@@ -23,6 +23,7 @@ public class World : MonoBehaviour {
 
         newChunk.pos = worldPos; //rounds position to an int
         newChunk.world = this; //tells the chunk how to get back to mommy
+		newChunk.tag = "breakable";
 
         //Add it to the chunks dictionary with the position as the key
         chunks.Add(worldPos, newChunk);
