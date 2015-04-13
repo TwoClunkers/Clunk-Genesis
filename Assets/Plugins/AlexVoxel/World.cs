@@ -36,6 +36,18 @@ public class World : MonoBehaviour {
         Serialization.Load(newChunk);
     }
 
+	public void SaveAll()
+	{
+		foreach(var objchunk in chunks) 
+		{
+			Chunk data = null;
+			if (chunks.TryGetValue(new WorldPos(objchunk.Key.x, objchunk.Key.y, objchunk.Key.z), out data))
+			{
+				Serialization.SaveChunk(data);
+			}
+		}
+	}
+
     public void DestroyChunk(int x, int y, int z)
     {
         Chunk chunk = null;

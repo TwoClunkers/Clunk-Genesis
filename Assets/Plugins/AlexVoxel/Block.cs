@@ -15,12 +15,17 @@ public class Block
 	public int varientx = 0;
 	public int varienty = 0;
 	public float damage = 100;
-	public Vector3 offset;
+	public float offx;
+	public float offy;
+	public float offz;
 
     //Base block constructor
     public Block()
     {
-		offset.Set (0.5f, 0.5f, 0.5f);
+		//offset.Set (0.5f, 0.5f, 0.5f);
+		offx = 0.5f;
+		offy = 0.5f;
+		offz = 0.5f;
     }
 	public virtual Boolean DamageBlock (WorldPos pos, float amount, Vector3 direction)
 	{
@@ -72,6 +77,25 @@ public class Block
 
     }
 
+	public Vector3 getoffset ()
+	{
+		return new Vector3 (offx, offy, offz);
+	}
+
+	public void setoffset (float x, float y, float z)
+	{
+		offx = x;
+		offy = y;
+		offz = z;
+	}
+
+	public void setoffset (Vector3 offset)
+	{
+		offx = offset.x;
+		offy = offset.y;
+		offz = offset.z;
+	}
+
 	//the getPoint# members should return a Vector3 that is a point relative to this block
 	protected Vector3 getPoint1 (int x, int y, int z, Vector3 pos)
 	{
@@ -117,13 +141,13 @@ public class Block
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
 		Vector3[] points = new Vector3[4]; 
-		points [0] = chunk.GetBlock (x - 1, y, z).offset;
+		points [0] = chunk.GetBlock (x - 1, y, z).getoffset ();
 		meshData.AddVertex(getPoint1 (x, y, z, points [0] ));
-		points [1] = offset;
+		points [1] = getoffset ();
 		meshData.AddVertex(getPoint2 (x, y, z, points [1] ));
-		points [2] = chunk.GetBlock(x, y, z - 1).offset;
+		points [2] = chunk.GetBlock(x, y, z - 1).getoffset ();
 		meshData.AddVertex(getPoint3 (x, y, z, points [2] ));
-		points [3] = chunk.GetBlock(x - 1, y, z - 1).offset;
+		points [3] = chunk.GetBlock(x - 1, y, z - 1).getoffset ();
 		meshData.AddVertex(getPoint4 (x, y, z, points [3] ));
 
         meshData.AddQuadTriangles();
@@ -138,13 +162,13 @@ public class Block
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
 		Vector3[] points = new Vector3[4]; 
-		points [0] = chunk.GetBlock(x - 1, y - 1, z - 1).offset;
+		points [0] = chunk.GetBlock(x - 1, y - 1, z - 1).getoffset ();
 		meshData.AddVertex(getPoint5 (x, y, z, points [0] ));
-		points [1] = chunk.GetBlock(x, y - 1, z - 1).offset;
+		points [1] = chunk.GetBlock(x, y - 1, z - 1).getoffset ();
 		meshData.AddVertex(getPoint6 (x, y, z, points [1] ));
-		points [2] = chunk.GetBlock(x, y - 1, z).offset;
+		points [2] = chunk.GetBlock(x, y - 1, z).getoffset ();
 		meshData.AddVertex(getPoint7 (x, y, z, points [2] ));
-		points [3] = chunk.GetBlock(x - 1, y - 1, z).offset;
+		points [3] = chunk.GetBlock(x - 1, y - 1, z).getoffset ();
 		meshData.AddVertex(getPoint8 (x, y, z, points [3] ));
 
         meshData.AddQuadTriangles();
@@ -158,21 +182,6 @@ public class Block
     protected virtual MeshData FaceDataNorth
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-//		Vector3[] points = new Vector3[4]; 
-//		points [0] = chunk.GetBlock(x, y - 1, z).offset;
-//		meshData.AddVertex(getPoint7 (x, y, z, points [0] ));
-//		points [1] = offset;
-//		meshData.AddVertex(getPoint2 (x, y, z, points [1] ));
-//		points [2] = chunk.GetBlock(x - 1, y, z).offset;
-//		meshData.AddVertex(getPoint1 (x, y, z, points [2] ));
-//		points [3] = chunk.GetBlock(x - 1, y - 1, z).offset;
-//		meshData.AddVertex(getPoint8 (x, y, z, points [3] ));
-//
-//        meshData.AddQuadTriangles();
-//		meshData.uv.AddRange(FaceUVs(Direction.north, new Vector2(points [0].x, points [0].y), 
-//		                             new Vector2 (points [1].x, points [1].y), 
-//		                             new Vector2 (points [2].x, points [2].y), 
-//		                             new Vector2 (points [3].x, points [3].y)));
         return meshData;
     }
 
@@ -180,13 +189,13 @@ public class Block
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
 		Vector3[] points = new Vector3[4]; 
-		points [0] = chunk.GetBlock(x, y, z - 1).offset;
+		points [0] = chunk.GetBlock(x, y, z - 1).getoffset ();
 		meshData.AddVertex(getPoint3 (x, y, z, points [0] ));
-		points [1] = offset;
+		points [1] = getoffset ();
 		meshData.AddVertex(getPoint2 (x, y, z, points [1] ));
-		points [2] = chunk.GetBlock(x, y - 1, z).offset;
+		points [2] = chunk.GetBlock(x, y - 1, z).getoffset ();
 		meshData.AddVertex(getPoint7 (x, y, z, points [2] ));
-		points [3] = chunk.GetBlock(x, y - 1, z - 1).offset;
+		points [3] = chunk.GetBlock(x, y - 1, z - 1).getoffset ();
 		meshData.AddVertex(getPoint6 (x, y, z, points [3] ));
 
 		
@@ -203,16 +212,16 @@ public class Block
     {
 		Vector3[] points = new Vector3[4]; 
 
-		points [0] = chunk.GetBlock(x - 1, y, z - 1).offset;
+		points [0] = chunk.GetBlock(x - 1, y, z - 1).getoffset ();
 		meshData.AddVertex(getPoint4 (x, y, z, points [0] ));
 
-		points [1] = chunk.GetBlock(x, y, z - 1).offset;
+		points [1] = chunk.GetBlock(x, y, z - 1).getoffset ();
 		meshData.AddVertex(getPoint3 (x, y, z, points [1] ));
 
-		points [2] = chunk.GetBlock(x, y - 1, z - 1).offset;
+		points [2] = chunk.GetBlock(x, y - 1, z - 1).getoffset ();
 		meshData.AddVertex(getPoint6 (x, y, z, points [2] ));
 
-		points [3] = chunk.GetBlock(x - 1, y - 1, z - 1).offset;
+		points [3] = chunk.GetBlock(x - 1, y - 1, z - 1).getoffset ();
 		meshData.AddVertex(getPoint5 (x, y, z, points [3] ));
 
         meshData.AddQuadTriangles();
@@ -227,13 +236,13 @@ public class Block
         (Chunk chunk, int x, int y, int z, MeshData meshData)
 	{
 		Vector3[] points = new Vector3[4]; 
-		points [0] = chunk.GetBlock(x - 1, y, z).offset;
+		points [0] = chunk.GetBlock(x - 1, y, z).getoffset ();
 		meshData.AddVertex(getPoint1 (x, y, z, points [0] ));
-		points [1] = chunk.GetBlock(x - 1, y, z - 1).offset;
+		points [1] = chunk.GetBlock(x - 1, y, z - 1).getoffset ();
 		meshData.AddVertex(getPoint4 (x, y, z, points [1] ));
-		points [2] = chunk.GetBlock(x - 1, y - 1, z - 1).offset;
+		points [2] = chunk.GetBlock(x - 1, y - 1, z - 1).getoffset ();
 		meshData.AddVertex(getPoint5 (x, y, z, points [2] ));
-		points [3] = chunk.GetBlock(x - 1, y - 1, z).offset;
+		points [3] = chunk.GetBlock(x - 1, y - 1, z).getoffset ();
 		meshData.AddVertex(getPoint8 (x, y, z, points [3] ));
 
 

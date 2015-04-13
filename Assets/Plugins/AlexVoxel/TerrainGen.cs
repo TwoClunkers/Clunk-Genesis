@@ -26,8 +26,8 @@ public class TerrainGen
 				float noise = GetNoise( x, y, z, 0.03f, 6);
 				float remainder = (noise - (int)noise);
 				Block block = new BlockAir();
-				block.offset.Set (remainder,remainder,Random.value/8);
-				//block.offset.Set (Random.value,0.5f,Random.value/8);
+				block.setoffset(remainder,remainder,Random.value/8);
+				//block.setoffset (Random.value,0.5f,Random.value/8);
 				chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
 			}
 			return chunk;
@@ -47,9 +47,9 @@ public class TerrainGen
 				Block block = new BlockAir();
 				block.varientx = vposx;
 				block.varienty = vposy;
-				//block.offset.Set (remainder,remainder,Random.value/4+0.38f);
-				//block.offset.Set (Random.value/4+0.38f,0.5f,Random.value/4+0.38f);
-				//block.offset.Set (Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
+				//block.setoffset(remainder,remainder,Random.value/4+0.38f);
+				//block.setoffset (Random.value/4+0.38f,0.5f,Random.value/4+0.38f);
+				//block.setoffset(Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
 				chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
 			}
 			else if(noise < 4)
@@ -59,9 +59,9 @@ public class TerrainGen
 				block.varienty = vposy;
 				block.material = Mathf.FloorToInt(noise-1);
 				//block.varient = Random.Range(0 , 3);
-				//block.offset.Set (remainder,remainder,Random.value/4+0.38f);
-				//block.offset.Set (Random.value/4+0.38f,0.5f,Random.value/2+0.5f);
-				//block.offset.Set (Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
+				//block.setoffset(remainder,remainder,Random.value/4+0.38f);
+				//block.setoffset (Random.value/4+0.38f,0.5f,Random.value/2+0.5f);
+				//block.setoffset (Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
 				chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
 			}
 			else if(noise < 6)
@@ -71,9 +71,9 @@ public class TerrainGen
 				block.varientx = vposx;
 				block.varienty = vposy;
 				//block.varient = Random.Range(0 , 3);
-				//block.offset.Set (remainder,remainder,Random.value/4+0.38f);
-				//block.offset.Set (Random.value,0.5f,Random.value/2+0.5f);
-				//block.offset.Set (Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
+				//block.setoffset(remainder,remainder,Random.value/4+0.38f);
+				//block.setoffset (Random.value,0.5f,Random.value/2+0.5f);
+				//block.setoffset (Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
 				chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
 			}
 			else 
@@ -83,9 +83,9 @@ public class TerrainGen
 				block.varientx = vposx;
 				block.varienty = vposy;
 				//block.varient = Random.Range(0 , 3);
-				//block.offset.Set (remainder,remainder,Random.value/4+0.38f);
-				//block.offset.Set (Random.value,0.5f,Random.value/2+0.5f);
-				//block.offset.Set (Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
+				//block.setoffset (remainder,remainder,Random.value/4+0.38f);
+				//block.setoffset (Random.value,0.5f,Random.value/2+0.5f);
+				//block.setoffset(Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
 				chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
 			}
 
