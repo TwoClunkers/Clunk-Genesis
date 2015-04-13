@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: 116351e1085bb3c46bc9a54ab3d93ccd
+timeCreated: 1428887179
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: bolt1
+    100002: bracket1
+    100004: cog1
+    100006: coil1
+    100008: fan1
+    100010: //RootNode
+    100012: frame1
+    100014: halfcog1
+    100016: nut1
+    100018: pipe1
+    100020: pulley1
+    100022: rackgear1
+    100024: spring1
+    100026: ventframe1
+    400000: bolt1
+    400002: bracket1
+    400004: cog1
+    400006: coil1
+    400008: fan1
+    400010: //RootNode
+    400012: frame1
+    400014: halfcog1
+    400016: nut1
+    400018: pipe1
+    400020: pulley1
+    400022: rackgear1
+    400024: spring1
+    400026: ventframe1
+    2300000: bolt1
+    2300002: bracket1
+    2300004: cog1
+    2300006: coil1
+    2300008: fan1
+    2300010: frame1
+    2300012: halfcog1
+    2300014: nut1
+    2300016: pipe1
+    2300018: pulley1
+    2300020: rackgear1
+    2300022: spring1
+    2300024: ventframe1
+    3300000: bolt1
+    3300002: bracket1
+    3300004: cog1
+    3300006: coil1
+    3300008: fan1
+    3300010: frame1
+    3300012: halfcog1
+    3300014: nut1
+    3300016: pipe1
+    3300018: pulley1
+    3300020: rackgear1
+    3300022: spring1
+    3300024: ventframe1
+    4300000: spring1
+    4300002: pipe1
+    4300004: coil1
+    4300006: pulley1
+    4300008: fan1
+    4300010: ventframe1
+    4300012: frame1
+    4300014: rackgear1
+    4300016: halfcog1
+    4300018: nut1
+    4300020: bolt1
+    4300022: bracket1
+    4300024: cog1
+    6400000: bolt1
+    6400002: bracket1
+    6400004: cog1
+    6400006: coil1
+    6400008: fan1
+    6400010: frame1
+    6400012: halfcog1
+    6400014: nut1
+    6400016: pipe1
+    6400018: pulley1
+    6400020: rackgear1
+    6400022: spring1
+    6400024: ventframe1
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
