@@ -1,4 +1,7 @@
-class Item {
+
+
+
+class ItemInfo {
 	var id : int;
 	var name : String;
 	var task : String;

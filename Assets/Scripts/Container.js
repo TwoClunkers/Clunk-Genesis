@@ -3,7 +3,7 @@
 var containerName : String = "Generic";
 //var block : GameObject;
 
-static var mouseItem : InventoryItem; //this is to hold the mouse drag
+static var mouseItem : InventoryItem = InventoryItem(); //this is to hold the mouse drag
 static var mouseRect : Rect = Rect(0,0,-30,-30);
 
 var size = 12;
@@ -13,8 +13,8 @@ var isOpen : boolean = false;
 var show : boolean = false;
 var pollRecipe : Split;
 
-var setItem : InventoryItem; //this allows us to set our global mouseItem at startup.
-var contents : InventoryItem[] = new InventoryItem[12]; //this holds the item data
+var setItem : InventoryItem = InventoryItem(); //this allows us to set our global mouseItem at startup.
+var contents : InventoryItem[]; //this holds the item data
 var buttonsData : GUIContent[] = new GUIContent[12]; //this holds the button info...
 var items : AllItems;
 
@@ -24,10 +24,21 @@ var positionRect : Rect = Rect(25,25,160,80); //this should hold our adjusted fo
 
 
 //var selectedSlot : int = 0;
-
-function Start () {
+function Awake () {
+	contents = new InventoryItem[size];
 	items = GameObject.FindGameObjectWithTag("mc").GetComponent(ItemController).items; //get pointer to main item library
-	mouseItem = setItem;
+	mouseItem.setInvItem(0, 0);
+	//foreach (InventoryItem in contents) {
+    //        setInvItem(0, 0);
+    //    }
+	for (var slot : InventoryItem in contents) 
+	{
+		slot = InventoryItem();
+	}
+}
+function Start () {
+	
+		
 }
 
 function Update () {
@@ -62,7 +73,7 @@ function pollInputSingle(process : ProcessTypes) {
 	//checks for a single stack that can be broken by the given process
 	//returns a recipe if available, or -1 if no stacks can be broken with this process
 
-	var checkItem : Item;
+	var checkItem : ItemInfo;
 	for(var i=0;i<size;i++) {
 		checkItem = items.library[contents[i].id]; //get the item info for this slot
 		//check that we have the right process
@@ -178,7 +189,7 @@ function OnGUI() {
 		if(EventType.Repaint) {
 			if(Input.GetKeyDown(KeyCode.R)) {
 				dropItem(mouseItem);
-				mouseItem = InventoryItem(0,0);
+				mouseItem.setInvItem(0,0);
 			}
 			originPos += offsetPos;
 			positionRect.x = originPos.x;

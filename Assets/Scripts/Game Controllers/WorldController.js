@@ -44,10 +44,7 @@ var testcount : int;
 var testcreate : int;
 var zonecount : int;
 
-function Awake () {
-	globalBlockScale = 1;
-	
-}
+
 
 function Start () {
 	items = transform.GetComponent(ItemController).items;
@@ -64,12 +61,12 @@ function Start () {
 	testcount = 0;
 	testcreate = 0;
 	
-	CL = globalBlockScale*globalChunkSize;
+	//CL = globalBlockScale*globalChunkSize;
 }
 
 function Update () {
-	var px : float = cam.transform.position.x;
-	var py : float = cam.transform.position.y;
+	//var px : float = cam.transform.position.x;
+	//var py : float = cam.transform.position.y;
 	
 //	if((Mathf.Abs(oldx-px)>8) || (Mathf.Abs(oldy-py)>8)) {
 //		testcount += 1;
@@ -89,7 +86,7 @@ function expandZones(start : Vector2, end : Vector2) {
 	var existingzones : GameObject[];
 	//var zoneframe : int[];
 	var oZone : Transform;
-	var zonescript : ZoneChunk;	
+//	var zonescript : ZoneChunk;	
 	
 	
 	//lets convert this into chunk units
@@ -102,7 +99,7 @@ function expandZones(start : Vector2, end : Vector2) {
 	//first lets scan to see what is already made
 	existingzones = GameObject.FindGameObjectsWithTag("chunk");
 	for (var zo : GameObject in existingzones)  {
-		zonescript = zo.GetComponent("ZoneChunk");
+		//zonescript = zo.GetComponent("ZoneChunk");
 		
 		//hide zone entities more than 3 zones to left and right
 		var posx : int = Mathf.FloorToInt((zo.transform.position.x/CL)-r_start);
@@ -127,7 +124,7 @@ function expandZones(start : Vector2, end : Vector2) {
 
 		//if we are here, then we fell in range
 		//so the zone entity should mark it's position in the frame so we don't re-create it
-		zonescript.showBlocks();  	
+		//zonescript.showBlocks();  	
 		testcreate = posx;	
 		zoneframe[(posx) + (posy)*r_length] = 1; 
 	} 
@@ -143,11 +140,11 @@ function expandZones(start : Vector2, end : Vector2) {
 			//but if not, we should create it
 			oZone = createZone(Vector3((r_start+a)*CL,(c_start+b)*CL,0));
 			//we initialize the zone to the start values at the corner and show it
-			zonescript = oZone.GetComponent("ZoneChunk");
+			//zonescript = oZone.GetComponent("ZoneChunk");
 			
-			zonescript.initialize(r_start+a, c_start+b); //this should be moved to within the create function
+			//zonescript.initialize(r_start+a, c_start+b); //this should be moved to within the create function
 			
-			zonescript.showBlocks();
+			//zonescript.showBlocks();
 			}
 		}
 	}	
@@ -213,9 +210,7 @@ function placeBlock(id : int, position : Vector3) {
 
 function createPickUpBlock(id : int, position : Vector3, direction : Vector3){
 	var oBlock : Transform = PoolManager.Pools["drops"].Spawn(pickupblock.transform, position, Quaternion.identity);
-	oBlock.GetComponent(pickUpBlock).invItem.id = id;
-	oBlock.GetComponent(pickUpBlock).invItem.quantity = 1;
-	oBlock.GetComponent(pickUpBlock).InitializeBlock();
+	oBlock.GetComponent(pickUpBlock).InitializePickup(id, 1);
 	oBlock.GetComponent(MeshFilter).mesh = master.GetComponent(ItemController).items.library[1].mesh;
 	oBlock.GetComponent.<Rigidbody>().AddForce(direction,UnityEngine.ForceMode.VelocityChange);
 	oBlock.GetComponent.<Renderer>().material = master.GetComponent(ItemController).items.library[id].material;

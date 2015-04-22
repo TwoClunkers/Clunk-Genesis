@@ -1,10 +1,4 @@
-class Chunk {
-	var id : int;
-	var strata : StrataType;  //used to pick spawns and blocks
-	var zone : ZoneType; //a subtype based on strata
-	var feature : FeatureType;  //used for drawing shapes that match up across chunks
-	var data : int[]; //used for serialization
-}
+
 public enum FeatureType {
 	none,
 	crack,

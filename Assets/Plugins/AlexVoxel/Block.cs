@@ -19,6 +19,8 @@ public class Block
 	public float offy;
 	public float offz;
 
+
+
     //Base block constructor
     public Block()
     {

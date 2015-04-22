@@ -1,6 +1,6 @@
 class AllItems {
-	public var library : Item[];
+	public var library : ItemInfo[];
 	function Start(){
-		library = new Item[100];
+		library = new ItemInfo[100];
 	}
 }

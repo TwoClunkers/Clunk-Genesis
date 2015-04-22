@@ -209,7 +209,7 @@ function setIndicator() {
 }
 
 function finishProcess (recipe : Split) {
-	var drop : InventoryItem = InventoryItem(0, 0);
+	var drop : InventoryItem = InventoryItem();
 	inputContainer.subtractItem(recipe.product);
 	for(var i = 0;i < recipe.components.length;i++) {
 		if(contIsAutoEject) {

@@ -1,4 +1,4 @@
-class EquippableItem extends Item {
+class EquippableItem extends ItemInfo {
 	var canActivate : boolean;
 	function Activate() {
 		
