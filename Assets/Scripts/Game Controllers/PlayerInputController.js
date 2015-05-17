@@ -5,15 +5,13 @@ var laserNade : GameObject;
 var oldPosition : Vector3;
 
 private var motor : CharacterMotor;
-private var worldController : WorldController;
 
 function Awake () {
 	motor = GetComponent(CharacterMotor);
 }
 
 function Start() {
-	//reference to the world controller for placing blocks
-	worldController = GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController);
+	
 	oldPosition = transform.position;
 }
 

@@ -1,13 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using PathologicalGames;
+using DataObjects;
 
 public class World : MonoBehaviour {
 
     public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
     public GameObject chunkPrefab;
+	public GameObject pickupPrefab;
+	public GameObject master;
+	public string worldName = "pickup";
 
-    public string worldName = "try";
+	public ItemLibrary itemLibrary; 
+
+	void Start()
+	{
+		itemLibrary = GameObject.FindGameObjectWithTag ("mc").GetComponent<ItemLibrary> ();
+	}
 
     public void CreateChunk(int x, int y, int z)
     {
@@ -34,6 +44,7 @@ public class World : MonoBehaviour {
         newChunk.SetBlocksUnmodified(); //this tells Serialization not to save as there was no changes
 
         Serialization.Load(newChunk);
+		SpawnPickups(newChunk);
     }
 
 	public void SaveAll()
@@ -124,4 +135,27 @@ public class World : MonoBehaviour {
                 chunk.update = true;
         }
     }
+	
+	public bool createPickUp(Pickup pickup) //creates an instance that holds the data object
+	{		
+		//get the pickup info from library
+		ItemInfo info = new ItemInfo();
+		if (!itemLibrary.getItemInfo(info, pickup.itemID))
+			return false;
+		Transform oPickup = PoolManager.Pools["drops"].Spawn(pickupPrefab, pickup.getPosition(), pickup.thisRotation);
+		//okay, we kinda need to populate the  new object with the pickup data...
+		pickUpScript sPickup = oPickup.GetComponent("pickUpScript") as pickUpScript; 
+		sPickup.pickup = pickup;
+
+		return true;
+	}
+
+	void SpawnPickups(Chunk chunk)
+	{
+		foreach (Pickup pickupData in chunk.pickups) {
+			if(createPickUp(pickupData))
+				Debug.Log("Success!");
+			else Debug.Log ("Fail :(");
+		}
+	}
 }

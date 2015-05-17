@@ -56,6 +56,12 @@ public static class Serialization
 
         Save save = (Save)formatter.Deserialize(stream);
 
+		foreach (var pickup in save.articles) 
+		{
+			//after placing the worldposition back into the pickup structure, we set it into the chunk list
+			pickup.Value.setPosition (pickup.Key.x, pickup.Key.y, pickup.Key.z);
+			chunk.pickups.Add (pickup.Value); 
+		}
         foreach (var block in save.blocks)
         {
             chunk.blocks[block.Key.x, block.Key.y, block.Key.z] = block.Value;

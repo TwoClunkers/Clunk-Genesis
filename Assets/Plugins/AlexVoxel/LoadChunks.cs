@@ -123,9 +123,6 @@ public class LoadChunks : MonoBehaviour
     {
         for (int y = pos.y - Chunk.chunkSize; y <= pos.y + Chunk.chunkSize; y += Chunk.chunkSize)
         {
-//            if (y > 64 || y < -64)
-//                continue;
-
             for (int x = pos.x - Chunk.chunkSize; x <= pos.x + Chunk.chunkSize; x += Chunk.chunkSize)
             {
                 for (int z = pos.z - Chunk.chunkSize; z <= pos.z + Chunk.chunkSize; z += Chunk.chunkSize)

@@ -1,9 +1,14 @@
-class EquippableItem extends ItemInfo {
-	var canActivate : boolean;
-	function Activate() {
-		
+
+
+	class EquippableItem {
+		var canActivate : boolean;
+		function Activate() {
+			
+		}
+		function Deactivate() {
+			
+		}
 	}
-	function Deactivate() {
-		
-	}
-}
+
+	
+	

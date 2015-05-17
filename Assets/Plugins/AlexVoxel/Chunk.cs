@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using DataObjects;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -9,6 +11,7 @@ public class Chunk : MonoBehaviour
 {
 
     public Block[, ,] blocks = new Block[chunkSize, chunkSize, chunkSize];
+	public List<Pickup> pickups = new List<Pickup> ();
 
     public static int chunkSize = 16;
     public bool update = false;

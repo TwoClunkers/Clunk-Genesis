@@ -1,5 +1,7 @@
 ﻿#pragma strict
 
+import DataObjects;
+
 private var TerrainScript : Terra;
 
 var positionhit : WorldPos;
@@ -16,7 +18,7 @@ var obMarker : GameObject;
 var trCamera : Transform;
 
 var obPlayer : GameObject;
-var inventory : PlayerInventory;
+var inventory : ContainerUI;
 
 var obCanvas : GameObject;
 var obUI : GameObject;
@@ -30,7 +32,7 @@ var spriteEdit : Sprite;
 
 function Start () {
 	obPlayer = this.transform.parent.gameObject;
-	inventory = obPlayer.GetComponent(PlayerInventory);
+	inventory = obPlayer.GetComponent(ContainerUI);
 	
 	obMarker = GameObject.Instantiate(obCubeMarker,transform.position,Quaternion.identity);
 	scrMarker = obMarker.GetComponent("SelectorCube");
@@ -85,7 +87,10 @@ function Update () {
 		        	
 		        	if(blockhit.material > 0) {
 						if(Terra.DamageBlock(scrWorld.GetChunk(positionhit.x,positionhit.y,positionhit.z), positionhit, 30.0, transform.forward)) {
-							GameObject.FindGameObjectWithTag("mc").GetComponent(WorldController).createPickUpBlock(blockhit.material, Vector3(positionhit.x,positionhit.y,1.5), transform.forward);
+							var newPickup : Pickup = new Pickup();
+							newPickup.initialize(blockhit.material, 1);
+							newPickup.setPosition(Vector3(positionhit.x, positionhit.y, 1.5), transform.rotation);
+							GameObject.FindGameObjectWithTag("world").GetComponent(World).createPickUp(newPickup);
 							GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "blockDestroyed", Vector3(positionhit.x,positionhit.y,positionhit.z));
 						}
 					}
@@ -97,7 +102,7 @@ function Update () {
 		        	
 		        	if(blockhit.material == 0) {
 						var pos : WorldPos = Terra.GetBlockPos(targetPosition);
-						var item : InventoryItem = inventory.PlaceCurrent(1);
+						var item : InventoryItem = inventory.pullCurrent(1);
 						if(item.id > 0) { //not an air block Yay!
 							blockset = new Block();
 							blockset.material = item.id;
