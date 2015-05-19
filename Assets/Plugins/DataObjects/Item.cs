@@ -13,12 +13,13 @@ namespace DataObjects
 		public String info;
 		public ItemTypes type;
 		public Material material;
+		public Sprite sprite;
 		public Mesh mesh;
 		public int maxHealth;
 		public GameObject itemPrefab;
-		public GUIContent buttonContent;
 		public Split construct;
 		//public ItemAttribute[] attributes;
+
 		public ItemInfo()
 		{
 

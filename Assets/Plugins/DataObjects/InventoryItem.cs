@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 namespace DataObjects
 {
+	[Serializable]
 	public class InventoryItem 
 	{
 		public int id;

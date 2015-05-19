@@ -2,6 +2,7 @@
 using System;
 namespace DataObjects
 {
+	[Serializable]
 	public class Split
 	{
 		public InventoryItem product;

@@ -123,15 +123,17 @@ namespace AssemblyCSharpfirstpass
 			return itemstack.quantity;
 		}
 
-		public bool swapSlot(int slot, InventoryItem swapItem)
+		public InventoryItem swapSlot(int slot, InventoryItem swapItem)
 		{
-			if (size > slot) {
-				InventoryItem thisStack = contents [slot];
+			InventoryItem thisStack = new InventoryItem ();
+			if ((size > slot) && (slot > -1)) {
+				Debug.Log(slot);
+				Debug.Log(size);
+				Debug.Log(swapItem.quantity);
+				thisStack = contents [slot];
 				contents [slot] = swapItem;
-				swapItem = thisStack;
-				return true;
 			}
-			return false;
+			return thisStack;
 		}
 	}
 

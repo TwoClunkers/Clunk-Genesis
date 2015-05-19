@@ -27,8 +27,8 @@ namespace DataObjects
 
 		public bool getItemInfo(ItemInfo info, int itemId)
 		{
-			if (itemId == 0)
-				return false;
+			//if (itemId == 0)
+			//	return false;
 
 			info.id = library[itemId].id;
 			info.name = library[itemId].name;
@@ -36,10 +36,10 @@ namespace DataObjects
 			info.info = library[itemId].info;
 			info.type = library[itemId].type;
 			info.material = library[itemId].material;
+			info.sprite = library[itemId].sprite;
 			info.mesh = library[itemId].mesh;
 			info.maxHealth = library[itemId].maxHealth;
 			info.itemPrefab = library[itemId].itemPrefab;
-			info.buttonContent = library[itemId].buttonContent;
 			info.construct = library[itemId].construct;
 			//info.attributes = library[itemId].attributes;
 
