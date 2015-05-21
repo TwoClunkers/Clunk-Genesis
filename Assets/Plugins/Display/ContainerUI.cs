@@ -25,11 +25,12 @@ public class ContainerUI : MonoBehaviour
 		float width = slotRect.rect.width * storage.size;
 		float height = slotRect.rect.height;
 
-		//adjust container height
+		//adjust container height to fit buttons
 		containerRect.offsetMin = new Vector2 (containerRect.offsetMin.x, 0);
 		containerRect.offsetMax = new Vector2 (containerRect.offsetMin.x + width, containerRect.offsetMin.y + height);
 
 		for (int i = 0; i < storage.size; i += 1) {
+			//create our prefab slot
 			GameObject newSlot = Instantiate(buttonPrefab) as GameObject;
 			newSlot.transform.parent = gameObject.transform;
 
@@ -39,10 +40,14 @@ public class ContainerUI : MonoBehaviour
 			thisRect.offsetMax = new Vector2(containerRect.offsetMin.x + (slotRect.rect.width * i) + slotRect.rect.width, 0);
 			thisRect.localScale = new Vector3(1, 1, 1);
 
+			//save a reference to this slot and add a handler
 			Button thisButton = newSlot.GetComponent<Button>();
 			buttonList[i] = thisButton; //save for later
 			int capture = i;
 			thisButton.onClick.AddListener(() => leftclickSlot(capture));
+
+			//refresh image and number
+			refreshItem(i);
 
 		}
 		

@@ -127,9 +127,6 @@ namespace AssemblyCSharpfirstpass
 		{
 			InventoryItem thisStack = new InventoryItem ();
 			if ((size > slot) && (slot > -1)) {
-				Debug.Log(slot);
-				Debug.Log(size);
-				Debug.Log(swapItem.quantity);
 				thisStack = contents [slot];
 				contents [slot] = swapItem;
 			}
