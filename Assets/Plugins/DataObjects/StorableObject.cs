@@ -7,20 +7,24 @@ namespace DataObjects
 	[Serializable]
 	public class StorableObject
 	{
+		public int itemID;
+
 		public float localx;
 		public float localy;
 		public float localz;
 
+		public float rotatex;
+		public float rotatey;
+		public float rotatez;
+
+		[NonSerialized]
 		public Quaternion thisRotation;
-
-		public int itemID;
-
 		private WorldPos thisPos;
 
 		// Use this for initialization
 		public StorableObject ()
 		{
-		
+
 		}
 
 		public virtual void setPosition (Vector3 position, Quaternion rotation) 
@@ -35,6 +39,12 @@ namespace DataObjects
 			localz = position.z - thisPos.z;
 
 			thisRotation = rotation;
+
+			Vector3 rot3 = thisRotation.eulerAngles;
+			rotatex = rot3.x;
+			rotatey = rot3.y;
+			rotatez = rot3.z;
+
 		}
 
 		public virtual void setPosition (int x, int y, int z)
@@ -49,7 +59,12 @@ namespace DataObjects
 			localx = x;
 			localy = y;
 			localz = z;
+
 			thisRotation = rotation;
+			Vector3 rot3 = thisRotation.eulerAngles;
+			rotatex = rot3.x;
+			rotatey = rot3.y;
+			rotatez = rot3.z;
 		}
 
 		public virtual WorldPos getWorldPos ()

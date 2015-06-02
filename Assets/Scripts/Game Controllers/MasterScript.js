@@ -108,7 +108,7 @@ function Update(){
 	if(Input.GetKey(KeyCode.KeypadMinus)){
 		Camera.main.GetComponent(PlatformCam).zoomCamera(-0.2);
 	}
-	if(Input.GetKey(KeyCode.K )) {
+	if(Input.GetKeyUp(KeyCode.K)) {
 		GameObject.FindGameObjectWithTag("world").GetComponent(World).SaveAll();
 	} 
 }

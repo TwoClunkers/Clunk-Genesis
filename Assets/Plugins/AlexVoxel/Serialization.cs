@@ -32,7 +32,7 @@ public static class Serialization
         Save save = new Save(chunk);
         if (save.blocks.Count == 0)
             return;
-		Debug.Log ("saveattempt");
+
         string saveFile = SaveLocation(chunk.world.worldName);
         saveFile += FileName(chunk.pos);
 
@@ -58,8 +58,10 @@ public static class Serialization
 
 		foreach (var pickup in save.articles) 
 		{
-			//after placing the worldposition back into the pickup structure, we set it into the chunk list
+			//after placing the worldposition and rotation
+			//back into the pickup structure, we set it into the chunk list
 			pickup.Value.setPosition (pickup.Key.x, pickup.Key.y, pickup.Key.z);
+			pickup.Value.OnLoad();
 			chunk.pickups.Add (pickup.Value); 
 		}
         foreach (var block in save.blocks)

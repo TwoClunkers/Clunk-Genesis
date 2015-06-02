@@ -91,10 +91,27 @@ public class Chunk : MonoBehaviour
                 }
             }
         }
-
         RenderMesh(meshData);
+
+		SpawnPickups();
+
     }
 
+	void SpawnPickups()
+	{
+		for (int i = 0; pickups.Count > 0; i++) 
+		{
+			Pickup pickupData;
+			pickupData = pickups[0];
+			pickups.RemoveAt(0);
+
+			if(world.createPickUp(pickupData))
+			{
+				Debug.Log("Success!");
+			}
+			else Debug.Log ("Fail :(");
+		}
+	}
     // Sends the calculated mesh information
     // to the mesh and collision components
     void RenderMesh(MeshData meshData)

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -65,7 +65,7 @@ public class LoadChunks : MonoBehaviour
         WorldPos playerPos = new WorldPos(
             Mathf.FloorToInt(transform.position.x / Chunk.chunkSize) * Chunk.chunkSize,
             Mathf.FloorToInt(transform.position.y / Chunk.chunkSize) * Chunk.chunkSize, 0
-            //Mathf.FloorToInt(transform.position.z / Chunk.chunkSize) * Chunk.chunkSize
+			//Mathf.FloorToInt(transform.position.z / Chunk.chunkSize) * Chunk.chunkSize
             );
 
         //If there aren't already chunks to generate

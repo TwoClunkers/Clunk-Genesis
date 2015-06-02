@@ -38,25 +38,29 @@ public class World : MonoBehaviour {
         //Add it to the chunks dictionary with the position as the key
         chunks.Add(worldPos, newChunk);
 
-        var terrainGen = new TerrainGen(); //this has some preset values for generating 
+        TerrainGen terrainGen = new TerrainGen(); //this has some preset values for generating 
         newChunk = terrainGen.ChunkGen(newChunk); //this runs the generation code
 
         newChunk.SetBlocksUnmodified(); //this tells Serialization not to save as there was no changes
 
         Serialization.Load(newChunk);
-		SpawnPickups(newChunk);
     }
 
 	public void SaveAll()
 	{
+		int savecount = 0;
 		foreach(var objchunk in chunks) 
 		{
+			if(objchunk.Key.z != 0) continue;
 			Chunk data = null;
+
 			if (chunks.TryGetValue(new WorldPos(objchunk.Key.x, objchunk.Key.y, objchunk.Key.z), out data))
 			{
 				Serialization.SaveChunk(data);
+				savecount+=1;
 			}
 		}
+		Debug.Log("Count:" + savecount);
 	}
 
     public void DestroyChunk(int x, int y, int z)
@@ -140,22 +144,18 @@ public class World : MonoBehaviour {
 	{		
 		//get the pickup info from library
 		ItemInfo info = new ItemInfo();
-		if (!itemLibrary.getItemInfo(info, pickup.itemID))
+		if (!itemLibrary.getItemInfo (info, pickup.itemID)) {
+			Debug.Log("Oh Noo Mr Billlll");
 			return false;
+		}
 		Transform oPickup = PoolManager.Pools["drops"].Spawn(pickupPrefab, pickup.getPosition(), pickup.thisRotation);
+
+
 		//okay, we kinda need to populate the  new object with the pickup data...
 		pickUpScript sPickup = oPickup.GetComponent("pickUpScript") as pickUpScript; 
-		sPickup.pickup = pickup;
+
 
 		return true;
 	}
-
-	void SpawnPickups(Chunk chunk)
-	{
-		foreach (Pickup pickupData in chunk.pickups) {
-			if(createPickUp(pickupData))
-				Debug.Log("Success!");
-			else Debug.Log ("Fail :(");
-		}
-	}
+	
 }

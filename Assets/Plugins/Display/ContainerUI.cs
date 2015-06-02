@@ -16,6 +16,12 @@ public class ContainerUI : MonoBehaviour
 	
 	void Start ()
 	{
+		InitializeButtons ();
+	}
+
+	//call after new container data is assigned
+	void InitializeButtons () 
+	{
 		itemLibrary = GameObject.FindGameObjectWithTag ("mc").GetComponent<ItemLibrary> ();
 		buttonList = new Button[storage.size];
 
@@ -66,8 +72,8 @@ public class ContainerUI : MonoBehaviour
 			InventoryItem thisItem = storage.contents [slot];
 			itemLibrary.getItemInfo (ourInfo, thisItem.id);
 			Button thisButton = buttonList[slot];
-			thisButton.transform.GetChild(1).GetComponent<Image>().sprite = ourInfo.sprite;
-			Text thisText = thisButton.transform.GetChild(0).GetComponent<Text>();
+			thisButton.transform.GetChild(0).GetComponent<Image>().sprite = ourInfo.sprite;
+			Text thisText = thisButton.transform.GetChild(1).GetComponent<Text>();
 			if(thisItem.quantity > 0) {
 				thisText.text = thisItem.quantity.ToString();
 				thisText.enabled = true;

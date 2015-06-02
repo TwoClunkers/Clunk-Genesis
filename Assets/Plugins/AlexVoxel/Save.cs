@@ -9,10 +9,10 @@ public class Save
 {
     public Dictionary<WorldPos, Block> blocks = new Dictionary<WorldPos, Block>();
 	public Dictionary<WorldPos, Pickup> articles = new Dictionary<WorldPos, Pickup>();
-	private GameObject[] pickups;
 	
     public Save(Chunk chunk)
     {
+		Debug.Log ("saveattempt blocks");
 		//pull our block data from chunk and store it in dictionary only if changed
 		for (int x = 0; x < Chunk.chunkSize; x++)
         {
@@ -20,24 +20,31 @@ public class Save
             {
 				for (int z = 0; z < Chunk.chunkSize; z++)
                 {
-                    if (!chunk.blocks[x, y, z].changed) //if this block was changed, lets save the block and related articles
-                        continue;
-
-                    WorldPos pos = new WorldPos(x, y, z);
-                    blocks.Add(pos, chunk.blocks[x, y, z]);
+                    if (chunk.blocks[x, y, z].changed) //if this block was changed, lets save the block and related articles
+					{
+	                    WorldPos pos = new WorldPos(x, y, z);
+	                    blocks.Add(pos, chunk.blocks[x, y, z]);
+					}
                 }
             }
         }
 		//pickup blocks should always be saved
-		pickups = GameObject.FindGameObjectsWithTag("pickup");
-		if(pickups.Length > 0) {
+		GameObject[] drops;
+		drops = GameObject.FindGameObjectsWithTag("pickup");
+		if(drops.Length > 0) {
+			Debug.Log ("saveattempt pickups");
 			Rect rbounds = new Rect(chunk.pos.x, chunk.pos.y, Chunk.chunkSize, Chunk.chunkSize);
-			foreach (GameObject pickupObj in pickups)
+			foreach (GameObject pickupObj in drops)
 			{
+
 				if(rbounds.Contains(pickupObj.transform.position, true) )
 				{
+					 
+						Debug.Log ("saveattempt single pickup");
+						Debug.Log(pickupObj.transform.position.x.ToString());
+					
 					//set position within the data structure before saving
-					Pickup thisPickup = pickupObj.GetComponent<Pickup>();
+					Pickup thisPickup = pickupObj.GetComponent<pickUpScript>().pickup;
 					thisPickup.setPosition(pickupObj.transform.position, pickupObj.transform.rotation);
 					articles.Add(thisPickup.getWorldPos(), thisPickup);
 				}

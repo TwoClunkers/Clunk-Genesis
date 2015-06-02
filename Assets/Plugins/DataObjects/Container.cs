@@ -31,7 +31,7 @@ namespace AssemblyCSharpfirstpass
 
 		public int getEmptySlot () 
 		{
-			for(var i=0;i<size;i++) {
+			for(int i=0;i<size;i++) {
 				if(contents[i].quantity < 1) return i;
 			}
 			return -1;
@@ -39,7 +39,7 @@ namespace AssemblyCSharpfirstpass
 
 		public int getMatchingSlot (int compareID)
 		{
-			for(var i=0;i<size;i++) {
+			for(int i=0;i<size;i++) {
 				if(contents[i].id == compareID) return i;
 			}
 			return -1;
@@ -51,7 +51,7 @@ namespace AssemblyCSharpfirstpass
 			int quantityneeded = requestedItem.quantity;
 			int quantitymoved = 0;
 						
-			for (var i=0; i<size; i++) {
+			for (int i=0; i<size; i++) {
 				if (requestedItem.id == contents [i].id) {
 					quantityneeded -= contents [i].Remove(quantityneeded);
 				
@@ -69,24 +69,33 @@ namespace AssemblyCSharpfirstpass
 			//this code makes the assumption that quantity is limited to a single stack
 			int quantityleft = itemstack.quantity;
 			int quantitymoved = 0;
-			for (var i=0; i<size; i++) {
-				if (itemstack.id == contents [i].id) {
+			for (int i=0; i<size; i++) {
+				//Debug.Log (itemstack.id.ToString());
+				//Debug.Log (contents[i].id.ToString());
+				if (itemstack.id == contents[i].id) {
 					Debug.Log ("Match Found");
-					quantityleft = contents [i].Add(quantityleft);
+					//Debug.Log (itemstack.id.ToString());
+					Debug.Log (itemstack.quantity.ToString());
+					quantityleft = contents[i].Add(quantityleft);
 				}
 			}
 			if (quantityleft > 0) {
 				int firstempty = getEmptySlot ();
 				while (firstempty > -1) {
-					quantityleft = contents [firstempty].Add(quantityleft);
+					int temp = contents [firstempty].Add(quantityleft);
+					if(temp != quantityleft) {
+						contents[firstempty].id = itemstack.id;
+						quantityleft = temp;
+					}
 					//if we placed it all, we can exit here
 					if (quantityleft < 1)
 						return 0;
-					else
+					else //otherwise, go after another empty slot
 						firstempty = getEmptySlot ();
 				}
 				Debug.Log ("Too much!");
-				//we could not find an more empty slots
+				//Debug.Log (itemstack.id.ToString());
+				//we could not find any more empty slots
 				return quantityleft;
 			}
 			return 0;

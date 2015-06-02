@@ -26,6 +26,12 @@ namespace DataObjects
 			quantity = newQuant;
 		}
 
+		public void OnLoad()
+		{
+			thisRotation = Quaternion.Euler (rotatex, rotatey, rotatez);
+
+		}
+
 		public bool destroyCheck( float checktime )
 		{
 			if (checktime >= destroyAtThisTime)
@@ -38,6 +44,7 @@ namespace DataObjects
 		{
 			InventoryItem inv = new InventoryItem();
 			inv.setInvItem( itemID, quantity);
+
 			return inv;
 		}
 
