@@ -40,12 +40,16 @@ public class Save
 				if(rbounds.Contains(pickupObj.transform.position, true) )
 				{
 					 
-						Debug.Log ("saveattempt single pickup");
-						Debug.Log(pickupObj.transform.position.x.ToString());
+						//Debug.Log ("saveattempt single pickup");
+						
 					
 					//set position within the data structure before saving
-					Pickup thisPickup = pickupObj.GetComponent<pickUpScript>().pickup;
+					Pickup thisPickup = new Pickup();
+					thisPickup.copyPickup(pickupObj.GetComponent<pickUpScript>().pickup);
+
 					thisPickup.setPosition(pickupObj.transform.position, pickupObj.transform.rotation);
+					//Debug.Log(thisPickup.quantity.ToString());
+					//Debug.Log(thisPickup.itemID.ToString() + "<- added");
 					articles.Add(thisPickup.getWorldPos(), thisPickup);
 				}
 			}

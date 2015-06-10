@@ -150,12 +150,15 @@ public class World : MonoBehaviour {
 		}
 		Transform oPickup = PoolManager.Pools["drops"].Spawn(pickupPrefab, pickup.getPosition(), pickup.thisRotation);
 
-
 		//okay, we kinda need to populate the  new object with the pickup data...
 		pickUpScript sPickup = oPickup.GetComponent("pickUpScript") as pickUpScript; 
 
-
-		return true;
+		if (sPickup.pickup.copyPickup (pickup)) {
+			//Debug.Log(sPickup.pickup.quantity.ToString() + "<- after create");
+			return true;
+		}
+		else
+			return false;
 	}
 	
 }

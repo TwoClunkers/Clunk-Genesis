@@ -101,13 +101,14 @@ public class Chunk : MonoBehaviour
 	{
 		for (int i = 0; pickups.Count > 0; i++) 
 		{
-			Pickup pickupData;
-			pickupData = pickups[0];
+			Pickup pickupData = new Pickup();
+			pickupData.copyPickup(pickups[0]);
+			//Debug.Log(pickupData.quantity.ToString() + "<- after serialize");
 			pickups.RemoveAt(0);
 
 			if(world.createPickUp(pickupData))
 			{
-				Debug.Log("Success!");
+				//Debug.Log("Success!");
 			}
 			else Debug.Log ("Fail :(");
 		}

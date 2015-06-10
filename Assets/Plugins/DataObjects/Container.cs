@@ -73,9 +73,9 @@ namespace AssemblyCSharpfirstpass
 				//Debug.Log (itemstack.id.ToString());
 				//Debug.Log (contents[i].id.ToString());
 				if (itemstack.id == contents[i].id) {
-					Debug.Log ("Match Found");
+					//Debug.Log ("Match Found");
 					//Debug.Log (itemstack.id.ToString());
-					Debug.Log (itemstack.quantity.ToString());
+					//Debug.Log (itemstack.quantity.ToString());
 					quantityleft = contents[i].Add(quantityleft);
 				}
 			}

@@ -19,7 +19,7 @@ namespace DataObjects
 
 		[NonSerialized]
 		public Quaternion thisRotation;
-		private WorldPos thisPos;
+		public WorldPos thisPos;
 
 		// Use this for initialization
 		public StorableObject ()

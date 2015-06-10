@@ -88,7 +88,7 @@ function Update () {
 		        	if(blockhit.material > 0) {
 						if(Terra.DamageBlock(scrWorld.GetChunk(positionhit.x,positionhit.y,positionhit.z), positionhit, 30.0, transform.forward)) {
 							var newPickup : Pickup = new Pickup();
-							newPickup.initialize(2, 1); //blockhit.material, 1);
+							newPickup.reset( 2, 1); //blockhit.material, 1);
 							newPickup.setPosition(Vector3(positionhit.x, positionhit.y, 1.5), transform.rotation);
 							GameObject.FindGameObjectWithTag("world").GetComponent(World).createPickUp(newPickup);
 							GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "blockDestroyed", Vector3(positionhit.x,positionhit.y,positionhit.z));

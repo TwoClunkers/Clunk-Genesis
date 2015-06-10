@@ -10,7 +10,7 @@ public class pickUpScript : MonoBehaviour
 
 	void Start ()
 	{
-		pickup.initialize(1, 1);
+
 	}
 
 	void Update()
@@ -21,7 +21,7 @@ public class pickUpScript : MonoBehaviour
 	
 	void InitializePickup(int ID, int newQuant)
 	{
-		pickup.initialize(ID, newQuant);
+		pickup.reset(ID, newQuant);
 	}
 
 	void OnTriggerStay(Collider other)

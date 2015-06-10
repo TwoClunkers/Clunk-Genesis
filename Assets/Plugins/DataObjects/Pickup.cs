@@ -19,11 +19,12 @@ namespace DataObjects
 			lifeTime = 100;
 		}
 
-		public void initialize(int newID, int newQuant)
+		public void reset(int newID, int newQuant)
 		{
 			destroyAtThisTime = Time.time + lifeTime;
 			itemID = newID;
 			quantity = newQuant;
+			//Debug.Log (itemID.ToString ()+"  reset");
 		}
 
 		public void OnLoad()
@@ -46,6 +47,31 @@ namespace DataObjects
 			inv.setInvItem( itemID, quantity);
 
 			return inv;
+		}
+
+		public bool copyPickup (Pickup destination)
+		{
+			if (destination == null)
+				return false;
+
+			quantity = destination.quantity;
+			destroyAtThisTime = destination.destroyAtThisTime;
+			
+			lifeTime = destination.lifeTime;
+			itemID = destination.itemID;
+			
+			localx = destination.localx;
+			localy = destination.localy;
+			localz = destination.localz;
+			
+			rotatex = destination.rotatex;
+			rotatey = destination.rotatey;
+			rotatez = destination.rotatez;
+
+			thisRotation = destination.thisRotation;
+			thisPos = destination.thisPos;
+
+			return true;
 		}
 
 		public bool combinePickups(Pickup otherPickup)
