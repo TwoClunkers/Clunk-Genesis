@@ -8,7 +8,7 @@ public class Block
     public enum Direction { north, east, south, west, up, down };
 
     public struct Tile { public int x; public int y;}
-    const float tileSize = 0.03125f; //one 32th of the pic
+    public float tileSize = 0.03125f; //one 32th of the pic
     public bool changed = true;
 
 	public int material = 1;
@@ -32,12 +32,17 @@ public class Block
 	public virtual Boolean DamageBlock (WorldPos pos, float amount, Vector3 direction)
 	{
 		damage = Mathf.Max(0, damage-amount);
-		if(damage < 1) {
+		if (damage < 1) {
 
 			return true;
+		} else {
+			//offx = direction.x;
+			//offy = direction.y;
+			//offz = direction.z;
 		}
-		else return false;
+		return false;
 	}
+
     public virtual MeshData Blockdata
      (Chunk chunk, int x, int y, int z, MeshData meshData)
     {

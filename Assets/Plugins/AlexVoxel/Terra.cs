@@ -71,11 +71,15 @@ public static class Terra
 			return false;
 		
 		Block block = chunk.world.GetBlock(pos.x, pos.y, pos.z);
-		if(block.DamageBlock(pos,amount,direction)) {
-			block = new BlockAir();
+		if (block.DamageBlock (pos, amount, direction)) {
+			block = new BlockAir ();
 			block.changed = true;
-			chunk.world.SetBlock(pos.x, pos.y, pos.z, block);
+			chunk.world.SetBlock (pos.x, pos.y, pos.z, block);
 			return true;
+		} else {
+			block.changed = true;
+			block.material = 3;
+			chunk.world.SetBlock (pos.x, pos.y, pos.z, block);
 		}
 		return false;
 	}

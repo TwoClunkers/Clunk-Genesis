@@ -12,6 +12,9 @@ public class ContainerUI : MonoBehaviour
 	public Button[] buttonList;
 	public ItemLibrary itemLibrary;
 
+	public Texture2D cursorTexture;
+	public CursorMode cursorMode = CursorMode.ForceSoftware;
+	public Vector2 hotSpot = Vector2.zero;
 	//public int rows; NOTE: perhaps we could enum different setups?
 	
 	void Start ()
@@ -19,6 +22,14 @@ public class ContainerUI : MonoBehaviour
 		InitializeButtons ();
 	}
 
+	void OnMouseEnter() {
+		Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
+		Debug.Log ("enter");
+	}
+	void OnMouseExit() {
+		Cursor.SetCursor(null, Vector2.zero, cursorMode);
+		Debug.Log ("exit");
+	}
 	//call after new container data is assigned
 	void InitializeButtons () 
 	{
