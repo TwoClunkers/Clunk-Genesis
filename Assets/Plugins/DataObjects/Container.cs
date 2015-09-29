@@ -22,10 +22,13 @@ namespace AssemblyCSharpfirstpass
 			
 		public InventoryItem getItem (int slot)
 		{
-			if (size > slot)
-				return contents [slot];
-			else
-				return new InventoryItem ();
+			InventoryItem thisitem = new InventoryItem ();
+
+			if (size > slot) {
+				thisitem.id = contents [slot].id;
+				thisitem.quantity = contents [slot].quantity;
+			}
+			return thisitem;
 
 		}
 

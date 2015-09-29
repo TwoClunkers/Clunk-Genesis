@@ -92,7 +92,6 @@ public class World : MonoBehaviour {
     public Block GetBlock(int x, int y, int z)
     {
         Chunk containerChunk = GetChunk(x, y, z);
-
         if (containerChunk != null)
         {
             Block block = containerChunk.GetBlock(

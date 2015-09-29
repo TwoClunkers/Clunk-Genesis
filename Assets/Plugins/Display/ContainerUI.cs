@@ -123,10 +123,12 @@ public class ContainerUI : MonoBehaviour
 		if (selectedSlot > -1) {
 			pulled = storage.getItem (selectedSlot);
 			if (pulled.id > 0) {
-				pulled.quantity = 1 - storage.pullSlot (selectedSlot, 1);
+				pulled.quantity = 1 - (storage.pullSlot (selectedSlot, 1));
 			}
+		} else {
+			pulled.id = 0;
+			pulled.quantity = 0;
 		}
-
 		return pulled;
 	}
 

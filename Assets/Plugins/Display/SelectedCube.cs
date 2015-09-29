@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using AssemblyCSharpfirstpass;
+using DataObjects;
 
 public class SelectedCube : MonoBehaviour
 {
@@ -16,20 +18,84 @@ public class SelectedCube : MonoBehaviour
 	public Chunk hostChunk;
 	public Vector3 targetPosition;
 	BlockSelect displayBlock;
+	public GameObject handleUI;
+	public GameObject[] corner;
 
 	public int depth;
 	public bool mousehold = false;
+	public Camera camera;
+	public GameObject mainCanvas;
+	public CornerHandle scriptHandle;
 
 	// Use this for initialization
 	void Start ()
 	{
-		world = GameObject.FindWithTag("world").GetComponent("World") as World;
+		GameObject tempgo = GameObject.FindWithTag ("world");
+		world = tempgo.GetComponent("World") as World;
+
+		camera = Camera.main;
+		mainCanvas = GameObject.FindWithTag ("UI");
+
+		corner = new GameObject[8];
+		for(int a = 0; a < 8; a+=1) 
+		{
+			GameObject point = corner[a];
+			point = Instantiate (handleUI, new Vector3 (targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity) as GameObject;
+			Debug.Log("juju");
+			point.transform.SetParent(mainCanvas.transform);
+
+			corner[a] = point;
+			setcorner(point, a);
+
+		}
+			
 
 		displayBlock = new BlockSelect();
 		filter = gameObject.GetComponent<MeshFilter>();
 		//coll = gameObject.GetComponent<MeshCollider>();
+
+
 	}
-	
+
+	void setcorner(GameObject marker, int num) {
+
+		scriptHandle = marker.GetComponent ("CornerHandle") as CornerHandle;
+		WorldPos thisPos;
+		thisPos.x = pos.x;
+		thisPos.y = pos.y;
+		thisPos.z = pos.z;
+
+		if (num < 1) {	
+			thisPos.x = pos.x - 1;	
+		}
+		else if (num < 2) {		}
+		else if (num < 3) {	
+			thisPos.z = pos.z - 1;	
+		}
+		else if (num < 4) {	
+			thisPos.x = pos.x - 1;
+			thisPos.z = pos.z - 1;
+		}
+		else if (num < 5) {	
+			thisPos.x = pos.x - 1;
+			thisPos.y = pos.y - 1;
+			thisPos.z = pos.z - 1;
+		}
+		else if (num < 6) {		
+			thisPos.y = pos.y - 1;
+			thisPos.z = pos.z - 1;
+		}
+		else if (num < 7) {		
+			thisPos.y = pos.y - 1;
+		}
+		else if (num < 8) {		
+			thisPos.y = pos.y - 1;
+			thisPos.x = pos.x - 1;
+		}
+
+		scriptHandle.assignVoxel (world, thisPos, num);
+
+	}
 	// Update is called once per frame
 	void Update ()
 	{
@@ -64,7 +130,11 @@ public class SelectedCube : MonoBehaviour
 			update = false;
 			UpdateCube();
 		}
-
+		for(int a = 0; a < 8; a+=1) 
+		{
+			GameObject point = corner[a];
+			setcorner(point, a);
+		}
 	}
 
 	void UpdateCube()
