@@ -138,48 +138,6 @@ function Update () {
 
 function pushVoxels (center : Vector3)
 	{
-		var pos_hit : WorldPos;
-		var b_hit : Block;
-		var distanceVtoC : float;
-		var directionVtoC : Vector3;
-		var radius : float = 4;
-		
-		var sizeX : int = (radius * 2) + 1;
-		var sizeY : int = (radius * 2) + 1;
-		
-		for(var a : int = 0; a < sizeX; a+=1)
-			for(var b : int = 0; b < sizeY; b+=1)
-				for(var c : int = 0; c < sizeX; c+=1)
-			{
-				pos_hit = Terra.GetBlockPos(Vector3(center.x+a-(sizeX/2),center.y+b-(sizeY/2),center.z+c-(sizeX/2)));
-    			b_hit = scrWorld.GetBlock(pos_hit.x,pos_hit.y,pos_hit.z);
-    			//var Vpos : Vector3 = new Vector3(b_hit.offx + pos_hit.x, b_hit.offy +pos_hit.y, b_hit.offz + pos_hit.z);
-    			var Vpos : Vector3 = new Vector3(0.5 + pos_hit.x, 0.5 +pos_hit.y, 0.5 + pos_hit.z);
-    			distanceVtoC = Vector3.Distance(Vpos, center);
-    			var push : float = radius/distanceVtoC;
-    			
-    			if(push > 1) {
-    				var Vpush : Vector3 = (Vpos-center)*push;
-    				Vpos = center+Vpush;
-    				b_hit.offx = Mathf.Clamp(Vpos.x - pos_hit.x, 0.0, 1.0);
-    				b_hit.offy = Mathf.Clamp(Vpos.y - pos_hit.y, 0.0, 1.0);
-    				b_hit.offz = Mathf.Clamp(Vpos.z - pos_hit.z, 0.0, 1.0);
-    				Terra.SetBlock(scrWorld.GetChunk(pos_hit.x,pos_hit.y,pos_hit.z), pos_hit, b_hit);
-    			}
-    			
-    		}
+		Terra.applySphere(scrWorld, center, 3.0f);
 	}
-//		float distanceVtoC;
-//		float radius = 1;
-//		
-//		int sizeX = radius x 2;
-//		int sizeY = radius x 2;
-//		
-//		for(int a = 0; a < sizeX; a+=1)
-//			for(int b = 0; b < sizeY; b+=1)
-//			{
-//				positionhit = Terra.GetBlockPos(Vector3(center.x+a,center.y+b,center.z));
-//    			blockhit = scrWorld.GetBlock(positionhit.x,positionhit.y,positionhit.z);
-//	}
 
-	

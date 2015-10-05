@@ -24,11 +24,63 @@ public class Block
     //Base block constructor
     public Block()
     {
-		//offset.Set (0.5f, 0.5f, 0.5f);
 		offx = 0.5f;
 		offy = 0.5f;
 		offz = 0.5f;
     }
+	public virtual void cloneBlock (Block target)
+	{
+		changed = true;
+		
+		material = target.material;
+		varientx = target.varientx;
+		varienty = target.varienty;
+		damage = target.damage;
+		offx = target.offx;
+		offy = target.offy;
+		offz = target.offz;
+
+	}
+	public virtual Tile TexturePosition(Direction direction)
+	{
+		Tile tile = new Tile();
+		
+		//tile.x = varientx;
+		//tile.y = varienty;
+		
+		if(material < 5) {
+			tile.x = varientx;
+			tile.y = varienty+(material-1)*8;
+		}
+		else {
+			tile.x = varientx+8;
+			tile.y = varienty+(material-5)*8;
+		}
+		
+		return tile;
+	}
+	
+	public virtual Vector2[] FaceUVs(Direction direction, Vector2 point0, Vector2 point1, Vector2 point2, Vector2 point3)
+	{
+		Vector2[] UVs = new Vector2[4];
+		Tile tilePos = TexturePosition(direction);
+		
+		
+		
+		UVs[0] = new Vector2(tileSize * tilePos.x + tileSize*point0.x,
+		                     tileSize * tilePos.y + tileSize*point0.y + tileSize);
+		
+		UVs[1] = new Vector2(tileSize * tilePos.x + tileSize*point1.x + tileSize,
+		                     tileSize * tilePos.y + tileSize*point1.y + tileSize);
+		
+		UVs[2] = new Vector2(tileSize * tilePos.x + tileSize*point2.x + tileSize,
+		                     tileSize * tilePos.y + tileSize*point2.y);
+		
+		UVs[3] = new Vector2(tileSize * tilePos.x + tileSize*point3.x,
+		                     tileSize * tilePos.y + tileSize*point3.y);
+		
+		return UVs;
+	}
 	public virtual Boolean DamageBlock (WorldPos pos, float amount, Vector3 direction)
 	{
 		damage = Mathf.Max(0, damage-amount);
@@ -261,46 +313,7 @@ public class Block
         return meshData;
     }
 
-    public virtual Tile TexturePosition(Direction direction)
-    {
-        Tile tile = new Tile();
-
-		//tile.x = varientx;
-		//tile.y = varienty;
-
-		if(material < 5) {
-			tile.x = varientx;
-			tile.y = varienty+(material-1)*8;
-		}
-		else {
-			tile.x = varientx+8;
-			tile.y = varienty+(material-5)*8;
-		}
-
-        return tile;
-    }
-
-	public virtual Vector2[] FaceUVs(Direction direction, Vector2 point0, Vector2 point1, Vector2 point2, Vector2 point3)
-    {
-        Vector2[] UVs = new Vector2[4];
-        Tile tilePos = TexturePosition(direction);
-
-
-
-		UVs[0] = new Vector2(tileSize * tilePos.x + tileSize*point0.x,
-		    tileSize * tilePos.y + tileSize*point0.y + tileSize);
-
-		UVs[1] = new Vector2(tileSize * tilePos.x + tileSize*point1.x + tileSize,
-		    tileSize * tilePos.y + tileSize*point1.y + tileSize);
-
-		UVs[2] = new Vector2(tileSize * tilePos.x + tileSize*point2.x + tileSize,
-		    tileSize * tilePos.y + tileSize*point2.y);
-
-		UVs[3] = new Vector2(tileSize * tilePos.x + tileSize*point3.x,
-		    tileSize * tilePos.y + tileSize*point3.y);
-
-        return UVs;
-    }
+ 
 
     public virtual bool IsSolid(Direction direction)
     {
