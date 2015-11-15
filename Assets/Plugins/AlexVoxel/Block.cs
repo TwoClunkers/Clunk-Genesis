@@ -10,7 +10,7 @@ public class Block
     public struct Tile { public int x; public int y;}
     public float tileSize = 0.03125f; //one 32th of the pic
     public bool changed = true;
-
+	public bool isSelected = false;
 	public int material = 1;
 	public int varientx = 0;
 	public int varienty = 0;
@@ -81,8 +81,37 @@ public class Block
 		
 		return UVs;
 	}
+
+	public virtual Vector2[] FaceUV1 ()
+	{
+		Vector2[] UVs = new Vector2[4];
+
+		if (isSelected) {
+
+			UVs [0] = new Vector2 (0.0f, 0.0f);
+		
+			UVs [1] = new Vector2 (1.0f, 0.0f);
+		
+			UVs [2] = new Vector2 (1.0f, 1.0f); 
+		
+			UVs [3] = new Vector2 (0.0f, 1.0f);
+		} else {
+			UVs [0] = new Vector2 (0.1f, 0.1f);
+			
+			UVs [1] = new Vector2 (0.9f, 0.1f);
+			
+			UVs [2] = new Vector2 (0.9f, 0.9f); 
+			
+			UVs [3] = new Vector2 (0.1f, 0.9f);
+		}
+		return UVs;
+	}
+
 	public virtual Boolean DamageBlock (WorldPos pos, float amount, Vector3 direction)
 	{
+		if (material < 1)
+			return false;
+
 		damage = Mathf.Max(0, damage-amount);
 		if (damage < 1) {
 
@@ -98,7 +127,7 @@ public class Block
     public virtual MeshData Blockdata
      (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-
+		if(material < 1) return meshData;
 
         meshData.useRenderDataForCol = true;
 
@@ -153,6 +182,18 @@ public class Block
 		offx = offset.x;
 		offy = offset.y;
 		offz = offset.z;
+	}
+
+	public void setvariant (float x, float y)
+	{
+		int vposx = (int)(x % 7);
+		int vposy = (int)(y % 7);
+		if (vposx < 0)
+			vposx += 7;
+		if (vposy < 0)
+			vposy += 7;
+		varientx = vposx;
+		varienty = vposy;
 	}
 
 	//the getPoint# members should return a Vector3 that is a point relative to this block
@@ -214,6 +255,8 @@ public class Block
 		                             new Vector2 (points [1].x, points [1].z), 
 		                             new Vector2 (points [2].x, points [2].z), 
 		                             new Vector2 (points [3].x, points [3].z)));
+		meshData.uv1.AddRange (FaceUV1 ());
+
         return meshData;
     }
 
@@ -235,6 +278,7 @@ public class Block
 		                             new Vector2 (points [1].x, points [1].z), 
 		                             new Vector2 (points [2].x, points [2].z), 
 		                             new Vector2 (points [3].x, points [3].z)));
+		meshData.uv1.AddRange (FaceUV1 ());
         return meshData;
     }
 
@@ -263,6 +307,7 @@ public class Block
 		                             new Vector2 (points [1].y, points [1].z), 
 		                             new Vector2 (points [2].y, points [2].z), 
 		                             new Vector2 (points [3].y, points [3].z)));
+		meshData.uv1.AddRange (FaceUV1 ());
         return meshData;
     }
 
@@ -288,6 +333,7 @@ public class Block
 		                             new Vector2 (points [1].x, points [1].y), 
 		                             new Vector2 (points [2].x, points [2].y), 
 		                             new Vector2 (points [3].x, points [3].y)));
+		meshData.uv1.AddRange (FaceUV1 ());
         return meshData;
     }
 
@@ -310,6 +356,7 @@ public class Block
 		                             new Vector2 (points [1].z, points [1].y), 
 		                             new Vector2 (points [2].z, points [2].y), 
 		                             new Vector2 (points [3].z, points [3].y)));
+		meshData.uv1.AddRange (FaceUV1 ());
         return meshData;
     }
 
@@ -317,6 +364,9 @@ public class Block
 
     public virtual bool IsSolid(Direction direction)
     {
+		if (material < 1)
+			return false;
+
         switch (direction)
         {
             case Direction.north:

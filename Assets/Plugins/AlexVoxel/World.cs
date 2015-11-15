@@ -103,7 +103,9 @@ public class World : MonoBehaviour {
         }
         else
         {
-            return new BlockAir();
+			Block block = new Block();
+			block.material = 0;
+            return block;
         }
 
     }

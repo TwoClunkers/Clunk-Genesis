@@ -7,6 +7,7 @@ public class MeshData
     public List<Vector3> vertices = new List<Vector3>();
     public List<int> triangles = new List<int>();
     public List<Vector2> uv = new List<Vector2>();
+	public List<Vector2> uv1 = new List<Vector2>();
 
     public List<Vector3> colVertices = new List<Vector3>();
     public List<int> colTriangles = new List<int>();
@@ -14,6 +15,16 @@ public class MeshData
     public bool useRenderDataForCol;
 
     public MeshData() { }
+
+	public void ClearAll() 
+	{
+		vertices.Clear();
+		triangles.Clear();
+		uv.Clear();
+		uv1.Clear ();
+		colVertices.Clear();
+		colTriangles.Clear();
+	}
 
     public void AddQuadTriangles()
     {
@@ -47,13 +58,18 @@ public class MeshData
 
     }
 
-    public void AddTriangle(int tri)
+    public void AddTriangle()
     {
-        triangles.Add(tri);
+		triangles.Add(vertices.Count - 3);
+		triangles.Add(vertices.Count - 2);
+		triangles.Add(vertices.Count - 1);
 
         if (useRenderDataForCol)
         {
-            colTriangles.Add(tri - (vertices.Count - colVertices.Count));
+            //colTriangles.Add(tri - (vertices.Count - colVertices.Count));
+			colTriangles.Add(colVertices.Count - 3);
+			colTriangles.Add(colVertices.Count - 2);
+			colTriangles.Add(colVertices.Count - 1);
         }
     }
 }

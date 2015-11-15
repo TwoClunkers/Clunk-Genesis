@@ -27,7 +27,7 @@ public class Modify : MonoBehaviour
 			raystart.z += (mode-1);
             if (Physics.Raycast(raystart , transform.forward, out hit, 100))
             {
-                Terra.SetBlock(hit, new BlockAir());
+                Terra.SetBlock(hit, new BlockAir(), false);
             }
         }
 

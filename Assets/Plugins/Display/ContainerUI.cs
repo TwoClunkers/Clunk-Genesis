@@ -49,7 +49,7 @@ public class ContainerUI : MonoBehaviour
 		for (int i = 0; i < storage.size; i += 1) {
 			//create our prefab slot
 			GameObject newSlot = Instantiate(buttonPrefab) as GameObject;
-			newSlot.transform.parent = gameObject.transform;
+			newSlot.transform.SetParent(gameObject.transform);
 
 			//reposition
 			RectTransform thisRect = newSlot.GetComponent<RectTransform> ();

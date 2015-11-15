@@ -961,7 +961,7 @@ public static class PGEditorUtils
     /// Used by AddFoldOutListItemButtons to return which button was pressed, and by 
     /// UpdateFoldOutListOnButtonPressed to process the pressed button for regular lists
     /// </summary>
-    protected enum LIST_BUTTONS { None, Up, Down, Add, Remove }
+    enum LIST_BUTTONS { None, Up, Down, Add, Remove }
 
     /// <summary>
     /// Adds the buttons which control a list item

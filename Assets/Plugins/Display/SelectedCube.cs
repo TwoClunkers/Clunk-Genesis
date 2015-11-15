@@ -39,9 +39,9 @@ public class SelectedCube : MonoBehaviour
 		corner = new GameObject[8];
 		for(int a = 0; a < 8; a+=1) 
 		{
+			//this creates a circle for each corner to act as a handle to drag
 			GameObject point = corner[a];
 			point = Instantiate (handleUI, new Vector3 (targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity) as GameObject;
-			Debug.Log("juju");
 			point.transform.SetParent(mainCanvas.transform);
 
 			corner[a] = point;
@@ -157,14 +157,12 @@ public class SelectedCube : MonoBehaviour
 		
 		filter.mesh.uv = meshData.uv.ToArray();
 		filter.mesh.RecalculateNormals();
-		Debug.Log ("hmm");
-		//coll.sharedMesh = null;
+
 		Mesh mesh = new Mesh();
 		mesh.vertices = meshData.colVertices.ToArray();
 		mesh.triangles = meshData.colTriangles.ToArray();
 		mesh.RecalculateNormals();
-		
-		//coll.sharedMesh = mesh;
+
 	}
 }
 

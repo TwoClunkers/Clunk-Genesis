@@ -122,6 +122,7 @@ public class Chunk : MonoBehaviour
         filter.mesh.triangles = meshData.triangles.ToArray();
 
         filter.mesh.uv = meshData.uv.ToArray();
+		filter.mesh.uv2 = meshData.uv1.ToArray ();
         filter.mesh.RecalculateNormals();
 
         coll.sharedMesh = null;

@@ -4,6 +4,7 @@ var target : Vector3;
 var range : float;
 var laserNade : GameObject;
 var selector : GameObject;
+var scrWorld : World;
 //private var line : LineRenderer;
 
 private var TerrainScript : Terra;
@@ -11,6 +12,7 @@ private var TerrainScript : Terra;
 function Start () {
 	range = 20;
 	selector = GameObject.FindGameObjectWithTag("selector");
+	scrWorld = GameObject.FindWithTag("world").GetComponent("World");
 	//line = GetComponent(LineRenderer);
 }
 
@@ -37,8 +39,13 @@ function Laser () {
     if (Physics.Raycast(raystart , transform.forward, hit, 100))
     {
     	Debug.DrawLine (raystart, hit.point, Color.red, 1, false);
-        TerrainScript.SetBlock(hit, new BlockAir(),false);
+        //TerrainScript.SetBlock(hit, new BlockAir(),false);
     }
+//            for (var i = 0; i < hitColliders.Length; i++) {
+//        	Terra.applyCircle(scrWorld, trueHit.point, 1.0f, -2, 50);
+//			GameObject.FindGameObjectWithTag("mc").GetComponent(NetworkView).RPC("playSound", RPCMode.All, "tickAudio", hitBlock.transform.position);	
+//			
+//        }
 }
 
 function Blast () {
