@@ -7,7 +7,7 @@ namespace DataObjects
 	[Serializable]
 	public class StorableObject
 	{
-		public int itemID;
+		public InventoryItem item;
 
 		public float localx;
 		public float localy;

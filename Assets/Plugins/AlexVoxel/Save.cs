@@ -48,8 +48,7 @@ public class Save
 					thisPickup.copyPickup(pickupObj.GetComponent<pickUpScript>().pickup);
 
 					thisPickup.setPosition(pickupObj.transform.position, pickupObj.transform.rotation);
-					//Debug.Log(thisPickup.quantity.ToString());
-					//Debug.Log(thisPickup.itemID.ToString() + "<- added");
+
 					articles.Add(thisPickup.getWorldPos(), thisPickup);
 				}
 			}

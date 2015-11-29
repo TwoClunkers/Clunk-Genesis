@@ -16,7 +16,11 @@ namespace DataObjects
 		equip_buff,
 		equip_internal,
 		consumable,
-		material
+		material,
+		bot_core,
+		bot_drive,
+		bot_chassis,
+		bot_apex
 	}
 	public enum ProcessTypes {
 		mine,

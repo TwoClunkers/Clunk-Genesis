@@ -15,7 +15,7 @@ public class pickUpScript : MonoBehaviour
 
 	void Update()
 	{
-		if(pickup.quantity < 1) destroyMe();
+		if(pickup.item.quantity < 1) destroyMe();
 		else if(pickup.destroyCheck(Time.time)) destroyMe();
 	}
 	
@@ -37,7 +37,7 @@ public class pickUpScript : MonoBehaviour
 			int remainder = thisInv.containerData.addItem(pickup.invItem());
 			thisInv.changed = true;
 			if(remainder>0) {
-				pickup.quantity = remainder;
+				pickup.item.quantity = remainder;
 			}
 			else destroyMe();
 		} else if(other.tag.Equals("pickup")){ //combine data

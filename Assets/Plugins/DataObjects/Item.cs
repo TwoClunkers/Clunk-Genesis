@@ -13,8 +13,8 @@ namespace DataObjects
 		public String info;
 		public ItemTypes type;
 		public Material material;
-		public Sprite sprite;
-		public Mesh mesh;
+		public Sprite sprite; //as inventory
+		public Mesh mesh; //as pickup
 		public int maxHealth;
 		public GameObject itemPrefab;
 		public Split construct;

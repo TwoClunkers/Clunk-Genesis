@@ -203,6 +203,7 @@ function Update () {
 			if(ourBeam != null) {
 				
 				beamScript = ourBeam.GetComponent("Effect");
+				beamScript.endtime = Mathf.Min(beamScript.endtime, Time.time + 0.1f);
 				Debug.Log("beam on");
 				//point to our target
 				ray.origin = transform.position;

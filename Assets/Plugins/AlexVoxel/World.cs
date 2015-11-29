@@ -145,17 +145,18 @@ public class World : MonoBehaviour {
 	{		
 		//get the pickup info from library
 		ItemInfo info = new ItemInfo();
-		if (!itemLibrary.getItemInfo (info, pickup.itemID)) {
+		if (!itemLibrary.getItemInfo (info, pickup.item.id)) {
 			Debug.Log("Oh Noo Mr Billlll");
 			return false;
 		}
 		Transform oPickup = PoolManager.Pools["drops"].Spawn(pickupPrefab, pickup.getPosition(), pickup.thisRotation);
 
+		oPickup.GetComponent<MeshFilter>().mesh = info.mesh;
 		//okay, we kinda need to populate the  new object with the pickup data...
 		pickUpScript sPickup = oPickup.GetComponent("pickUpScript") as pickUpScript; 
 
 		if (sPickup.pickup.copyPickup (pickup)) {
-			//Debug.Log(sPickup.pickup.quantity.ToString() + "<- after create");
+
 			return true;
 		}
 		else

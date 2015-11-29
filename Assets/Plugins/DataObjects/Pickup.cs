@@ -7,7 +7,6 @@ namespace DataObjects
 	[Serializable]
 	public class Pickup : StorableObject
 	{
-		public int quantity;
 		public float destroyAtThisTime;
 		
 		private float lifeTime; //usually this is static anyway...
@@ -22,9 +21,8 @@ namespace DataObjects
 		public void reset(int newID, int newQuant)
 		{
 			destroyAtThisTime = Time.time + lifeTime;
-			itemID = newID;
-			quantity = newQuant;
-			//Debug.Log (itemID.ToString ()+"  reset");
+			item = new InventoryItem();
+			item.setInvItem (newID, newQuant);
 		}
 
 		public void OnLoad()
@@ -44,44 +42,44 @@ namespace DataObjects
 		public InventoryItem invItem()
 		{
 			InventoryItem inv = new InventoryItem();
-			inv.setInvItem( itemID, quantity);
+			inv.setInvItem( item.id, item.quantity);
 
 			return inv;
 		}
 
-		public bool copyPickup (Pickup destination)
+		public bool copyPickup (Pickup source)
 		{
-			if (destination == null)
+			if (source == null)
 				return false;
 
-			quantity = destination.quantity;
-			destroyAtThisTime = destination.destroyAtThisTime;
-			
-			lifeTime = destination.lifeTime;
-			itemID = destination.itemID;
-			
-			localx = destination.localx;
-			localy = destination.localy;
-			localz = destination.localz;
-			
-			rotatex = destination.rotatex;
-			rotatey = destination.rotatey;
-			rotatez = destination.rotatez;
 
-			thisRotation = destination.thisRotation;
-			thisPos = destination.thisPos;
+			destroyAtThisTime = source.destroyAtThisTime;
+			
+			lifeTime = source.lifeTime;
+			item = source.invItem();
+			
+			localx = source.localx;
+			localy = source.localy;
+			localz = source.localz;
+			
+			rotatex = source.rotatex;
+			rotatey = source.rotatey;
+			rotatez = source.rotatez;
+
+			thisRotation = source.thisRotation;
+			thisPos = source.thisPos;
 
 			return true;
 		}
 
 		public bool combinePickups(Pickup otherPickup)
 		{
-			if (quantity > 0 && otherPickup.quantity > 0) { //if both blocks contain items
-				if (otherPickup.itemID == itemID) { //if the blocks are the same
+			if (item.quantity > 0 && otherPickup.item.quantity > 0) { //if both blocks contain items
+				if (otherPickup.item.id == item.id) { //if the blocks are the same
 					bool bCombineToOther = true;
-					if (otherPickup.quantity > quantity) { //other block has more
+					if (otherPickup.item.quantity > item.quantity) { //other block has more
 						bCombineToOther = true;
-					} else if (otherPickup.quantity < quantity) { //this block has more
+					} else if (otherPickup.item.quantity < item.quantity) { //this block has more
 						bCombineToOther = false;
 					} else { // blocks have equal quantity, combine to the one dying later
 						if (otherPickup.destroyAtThisTime > destroyAtThisTime) { //combine to other
@@ -92,14 +90,14 @@ namespace DataObjects
 					}
 			
 					if (bCombineToOther) {
-						otherPickup.quantity += quantity;
-						quantity = 0;
+						otherPickup.item.quantity += item.quantity;
+						item.quantity = 0;
 						otherPickup.destroyAtThisTime = Time.time + lifeTime;
 						destroyAtThisTime = Time.time + 1.0f;
 						return true;
 					} else {
-						quantity += otherPickup.quantity;
-						otherPickup.quantity = 0;
+						item.quantity += otherPickup.item.quantity;
+						otherPickup.item.quantity = 0;
 						otherPickup.destroyAtThisTime = Time.time + 1.0f;
 						destroyAtThisTime = Time.time + lifeTime;
 						return true;
