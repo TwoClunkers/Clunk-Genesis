@@ -131,7 +131,7 @@ public class IgnoreModifierInspector : Editor
 class IgnoreModifierGizmo
 {
 	
-    [DrawGizmo(GizmoType.Selected | GizmoType.NotSelected)]
+    [DrawGizmo(GizmoType.Selected | GizmoType.NotInSelectionHierarchy)]
     static void RenderGizmo(IgnoreModifier mod, GizmoType gizmoType)
     {
         if (mod.debugLevel == DEBUG_LEVELS.Off || !mod.enabled) return;

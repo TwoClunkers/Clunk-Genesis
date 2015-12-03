@@ -44,6 +44,7 @@ public class TerrainGen
 				Block block = new Block();
 				block.setvariant(x,y);
 				block.material = 0;
+				block.setoffset(remainder,remainder,Random.value/8);
 				//block.setoffset(remainder,remainder,Random.value/4+0.38f);
 				//block.setoffset (Random.value/4+0.38f,0.5f,Random.value/4+0.38f);
 				//block.setoffset(Random.Range (-0.2F,0.2F),Random.Range (-0.0F,0.0F),Random.Range (-0.0F,0.0F));
@@ -54,6 +55,7 @@ public class TerrainGen
 				Block block = new Block();
 				block.setvariant(x,y);
 				block.material = Mathf.FloorToInt(noise-1);
+				block.setoffset(remainder,remainder,Random.value/8);
 				//block.varient = Random.Range(0 , 3);
 				//block.setoffset(remainder,remainder,Random.value/4+0.38f);
 				//block.setoffset (Random.value/4+0.38f,0.5f,Random.value/2+0.5f);
@@ -65,6 +67,7 @@ public class TerrainGen
 				Block block = new Block();
 				block.material = Mathf.FloorToInt(noise-1);
 				block.setvariant(x,y);
+				block.setoffset(remainder,remainder,Random.value/8);
 				//block.varient = Random.Range(0 , 3);
 				//block.setoffset(remainder,remainder,Random.value/4+0.38f);
 				//block.setoffset (Random.value,0.5f,Random.value/2+0.5f);
@@ -76,6 +79,7 @@ public class TerrainGen
 				Block block = new Block();
 				block.material = Mathf.FloorToInt(Mathf.Min(4.0f, noise-1));
 				block.setvariant(x,y);
+				block.setoffset(remainder,remainder,Random.value/8);
 				//block.varient = Random.Range(0 , 3);
 				//block.setoffset (remainder,remainder,Random.value/4+0.38f);
 				//block.setoffset (Random.value,0.5f,Random.value/2+0.5f);
