@@ -1,5 +1,5 @@
 /// <Licensing>
-/// ©2011-2014 (Copyright) Path-o-logical Games, LLC
+/// Â©2011-2014 (Copyright) Path-o-logical Games, LLC
 /// If purchased from the Unity Asset Store, the following license is superseded 
 /// by the Asset Store license.
 /// Licensed under the Unity Asset Package Product License (the "License");
@@ -118,7 +118,7 @@ class FireDistanceModifierGizmo
 {
 	static GameObject spaceCalculator;
 	
-    [DrawGizmo(GizmoType.Selected | GizmoType.NotSelected)]
+    [DrawGizmo(GizmoType.Selected | GizmoType.NotInSelectionHierarchy)]
     static void RenderGizmo(FireDistanceModifier mod, GizmoType gizmoType)
     {
         if (!mod.drawGizmo || !mod.enabled || mod.overrideGizmoVisibility) return;
