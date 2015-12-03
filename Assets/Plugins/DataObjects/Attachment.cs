@@ -4,27 +4,44 @@ using System;
 
 namespace DataObjects
 {
+	[Serializable]
 	public class Attachment
 	{
-		public String name; //to describe this specific attachment point
-		public ItemTypes attachmentType; //used to limit attachments
-		public StorableObject currentEquipped; //when something is attached
+		public GameObject owner;
+		public GameObject equippedObject;
+		public bool equipped = false;
 		public Vector3 localPosition; //the offsets from this attachment's parent
 		public Vector3 localRotation; //as above
-		public bool equipped = false;
 		public float stability; //strength of connection
-
-
-
+		public ItemTypes attachmentType; //used to limit attachments
+		public String name; //to describe this specific attachment point
 
 		public Attachment ()
 		{
+			localPosition = new Vector3 ();
+			localRotation = new Vector3 ();
+			stability = new float();
+			attachmentType = ItemTypes.bot_core;
+			name = "empty";
 		}
 
-		public bool attackConnection(float force, float damage)
+		public void setAttachment(GameObject newOwner, Attachment source)
 		{
-			stability -= damage; //perminant
-			if (stability < force) { //temporary
+			equipped = false;
+			owner = newOwner;
+
+			localPosition = source.localPosition;
+			localRotation = source.localRotation;
+			stability = source.stability;
+			attachmentType = source.attachmentType;
+			name = source.name;
+		}
+
+
+
+		public bool attackConnection(float force)
+		{
+			if (stability < force) {
 				detach ();
 				return true;
 			} else
@@ -39,18 +56,17 @@ namespace DataObjects
 				return false;
 		}
 		
-		public bool attach(StorableObject newObject, ItemLibrary items)
+		public bool attach(GameObject newObject, Mech mech, ItemTypes thisType)
 		{
 			if (equipped)
 				return false;
 
-			ItemInfo info = new ItemInfo ();
-			if (items.getItemInfo (info, newObject.item.id)) {
-				if (isCompatable (info.type)) {
-					currentEquipped = newObject;
-					equipped = true;
-					return true;
-				}
+			if (isCompatable (thisType)) {
+				newObject.transform.SetParent(owner.transform);
+				mech.setAttached(this);
+				equippedObject = newObject;
+				equipped = true;
+				return true;
 			}
 
 			return false;
@@ -60,8 +76,7 @@ namespace DataObjects
 		{
 			if (!equipped)
 				return false;
-
-			currentEquipped = null;
+			equippedObject = null;
 			equipped = false;
 			return true;
 		}

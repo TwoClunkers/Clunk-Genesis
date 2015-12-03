@@ -152,6 +152,7 @@ public class World : MonoBehaviour {
 		Transform oPickup = PoolManager.Pools["drops"].Spawn(pickupPrefab, pickup.getPosition(), pickup.thisRotation);
 
 		oPickup.GetComponent<MeshFilter>().mesh = info.mesh;
+		oPickup.GetComponent<MeshCollider> ().sharedMesh = info.mesh;
 		//okay, we kinda need to populate the  new object with the pickup data...
 		pickUpScript sPickup = oPickup.GetComponent("pickUpScript") as pickUpScript; 
 
@@ -162,5 +163,26 @@ public class World : MonoBehaviour {
 		else
 			return false;
 	}
-	
+	public bool createMech(Mech newMech) //creates an instance that holds the data object
+	{		
+		//get the pickup info from library
+		ItemInfo info = new ItemInfo();
+		if (!itemLibrary.getItemInfo (info, newMech.item.id)) {
+			Debug.Log ("Oh Noo Mr Billlll");
+			return false;
+		} else
+			return true;
+			Transform oMech = PoolManager.Pools["mechs"].Spawn(pickupPrefab, newMech.getPosition(), newMech.thisRotation);
+			
+			oMech.GetComponent<MeshFilter>().mesh = info.mesh;
+			//okay, we kinda need to populate the  new object with the pickup data...
+			mechScript sMech = oMech.GetComponent("mechScript") as mechScript; 
+			
+		if (sMech.mechData.copyMech (newMech)) {
+				
+				return true;
+			}
+			else
+				return false;
+	}
 }

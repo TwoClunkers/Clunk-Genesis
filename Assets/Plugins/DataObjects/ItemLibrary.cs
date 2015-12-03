@@ -41,9 +41,19 @@ namespace DataObjects
 			info.maxHealth = library[itemId].maxHealth;
 			info.itemPrefab = library[itemId].itemPrefab;
 			info.construct = library[itemId].construct;
-			//info.attributes = library[itemId].attributes;
+			info.size = library [itemId].size;
+			info.attachments = library [itemId].attachments;
 
 			return true;
+		}
+		public Attachment[] getItemAttachments(int itemId)
+		{
+			return library [itemId].attachments;
+		}
+
+		public StatBlock getItemStats (int itemId)
+		{
+			return library [itemId].baseStats;
 		}
 	}
 }

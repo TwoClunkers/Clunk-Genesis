@@ -39,14 +39,6 @@ namespace DataObjects
 				return false; 
 		}
 
-		public InventoryItem invItem()
-		{
-			InventoryItem inv = new InventoryItem();
-			inv.setInvItem( item.id, item.quantity);
-
-			return inv;
-		}
-
 		public bool copyPickup (Pickup source)
 		{
 			if (source == null)

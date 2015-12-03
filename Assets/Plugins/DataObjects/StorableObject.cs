@@ -20,11 +20,21 @@ namespace DataObjects
 		[NonSerialized]
 		public Quaternion thisRotation;
 		public WorldPos thisPos;
+		public Vector3 extentMax;
+		public Vector3 extentMin;
 
 		// Use this for initialization
 		public StorableObject ()
 		{
 
+		}
+
+		public InventoryItem invItem()
+		{
+			InventoryItem inv = new InventoryItem();
+			inv.setInvItem( item.id, item.quantity);
+			
+			return inv;
 		}
 
 		public virtual void setPosition (Vector3 position, Quaternion rotation) 
@@ -75,6 +85,17 @@ namespace DataObjects
 		public virtual Vector3 getPosition ()
 		{
 			return new Vector3 (localx + thisPos.x, localy + thisPos.y, localz + thisPos.z);
+		}
+
+		public virtual bool getExtent(ItemLibrary items) 
+		{
+			ItemInfo info = new ItemInfo ();
+			if (items.getItemInfo (info, item.id)) {
+				extentMax = Vector3.one * info.size;
+				extentMin = Vector3.one * (-info.size);
+				return true;
+			} else
+				return false;
 		}
 	}
 

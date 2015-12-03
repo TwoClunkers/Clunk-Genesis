@@ -16,8 +16,11 @@ namespace DataObjects
 		public Sprite sprite; //as inventory
 		public Mesh mesh; //as pickup
 		public int maxHealth;
+		public float size;
 		public GameObject itemPrefab;
 		public Split construct;
+		public Attachment[] attachments;
+		public StatBlock baseStats;
 		//public ItemAttribute[] attributes;
 
 		public ItemInfo()
