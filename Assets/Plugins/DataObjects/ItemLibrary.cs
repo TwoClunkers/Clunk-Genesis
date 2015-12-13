@@ -42,18 +42,34 @@ namespace DataObjects
 			info.itemPrefab = library[itemId].itemPrefab;
 			info.construct = library[itemId].construct;
 			info.size = library [itemId].size;
-			info.attachments = library [itemId].attachments;
 
 			return true;
 		}
-		public Attachment[] getItemAttachments(int itemId)
+
+		public ItemTypes getItemType (int itemId)
 		{
-			return library [itemId].attachments;
+			return library [itemId].type;
+		}
+		public bool getItemAttachments(int itemId, out Node[] nodeList)
+		{
+			if (library.Length > itemId) {
+				nodeList = library [itemId].attachments.Clone () as Node[];
+				return true;
+			} else {
+				nodeList = null;
+				return false;
+			}
 		}
 
-		public StatBlock getItemStats (int itemId)
+		public bool getItemStats (int itemId, out StatBlock statCopy)
 		{
-			return library [itemId].baseStats;
+			if (library.Length > itemId) {
+				statCopy = library [itemId].baseStats.getCopy ();
+				return true;
+			} else {
+				statCopy = null;
+				return false;
+			}
 		}
 	}
 }

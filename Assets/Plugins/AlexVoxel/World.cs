@@ -10,7 +10,7 @@ public class World : MonoBehaviour {
     public GameObject chunkPrefab;
 	public GameObject pickupPrefab;
 	public GameObject master;
-	public string worldName = "pickup";
+	public string worldName = "mech";
 
 	public ItemLibrary itemLibrary; 
 
@@ -163,26 +163,29 @@ public class World : MonoBehaviour {
 		else
 			return false;
 	}
-	public bool createMech(Mech newMech) //creates an instance that holds the data object
+	public bool createPart(Part newPart) //creates an instance that holds the data object
 	{		
-		//get the pickup info from library
+		if (newPart == null)
+			return false;
+
+		GameObject newObject = new GameObject ();
+		//get the part info from library
 		ItemInfo info = new ItemInfo();
-		if (!itemLibrary.getItemInfo (info, newMech.item.id)) {
-			Debug.Log ("Oh Noo Mr Billlll");
+		if (!itemLibrary.getItemInfo (info, newPart.item.id)) {
+
 			return false;
 		} else
-			return true;
-			Transform oMech = PoolManager.Pools["mechs"].Spawn(pickupPrefab, newMech.getPosition(), newMech.thisRotation);
+			newObject = info.itemPrefab;
+
+		Transform oPart = PoolManager.Pools["parts"].Spawn(newObject, newPart.getPosition(), newPart.thisRotation);
+
+		oPart.GetComponent<MeshFilter>().mesh = info.mesh;
+		oPart.GetComponent<MeshCollider> ().sharedMesh = info.mesh;
 			
-			oMech.GetComponent<MeshFilter>().mesh = info.mesh;
-			//okay, we kinda need to populate the  new object with the pickup data...
-			mechScript sMech = oMech.GetComponent("mechScript") as mechScript; 
+		//okay, we kinda need to populate the  new object with the pickup data...
+		partScript sPart = oPart.GetComponent("partScript") as partScript; 
 			
-		if (sMech.mechData.copyMech (newMech)) {
-				
-				return true;
-			}
-			else
-				return false;
+		sPart.partData = newPart.getCopy ();
+		return true;
 	}
 }

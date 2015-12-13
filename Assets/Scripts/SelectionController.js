@@ -100,7 +100,7 @@ function Update () {
 		if(toolmode == 2) obTool.GetComponent.<UnityEngine.UI.Image>().sprite = spritePlace;
 	}
 		
-	if(Input.GetMouseButton(0)) {
+	if(Input.GetMouseButtonUp(0)) {
 		if(toolmode == 0) { //edit mode  lets use a mouse to screen ray to find the block
 			//create a target where we are pointing
 			targetPosition = Camera.main.ScreenToWorldPoint(Vector3(Input.mousePosition.x,Input.mousePosition.y,depth-(Camera.main.transform.position.z)));
@@ -185,14 +185,22 @@ function Update () {
 			else if(toolmode == 2) { //we did not hit anything? PLACE
 	        	if(blockhit.material == 0) {
 					var item : InventoryItem = inventory.containerScript.pullCurrent(1);
-					if(item.id > 0) { //not an air block Yay!
-						blockset = new Block();
-						blockset.material = item.id;
-						blockset.changed = true;
-						blockset.setoffset(0.5f, 0.5f, 0.5f);
-						blockset.setvariant(positionhit.x,positionhit.y);
-						//blockset.Tile.y = item.id;
-						Terra.SetBlock(scrWorld.GetChunk(positionhit.x,positionhit.y,positionhit.z), positionhit, blockset);
+					if(item.id > 0) { 
+						toolmode = 1;
+						var newPart : Part = new Part();
+						newPart.createFromItem(item, scrWorld.itemLibrary);
+						newPart.setPosition(Vector3(positionhit.x, positionhit.y, 1.5), transform.rotation);
+						GameObject.FindGameObjectWithTag("world").GetComponent(World).createPart(newPart);
+						
+					
+					//not an air block Yay!
+//						blockset = new Block();
+//						blockset.material = item.id;
+//						blockset.changed = true;
+//						blockset.setoffset(0.5f, 0.5f, 0.5f);
+//						blockset.setvariant(positionhit.x,positionhit.y);
+//						//blockset.Tile.y = item.id;
+//						Terra.SetBlock(scrWorld.GetChunk(positionhit.x,positionhit.y,positionhit.z), positionhit, blockset);
 					}
 				}
 			}

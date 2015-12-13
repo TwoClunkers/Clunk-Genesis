@@ -120,11 +120,12 @@ public class ContainerUI : MonoBehaviour
 	{
 		InventoryItem pulled = new InventoryItem ();
 
-		if (selectedSlot > -1) {
-			pulled = storage.getItem (selectedSlot);
-			if (pulled.id > 0) {
-				pulled.quantity = 1 - (storage.pullSlot (selectedSlot, 1));
-			}
+		if (selectedSlot < 0)
+			selectedSlot = 0;
+
+		pulled = storage.getItem (selectedSlot);
+		if (pulled.id > 0) {
+			pulled.quantity = 1 - (storage.pullSlot (selectedSlot, 1));
 		} else {
 			pulled.id = 0;
 			pulled.quantity = 0;

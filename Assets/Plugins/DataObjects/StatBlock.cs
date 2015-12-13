@@ -1,6 +1,7 @@
 using System;
 namespace DataObjects
 {
+	[Serializable]
 	public class StatBlock
 	{
 		public float stability; //health what it would take to destroy us now
@@ -16,6 +17,22 @@ namespace DataObjects
 
 		public StatBlock ()
 		{
+		}
+
+		public StatBlock getCopy()
+		{
+			StatBlock statCopy = new StatBlock ();
+
+			statCopy.stability = stability;
+			statCopy.energy = energy;
+			statCopy.fluid = fluid;
+			statCopy.durability = durability;
+			statCopy.capacitance = capacitance;
+			statCopy.volume = volume;
+			statCopy.aptitude = aptitude;
+			statCopy.precision = precision;
+
+			return statCopy;
 		}
 	}
 }

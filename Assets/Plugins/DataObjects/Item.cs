@@ -19,7 +19,7 @@ namespace DataObjects
 		public float size;
 		public GameObject itemPrefab;
 		public Split construct;
-		public Attachment[] attachments;
+		public Node[] attachments;
 		public StatBlock baseStats;
 		//public ItemAttribute[] attributes;
 
