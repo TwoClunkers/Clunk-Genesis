@@ -24,6 +24,7 @@ namespace DataObjects
 
 		public Part ()
 		{
+		
 		}
 
 		public Part getCopy()
@@ -34,6 +35,8 @@ namespace DataObjects
 			//newPart.nodes = new Node[nodes.Length];
 			newPart.nodes = nodes.Clone() as Node[];
 			newPart.type = type;
+
+			newPart.baseStats = baseStats.getCopy();
 
 			newPart.currentPower = currentPower;
 			newPart.active = active;
@@ -95,11 +98,12 @@ namespace DataObjects
 
 		public void createFromItem (InventoryItem keyItem, ItemLibrary items)
 		{
+			//this fills the "item" variable in this part
 			item = new InventoryItem ();
 			item.setInvItem (keyItem.id, keyItem.quantity);
 
-			items.getItemAttachments (keyItem.id, out nodes);
-			items.getItemStats (keyItem.id, out baseStats);
+			nodes = items.getItemAttachments (keyItem.id);
+			baseStats = items.getItemStats (keyItem.id);
 
 			currentPower = 0.0f;
 			currentHealth = baseStats.stability;

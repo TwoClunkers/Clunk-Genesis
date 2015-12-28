@@ -2,21 +2,17 @@
 using System;
 namespace DataObjects
 {
-	public enum ItemTypes {
-		place_fore,
-		place_back,
-		equip_body,
-		equip_head,
-		equip_drive,
-		equip_arm,
-		equip_arm_buff,
-		equip_drive_buff,
-		equip_head_buff,
-		equip_body_buff,
-		equip_buff,
-		equip_internal,
-		consumable,
+	public enum ItemGroup {
+		unused,
+		assortment,
 		material,
+		component,
+		part,
+		assembly,
+		unit
+	}
+	public enum ItemTypes {
+		unused,
 		bot_core,
 		bot_drive,
 		bot_chassis,

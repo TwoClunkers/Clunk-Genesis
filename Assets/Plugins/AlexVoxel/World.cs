@@ -9,6 +9,7 @@ public class World : MonoBehaviour {
     public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
     public GameObject chunkPrefab;
 	public GameObject pickupPrefab;
+	public GameObject controllerPrefab;
 	public GameObject master;
 	public string worldName = "mech";
 
@@ -140,6 +141,11 @@ public class World : MonoBehaviour {
                 chunk.update = true;
         }
     }
+
+	public GameObject createController(float x, float y, float z)
+	{
+		return Instantiate (controllerPrefab, new Vector3 (x, y, z), Quaternion.identity) as GameObject;
+	}
 	
 	public bool createPickUp(Pickup pickup) //creates an instance that holds the data object
 	{		
@@ -153,6 +159,7 @@ public class World : MonoBehaviour {
 
 		oPickup.GetComponent<MeshFilter>().mesh = info.mesh;
 		oPickup.GetComponent<MeshCollider> ().sharedMesh = info.mesh;
+		oPickup.GetComponent<MeshRenderer> ().material = info.material;
 		//okay, we kinda need to populate the  new object with the pickup data...
 		pickUpScript sPickup = oPickup.GetComponent("pickUpScript") as pickUpScript; 
 
@@ -163,29 +170,86 @@ public class World : MonoBehaviour {
 		else
 			return false;
 	}
-	public bool createPart(Part newPart) //creates an instance that holds the data object
+	public Transform createPart(Part newPart) //creates an instance that holds the data object
 	{		
 		if (newPart == null)
-			return false;
-
-		GameObject newObject = new GameObject ();
+			return null;
+	
 		//get the part info from library
 		ItemInfo info = new ItemInfo();
 		if (!itemLibrary.getItemInfo (info, newPart.item.id)) {
 
-			return false;
-		} else
-			newObject = info.itemPrefab;
+			return null;
+		} 
 
-		Transform oPart = PoolManager.Pools["parts"].Spawn(newObject, newPart.getPosition(), newPart.thisRotation);
+		Transform oPart = PoolManager.Pools["parts"].Spawn(info.itemPrefab, newPart.getPosition(), newPart.thisRotation);
 
 		oPart.GetComponent<MeshFilter>().mesh = info.mesh;
 		oPart.GetComponent<MeshCollider> ().sharedMesh = info.mesh;
+		oPart.GetComponent<Renderer>().material = info.material;
 			
 		//okay, we kinda need to populate the  new object with the pickup data...
+		//this would mean that whatever the prefab just used, hopefully it has a partScript
 		partScript sPart = oPart.GetComponent("partScript") as partScript; 
 			
+		//perhaps in the future we could see how to attach a script from the item data, which would correspond
+		//directly to the type of object. 
 		sPart.partData = newPart.getCopy ();
-		return true;
+
+		return oPart;
+	}
+	public Transform createActor(Schematic schema) //builds from schema
+	{		
+		if (schema == null)
+			return null;
+
+		if (schema.parts.Count < 1)
+			return null;
+
+		Transform core = createPart (schema.getPart (0));
+
+		if (core == null)
+			return null;
+
+		assembleActor (core, schema, 0); 
+		return core;
+	
+	}
+	public void assembleActor(Transform parentPart, Schematic schema, int index)
+	{
+
+		//reads node data to create child parts
+		Part thisPart = schema.getPart (index);
+		if (thisPart == null)
+			return;
+		else {
+			for(int i=0; i<thisPart.nodes.Length; i+=1) {
+
+				Node thisNode = thisPart.getNode(i);
+				if(thisNode == null) continue;
+
+				if(thisNode.equipped) {
+					Debug.Log("node:yes");
+					PartTag attachedTag = thisNode.getPartTag ();
+
+					if (attachedTag == null)
+						continue; //nothing attached
+
+					Part attachedPart = schema.getPart (attachedTag.index);
+
+					//now that we pulled the data we need..
+					Transform partObject = createPart(attachedPart);
+					if(partObject) {
+						partObject.SetParent(parentPart);
+						partObject.localPosition.Set (thisNode.localPosition.x,thisNode.localPosition.y,thisNode.localPosition.z);
+						partObject.localRotation = Quaternion.Euler(thisNode.localRotation.x,thisNode.localRotation.y,thisNode.localRotation.z);
+						assembleActor(partObject, schema, attachedTag.index);
+					}
+					else Debug.Log("Gag! no part!");
+				}
+
+			}
+
+		}
 	}
 }

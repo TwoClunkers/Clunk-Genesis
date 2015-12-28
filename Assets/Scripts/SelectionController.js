@@ -4,6 +4,7 @@ import DataObjects;
 
 private var TerrainScript : Terra;
 
+
 var positionhit : WorldPos;
 var positionclick : WorldPos;
 var blockhit : Block;
@@ -40,6 +41,7 @@ var AreaObject : GameObject;
 var thisArea : GameObject;
 var makingArea : boolean;
 var mouseController : MouseHandler;
+
 
 function Start () {
 	
@@ -187,11 +189,40 @@ function Update () {
 					var item : InventoryItem = inventory.containerScript.pullCurrent(1);
 					if(item.id > 0) { 
 						toolmode = 1;
-						var newPart : Part = new Part();
-						newPart.createFromItem(item, scrWorld.itemLibrary);
-						newPart.setPosition(Vector3(positionhit.x, positionhit.y, 1.5), transform.rotation);
-						GameObject.FindGameObjectWithTag("world").GetComponent(World).createPart(newPart);
+						var newSchema : Schematic = new Schematic();
+						var partNumber : InventoryItem = new InventoryItem();
+						partNumber.id = scrWorld.itemLibrary.findItem(ItemTypes.bot_core, 0);
+						partNumber.quantity = 1;
 						
+						var firstPart : Part = new Part();
+						firstPart.createFromItem(partNumber, scrWorld.itemLibrary);
+						firstPart.baseStats.energy = Random.value*5;
+						firstPart.setPosition(targetPosition, Quaternion.identity);
+						newSchema.startSchematic(firstPart);
+						for(var a : int = 0; a<firstPart.nodes.Length; a+=1)
+						{
+							
+							var node : Node = firstPart.getNode(a);
+							if(node) {
+							
+								var thisType : ItemTypes = node.typeRestriction;
+								var nextPart : Part = new Part();
+								partNumber.id = scrWorld.itemLibrary.findItem(thisType, 0);
+								nextPart.createFromItem(partNumber, scrWorld.itemLibrary);
+								Debug.Log ("Alpaca");
+								firstPart.clearNode(a);
+								newSchema.connect(nextPart, firstPart, a);
+							}
+						}
+						//so now we have a completed schematic
+						var newActor : Transform = scrWorld.createActor(newSchema);
+						
+						//this was testing if we could spawn parts - success!
+//						var newPart : Part = new Part();
+//						newPart.createFromItem(item, scrWorld.itemLibrary);
+//						newPart.setPosition(Vector3(positionhit.x, positionhit.y, 1.5), transform.rotation);
+//						GameObject.FindGameObjectWithTag("world").GetComponent(World).createPart(newPart);
+//						
 					
 					//not an air block Yay!
 //						blockset = new Block();

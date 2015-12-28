@@ -14,6 +14,7 @@ public class Block
 	public int material = 1;
 	public int varientx = 0;
 	public int varienty = 0;
+	public int varientz = 0;
 	public float damage = 100;
 	public float offx;
 	public float offy;
@@ -35,6 +36,7 @@ public class Block
 		material = target.material;
 		varientx = target.varientx;
 		varienty = target.varienty;
+		varientz = target.varientz;
 		damage = target.damage;
 		offx = target.offx;
 		offy = target.offy;
@@ -44,18 +46,60 @@ public class Block
 	public virtual Tile TexturePosition(Direction direction)
 	{
 		Tile tile = new Tile();
-		
-		//tile.x = varientx;
-		//tile.y = varienty;
-		
-		if(material < 5) {
-			tile.x = varientx;
-			tile.y = varienty+(material-1)*8;
+		int xregion = 0;
+		int yregion = 0;
+
+		if (material < 9) { //first 8 materials have large maps
+			if (material < 5) { //first 4 materials
+				xregion = 0;
+				yregion = (material - 1) * 8;
+			} else { //second 4 materials
+				xregion = 8;
+				yregion = (material - 5) * 8;
+			}
+		} else if (material < 17) { //next 8 matierals are medium size
+			xregion = 16;
+			yregion = (material - 9) * 4;
+			varientx = Mathf.Clamp (varientx, 0, 2);
+			varienty = Mathf.Clamp (varienty, 0, 2);
+			varientz = Mathf.Clamp (varientz, 0, 2);
+		} else if (material < 49) { //next 32 matirials are rectangles
+			if (material < 33) { //first row of materials
+				xregion = 20;
+				yregion = (material - 17) * 2;
+			} else { //second 16 materials
+				xregion = 24;
+				yregion = (material - 33) * 2;
+			}
+			varientx = Mathf.Clamp (varientx, 0, 2);
+			varienty = 0;
+			varientz = 0;
 		}
-		else {
-			tile.x = varientx+8;
-			tile.y = varienty+(material-5)*8;
+
+		switch (direction)
+		{
+			case Direction.south:
+				tile.x = varientx + xregion;
+				tile.y = varienty + yregion;
+				return tile;
+			case Direction.down:
+				tile.x = varientx + xregion;
+				tile.y = varientz + yregion;
+				return tile;
+			case Direction.up:
+				tile.x = varientx + xregion;
+				tile.y = varientz + yregion;
+				return tile;
+			case Direction.east:
+				tile.x = varientz + xregion;
+				tile.y = varienty + yregion;
+				return tile;
+			case Direction.west:
+				tile.x = 7-varientz + xregion;
+				tile.y = varienty + yregion;
+				return tile;
 		}
+
 		
 		return tile;
 	}
@@ -124,6 +168,12 @@ public class Block
 		return false;
 	}
 
+	public virtual void Resolve
+		(Chunk chunk, int x, int y, int z)
+	{
+
+	}
+
     public virtual MeshData Blockdata
      (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
@@ -184,16 +234,22 @@ public class Block
 		offz = offset.z;
 	}
 
-	public void setvariant (float x, float y)
+	public void setvariant (float x, float y, float z)
 	{
 		int vposx = (int)(x % 7);
 		int vposy = (int)(y % 7);
+		int vposz = (int)(z % 7);
+
 		if (vposx < 0)
 			vposx += 7;
 		if (vposy < 0)
 			vposy += 7;
+		if (vposz < 0)
+			vposz += 7;
+
 		varientx = vposx;
 		varienty = vposy;
+		varientz = vposz;
 	}
 
 	//the getPoint# members should return a Vector3 that is a point relative to this block
@@ -251,10 +307,10 @@ public class Block
 		meshData.AddVertex(getPoint4 (x, y, z, points [3] ));
 
         meshData.AddQuadTriangles();
-		meshData.uv.AddRange(FaceUVs(Direction.up, new Vector2(points [0].x, points [0].z), 
-		                             new Vector2 (points [1].x, points [1].z), 
-		                             new Vector2 (points [2].x, points [2].z), 
-		                             new Vector2 (points [3].x, points [3].z)));
+		meshData.uv.AddRange(FaceUVs(Direction.up, new Vector2(points [0].z, points [0].x), 
+		                             new Vector2 (points [1].z, points [1].x), 
+		                             new Vector2 (points [2].z, points [2].x), 
+		                             new Vector2 (points [3].z, points [3].x)));
 		meshData.uv1.AddRange (FaceUV1 ());
 
         return meshData;
@@ -303,10 +359,10 @@ public class Block
 
 		
         meshData.AddQuadTriangles();
-		meshData.uv.AddRange(FaceUVs(Direction.east, new Vector2(points [0].y, points [0].z), 
-		                             new Vector2 (points [1].y, points [1].z), 
-		                             new Vector2 (points [2].y, points [2].z), 
-		                             new Vector2 (points [3].y, points [3].z)));
+		meshData.uv.AddRange(FaceUVs(Direction.east, new Vector2(points [0].z, points [0].y), 
+		                             new Vector2 (points [1].z, points [1].y), 
+		                             new Vector2 (points [2].z, points [2].y), 
+		                             new Vector2 (points [3].z, points [3].y)));
 		meshData.uv1.AddRange (FaceUV1 ());
         return meshData;
     }

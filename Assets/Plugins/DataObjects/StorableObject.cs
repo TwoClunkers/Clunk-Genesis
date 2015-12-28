@@ -87,6 +87,13 @@ namespace DataObjects
 			return new Vector3 (localx + thisPos.x, localy + thisPos.y, localz + thisPos.z);
 		}
 
+		public virtual Quaternion getRotation ()
+		{
+			Quaternion temp = new Quaternion();
+			temp = thisRotation;
+			return temp;
+		}
+
 		public virtual bool getExtent(ItemLibrary items) 
 		{
 			ItemInfo info = new ItemInfo ();

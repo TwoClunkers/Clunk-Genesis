@@ -19,13 +19,13 @@ public class partScript : MonoBehaviour
 		
 	}
 	
-	void initialize (InventoryItem keyItem)
+	public virtual void initialize (InventoryItem keyItem)
 	{
 		partData = new Part ();
 		partData.createFromItem (keyItem, itemLibrary);
 	}
 	
-	void destroyMe()
+	public void destroyMe()
 	{
 		PoolManager.Pools["parts"].Despawn(transform);
 		//	try{ Network.RemoveRPCs(networkView.viewID); } catch(e){}

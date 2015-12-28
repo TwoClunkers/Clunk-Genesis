@@ -39,6 +39,14 @@ namespace DataObjects
 				return false; 
 		}
 
+		public bool stackCheck( float checktime )
+		{
+			if ((destroyAtThisTime - checktime) < 80)
+				return true;
+			else
+				return false;
+		}
+
 		public bool copyPickup (Pickup source)
 		{
 			if (source == null)

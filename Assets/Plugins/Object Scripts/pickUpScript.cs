@@ -7,6 +7,7 @@ using DataObjects;
 public class pickUpScript : MonoBehaviour
 {
 	public Pickup pickup;
+	public bool canStack = false;
 
 	void Start ()
 	{
@@ -15,6 +16,9 @@ public class pickUpScript : MonoBehaviour
 
 	void Update()
 	{
+		if (pickup.stackCheck (Time.time))
+			canStack = true;
+
 		if(pickup.item.quantity < 1) destroyMe();
 		else if(pickup.destroyCheck(Time.time)) destroyMe();
 	}
@@ -41,8 +45,10 @@ public class pickUpScript : MonoBehaviour
 			}
 			else destroyMe();
 		} else if(other.tag.Equals("pickup")){ //combine data
-			pickUpScript spup = other.GetComponent<pickUpScript>();
-			pickup.combinePickups(spup.pickup);
+			if(canStack) {
+				pickUpScript spup = other.GetComponent<pickUpScript>();
+				if(spup.canStack) pickup.combinePickups(spup.pickup);
+			}
 		}
 	}
 

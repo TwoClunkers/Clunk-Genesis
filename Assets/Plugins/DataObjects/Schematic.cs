@@ -34,11 +34,14 @@ namespace DataObjects
 		public bool connect (Part newPart, Part targetPart, int nodeIndex)
 		{
 			Node parentNode = targetPart.getNode(nodeIndex);
-			if (parentNode == null)
+			if (parentNode == null) {
+				Debug.Log ("node not found");
 				return false; //wrong index
-			if (!parentNode.validate (newPart))
+			}
+			if (!parentNode.validate (newPart)) {
+				Debug.Log ("validate failed");
 				return false; //node says we can't connect
-
+			}
 			PartTag newTag = new PartTag ();
 			PartTag targetTag = targetPart.tag;
 			
@@ -46,6 +49,15 @@ namespace DataObjects
 			newTag.level = targetTag.level + 1;
 			newTag.parent = targetTag.index;
 			newTag.node = nodeIndex;
+
+			//positioning must rotate to match the parent, then the attachment point (node)
+			Vector3 newPosition = targetPart.getPosition ();
+			Quaternion newRotation = targetPart.getRotation ();
+
+			newPosition = newPosition + (newRotation * parentNode.localPosition);
+			newRotation = newRotation * Quaternion.Euler (parentNode.localRotation);
+
+			newPart.setPosition (newPosition, newRotation);
 
 			newPart.tag = newTag; //this puts our new tag into our Part struct
 			parts.Add (newTag.index, newPart); //and into collection

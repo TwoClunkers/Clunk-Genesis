@@ -58,10 +58,14 @@ namespace DataObjects
 
 		public bool validate(Part newPart)
 		{
-			if (equipped)
+			if (equipped) {
+				Debug.Log("already connected!");
 				return false;
-			if (!(newPart.type == typeRestriction)) //likely will need to be a more complex check
+			}
+			if (!(newPart.type == typeRestriction)) {//likely will need to be a more complex check
+				Debug.Log ("not compatable");
 				return false;
+			}
 
 			return true; //this node is empty and accepts this part type
 		}

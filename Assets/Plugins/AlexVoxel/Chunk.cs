@@ -12,6 +12,7 @@ public class Chunk : MonoBehaviour
 
     public Block[, ,] blocks = new Block[chunkSize, chunkSize, chunkSize];
 	public List<Pickup> pickups = new List<Pickup> ();
+	public List<GameObject> processes = new List<GameObject> ();
 
     public static int chunkSize = 16;
     public bool update = false;
@@ -46,6 +47,21 @@ public class Chunk : MonoBehaviour
         return world.GetBlock(pos.x + x, pos.y + y, pos.z + z);
     }
 
+	public bool IsClear(int x, int y, int z, int endx, int endy, int endz)
+	{
+		for (int a = x; a < endx; a++)
+		{
+			for (int b = y; b < endy; b++)
+			{
+				for (int c = z; c < endz; c++)
+				{
+					Block check = GetBlock (a, b, c);
+					if(check.material > 0) return false;
+				}
+			}
+		}
+		return true;
+	}
     public static bool InRange(int index)
     {
         if (index < 0 || index >= chunkSize)
@@ -87,10 +103,28 @@ public class Chunk : MonoBehaviour
             {
                 for (int z = 0; z < chunkSize; z++)
                 {
-                    meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
+					Block thisBlock = blocks[x, y, z];
+					thisBlock.Resolve(this, x, y, z);
+					if(thisBlock is BlockAnchor) {
+						GameObject response = processes.Find(obj=>obj.transform.position == new Vector3(pos.x + x, pos.y + y, pos.z + z));
+						if(!response) {
+							response = world.createController(x,y,z);
+							processes.Add(response);
+						}
+					}
                 }
             }
         }
+		for (int x = 0; x < chunkSize; x++)
+		{
+			for (int y = 0; y < chunkSize; y++)
+			{
+				for (int z = 0; z < chunkSize; z++)
+				{
+					meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
+				}
+			}
+		}
         RenderMesh(meshData);
 
 		SpawnPickups();

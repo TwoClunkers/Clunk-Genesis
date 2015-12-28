@@ -4,6 +4,16 @@ using DataObjects;
 
 public static class Terra
 {
+	public static bool isCloser(Vector3 center, Vector3 pointOne, Vector3 pointTwo)
+	{
+		float distance1 = Vector3.SqrMagnitude (center - pointOne);
+		float distance2 = Vector3.SqrMagnitude (center - pointTwo);
+		if (distance1 < distance2)
+			return true;
+		else
+			return false;
+	}
+
 	public static bool damageSphere(World world, Vector3 center, float radius, float power)
 	{
 		WorldPos current_pos;
@@ -230,7 +240,7 @@ public static class Terra
 					}
 					else{
 						if(brush[a,b,c].material > 0) {
-							current_block.setvariant(current_pos.x,current_pos.y);
+							current_block.setvariant(current_pos.x,current_pos.y,current_pos.z);
 							current_block.setoffset(brush[a,b,c].offx, brush[a,b,c].offy, brush[a,b,c].offz);
 							current_block.material = 0;
 							SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
