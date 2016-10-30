@@ -102,7 +102,7 @@ function Update () {
 		if(toolmode == 2) obTool.GetComponent.<UnityEngine.UI.Image>().sprite = spritePlace;
 	}
 		
-	if(Input.GetMouseButtonUp(0)) {
+	if(Input.GetMouseButtonDown(0)) {
 		if(toolmode == 0) { //edit mode  lets use a mouse to screen ray to find the block
 			//create a target where we are pointing
 			targetPosition = Camera.main.ScreenToWorldPoint(Vector3(Input.mousePosition.x,Input.mousePosition.y,depth-(Camera.main.transform.position.z)));
@@ -242,7 +242,7 @@ function Update () {
 			if(ourBeam != null) {
 				
 				beamScript = ourBeam.GetComponent("Effect");
-				beamScript.endtime = Mathf.Min(beamScript.endtime, Time.time + 0.1f);
+				beamScript.endtime = Mathf.Min(beamScript.endtime, Time.time + 0.2f);
 				Debug.Log("beam on");
 				//point to our target
 				ray.origin = transform.position;
@@ -260,7 +260,7 @@ function Update () {
 						obMarker.transform.position = targetPosition;
 					}
 				}
-				Terra.applyCircle(scrWorld, targetPosition, brushRadius, -2, 100);
+				//Terra.applyCircle(scrWorld, targetPosition, brushRadius, -2, 5);
 				scrMarker.targetPosition = targetPosition;
 			}
 			else beamActive = false;
@@ -277,14 +277,14 @@ function pushVoxels (center : Vector3)
 		
 		if(beamActive) {
 			if(ourBeam != null) {
-				Terra.applyCircle(scrWorld, targetPosition, brushRadius, -2, 50);
+				Terra.applySphere(scrWorld, targetPosition, brushRadius);
 				beamScript = ourBeam.GetComponent("Effect");
-				beamScript.addPower(0.2f);
+				//beamScript.addPower(2.0f);
 			}
 			else beamActive = false;
 		}
 		else {
-			Terra.applyCircle(scrWorld, targetPosition, brushRadius, -2, 50);
+			Terra.applySphere(scrWorld, targetPosition, brushRadius);
 			ourBeam = Instantiate(EffectPrefab, transform.position, Quaternion.identity);
 			beamActive = true;
 			//eo.transform.SetParent(this.transform);

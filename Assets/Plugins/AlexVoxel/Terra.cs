@@ -133,124 +133,136 @@ public static class Terra
 	{
 		WorldPos current_pos;
 		WorldPos start_pos;
+		WorldPos test_pos;
 		Block current_block;
 		Vector3 V_pos;
-		Vector3 V_distance;
 		Vector3 O_pos;
+		Vector3 T_pos = new Vector3();
 		float distanceVtoC;
 		float distanceOtoC;
 		float push;
 		Vector3 V_push = new Vector3();
 		Vector3 V_offset;
-		int landing;
+		Vector3 directionCtoV = new Vector3();
 
-		int size = ((int)radius + 2) * 2; //this is to capture a cube of voxels
+		int size = ((int)radius + 3) * 2; //this is to capture a cube of voxels
 		int half = size / 2;
 
 		Block[,,] brush = new Block[size,size,size]; //this is where we will save our changes before final
 
+		center.Set (Mathf.Floor (center.x)+0.5f, Mathf.Floor (center.y)+0.5f, Mathf.Floor (center.z)+0.5f);
+
 		start_pos = GetBlockPos(new Vector3(center.x+half-1,center.y+half-1,center.z+half-1));
 
-		for(int a = size-1; a > -1; a-=1) 
-			for(int b = size-1; b > -1; b-=1) 
-				for(int c = size-1; c > -1; c-=1)
-				{
-					brush[a,b,c] = new Block();
-					current_pos = GetBlockPos(new Vector3(center.x+a-half,center.y+b-half,center.z+c-half));
-					current_block = world.GetBlock(current_pos.x,current_pos.y,current_pos.z);
+		for (int a = size - 1; a > -1; a -= 1)
+			for (int b = size - 1; b > -1; b -= 1)
+				for (int c = size - 1; c > -1; c -= 1) {
+					brush [a, b, c] = new Block ();
+					current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
+					current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
 				
-					O_pos = new Vector3(current_block.offx + current_pos.x, current_block.offx + current_pos.y, current_block.offx + current_pos.z);
-					V_pos = new Vector3(0.5f + current_pos.x, 0.5f + current_pos.y, 0.5f + current_pos.z);
-					
-					distanceVtoC = Vector3.Distance(V_pos, center);
-					distanceOtoC = Vector3.Distance(O_pos, center);
+					//world position of voxel
+					O_pos = new Vector3 (current_block.offx + current_pos.x, current_block.offy + current_pos.y, current_block.offz + current_pos.z);
+					//position of center of voxel
+					V_pos = new Vector3 (0.5f + current_pos.x, 0.5f + current_pos.y, 0.5f + current_pos.z);
 
-					push = radius/distanceVtoC;
-					V_distance = V_pos-center;
-					V_push = (V_distance)*push;
-					V_pos = center+V_push;
+					distanceVtoC = Vector3.Distance (V_pos, center);
+					//distanceOtoC = Vector3.Distance (O_pos, center);
 
-					V_offset = new Vector3(V_pos.x - current_pos.x, V_pos.y - current_pos.y, V_pos.z - current_pos.z);
+					//normalized direction
+					directionCtoV = (V_pos-center) / distanceVtoC;
+					//we can multiply by our radius to find the point on sphere that is in line
+					T_pos = center + (directionCtoV * radius);
 
-					//if(distanceOtoC<distanceVtoC) {
-						landing = Terra.insideBound(V_offset, distanceVtoC, radius, radius+1.55f);
-						brush[a,b,c].offx = Mathf.Clamp(V_offset.x,0.0f,1.0f);
-						brush[a,b,c].offy = Mathf.Clamp(V_offset.y,0.0f,1.0f);
-						brush[a,b,c].offz = Mathf.Clamp(V_offset.z,0.0f,1.0f);
-					//}
-					//else landing = 1;
-					
+					if (distanceVtoC > (radius)) { //marked as "outside"
+						brush [a, b, c].material = -2; 
+					} else if (distanceVtoC < (radius) ) { //marked as "inside"
+						brush [a, b, c].material = 0; 
+					} 
 
-					if(landing < 0) { //should be inside sphere
-						brush[a,b,c].material = 1;
-						landing = 0;
-					}
-					else { 
-						if(landing > 0) {
-							brush[a,b,c].material = -1; //should be outside, no change
-						}
-						else if(landing == 0)  //landed in voxel on edge
-						{ 
-							
-								brush[a,b,c].offx = V_offset.x;
-								brush[a,b,c].offy = V_offset.y;
-								brush[a,b,c].offz = V_offset.z;
-							
-							
-							brush[a,b,c].material = 1;
-						}
-						
-					}
+					if ((T_pos.x - current_pos.x) > 1.15f)
+						continue;
+					if ((T_pos.y - current_pos.y) > 1.15f)
+						continue;
+					if ((T_pos.z - current_pos.z) > 1.15f)
+						continue;
+					if ((T_pos.x - current_pos.x) < -0.15f)
+						continue;
+					if ((T_pos.y - current_pos.y) < -0.15f)
+						continue;
+					if ((T_pos.z - current_pos.z) < -0.15f)
+						continue;
 
-				if((landing&8)>0) {
-					brush[a,b,c+1].material = 0;
-					if((landing&4)>0) {
-						 brush[a,b+1,c+1].material = 0;
-						if((landing&2)>0 ) brush[a+1,b+1,c+1].material = 0;
-					}
-					if((landing&2)>0)brush[a+1,b,c+1].material = 0;
-				}
-				else if((landing&4)>0) {
-					 brush[a,b+1,c].material = 0;
-					if((landing&2) >0) brush[a+1,b+1,c].material = 0;
-				}
-				else if((landing&2)>0) brush[a+1,b,c].material = 0;
+//					test_pos = GetBlockPos (T_pos);
+//					if(test_pos.Equals (current_pos) ) { //landed in block
+//						brush [a, b, c ].offx = (T_pos.x) - (current_pos.x);	//(T_pos.x - current_pos.x);
+//						brush [a, b, c ].offy = (T_pos.y) - (current_pos.y);	//(T_pos.y - current_pos.y);
+//						brush [a, b, c ].offz = (T_pos.z) - (current_pos.z);	//(T_pos.z - current_pos.z);
+//						Debug.Log(brush [a, b, c ].offx);
+//						Debug.Log(brush [a, b, c ].offy);
+//						Debug.Log(brush [a, b, c ].offz);
+//						Debug.Log("end");
+						brush [a, b, c].offx = Mathf.Clamp((T_pos.x) - (current_pos.x), 0.0f, 1.0f);
+						brush [a, b, c].offy = Mathf.Clamp((T_pos.y) - (current_pos.y), 0.0f, 1.0f);
+						brush [a, b, c].offz = Mathf.Clamp((T_pos.z) - (current_pos.z), 0.0f, 1.0f);
 
-//				if(distanceOtoC>(radius)) {
-//					brush[a,b,c].offx = current_block.offx;
-//					brush[a,b,c].offy = current_block.offy;
-//					brush[a,b,c].offz = current_block.offz;
-//
+						brush [a, b, c].material = 1; //marked as "participating"
 //					}
+
 				}
 
-
-
-
-
+		//second loop to find and cancel out "participating" voxels that need to NOT change material
 		for(int a = size-1; a > -1; a-=1) 
 			for(int b = size-1; b > -1; b-=1) 
 				for(int c = size-1; c > -1; c-=1)
 				{	
 					current_pos = GetBlockPos(new Vector3(center.x+a-half,center.y+b-half,center.z+c-half));
 					current_block = world.GetBlock(current_pos.x,current_pos.y,current_pos.z);
-					if(brush[a,b,c].material == 0) { //set offset, don't change block
-						current_block.setoffset(brush[a,b,c].offx, brush[a,b,c].offy, brush[a,b,c].offz);
-						SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
-					}
-					else{
-						if(brush[a,b,c].material > 0) {
-							current_block.setvariant(current_pos.x,current_pos.y,current_pos.z);
-							current_block.setoffset(brush[a,b,c].offx, brush[a,b,c].offy, brush[a,b,c].offz);
-							current_block.material = 0;
-							SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
+					if(brush[a,b,c].material == -2) { //this is outside, so any prime voxel connected needs to NOT change material
+						//we will need to see if any connecting voxels are "participating"
+						for (int d = 0; d < 2; d += 1) { 
+							if (a + d > (size-1))
+								continue;
+							else
+								for (int e = 0; e < 2; e += 1) {
+									if (b + e > (size-1))
+										continue;
+									else
+										for (int f = 0; f < 2; f += 1) {
+											if (c + f > (size-1))
+												continue;
+											else if (brush [d+a, e+b, f+c].material == 1)
+												brush [d+a, e+b, f+c].material = -1; //mark as "NOT-affected"
+										}
+								}
 						}
-					
-						else {
-								SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
-						}
+									
 					}
+
 				}
+		//third loop to act on our markings
+		for (int a = size - 1; a > -1; a -= 1)
+			for (int b = size - 1; b > -1; b -= 1)
+				for (int c = size - 1; c > -1; c -= 1) {
+					current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
+					current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
+					int flagmat = brush [a, b, c].material;
+
+					if (flagmat == 0) { //"Inside"
+						current_block.material = 0; 
+					} else if (flagmat == 1) { //"Participating"
+						current_block.material = 0;
+						current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
+					} else if (flagmat == -1) { //"NON-Affected"
+						current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
+						//current_block.material = 0;
+					} else {
+						//current_block.material = 0;
+					}
+
+					SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
+				}
+		
 		return true;
 	}
 	public static bool pushCircle(World world, Vector3 center, float radius, int material, float amount)
@@ -269,7 +281,7 @@ public static class Terra
 		Block[,,] brush = new Block[size,size,size]; //this is where we will save our changes before final
 		for(int a = size-1; a > -1; a-=1) 
 			for(int b = size-1; b > -1; b-=1) 
-				for(int c = 2; c > -1; c-=1)
+				for(int c = 1; c > -1; c-=1)
 			{
 				brush[a,b,c] = new Block();
 				current_pos = GetBlockPos(new Vector3(center.x+a-half,center.y+b-half,center.z+c-1));
@@ -322,7 +334,7 @@ public static class Terra
 		
 		for (int a = size-1; a > -1; a-=1) {
 			for (int b = size-1; b > -1; b-=1) {
-				for (int c = size-1; c > -1; c-=1) {
+				for (int c = 3; c > 1; c-=1) {
 					brush [a, b, c] = new Block ();
 					current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
 					current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
@@ -390,7 +402,7 @@ public static class Terra
 		
 		for (int a = size-1; a > -1; a-=1) {
 			for (int b = size-1; b > -1; b-=1) {
-				for (int c = size-1; c > -1; c-=1) {	
+				for (int c = 3; c > 1; c-=1) {	
 					current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
 					current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
 					if (brush [a, b, c].material == 0) { //set offset, don't change block

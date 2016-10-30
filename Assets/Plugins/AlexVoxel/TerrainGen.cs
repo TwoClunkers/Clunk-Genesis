@@ -50,10 +50,12 @@ public class TerrainGen
 				if((noise < 2.55) && (noise > 2.549)) {
 					BlockAnchor blockA = new BlockAnchor();
 					blockA.material = 31;
+					blockA.damage = 450;
 					blockA.setvariant (x, y, z);
 					block = blockA;
 				} else if((noise < 2.6) && (noise > 2.59)) {
 					block.material = 32;
+					block.damage = 50;
 				} else block.material = 14;
 			} else if (noise < 6.0) {
 				block.material = Mathf.FloorToInt (noise - 1);

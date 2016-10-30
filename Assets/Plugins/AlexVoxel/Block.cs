@@ -15,7 +15,7 @@ public class Block
 	public int varientx = 0;
 	public int varienty = 0;
 	public int varientz = 0;
-	public float damage = 100;
+	public float damage = 200;
 	public float offx;
 	public float offy;
 	public float offz;
