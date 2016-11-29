@@ -6,8 +6,12 @@ public class MeshData
 {
     public List<Vector3> vertices = new List<Vector3>();
     public List<int> triangles = new List<int>();
+	public List<int> blendtriangles = new List<int>();
     public List<Vector2> uv = new List<Vector2>();
+	public List<Vector3> normals = new List<Vector3> ();
+
 	public List<Vector2> uv1 = new List<Vector2>();
+	public List<Color32> colors = new List<Color32> ();
 
     public List<Vector3> colVertices = new List<Vector3>();
     public List<int> colTriangles = new List<int>();
@@ -20,8 +24,11 @@ public class MeshData
 	{
 		vertices.Clear();
 		triangles.Clear();
+		blendtriangles.Clear ();
 		uv.Clear();
 		uv1.Clear ();
+		normals.Clear ();
+		colors.Clear ();
 		colVertices.Clear();
 		colTriangles.Clear();
 	}
@@ -47,9 +54,10 @@ public class MeshData
         }
     }
 
-    public void AddVertex(Vector3 vertex)
+    public void AddVertex(Vector3 vertex, Vector3 normal)
     {
         vertices.Add(vertex);
+		normals.Add (normal);
 
         if (useRenderDataForCol)
         {
@@ -57,6 +65,17 @@ public class MeshData
         }
 
     }
+
+	public void AddVertex(Vector3 vertex) //for backward compatability :)
+	{
+		vertices.Add(vertex);
+
+		if (useRenderDataForCol)
+		{
+			colVertices.Add(vertex);
+		}
+
+	}
 
     public void AddTriangle()
     {
@@ -72,4 +91,22 @@ public class MeshData
 			colTriangles.Add(colVertices.Count - 1);
         }
     }
+
+	public void AddBlendTriangle()
+	{
+		blendtriangles.Add(vertices.Count - 3);
+		blendtriangles.Add(vertices.Count - 2);
+		blendtriangles.Add(vertices.Count - 1);
+	}
+
+	public void AddBlendQuad()
+	{
+		blendtriangles.Add(vertices.Count - 6);
+		blendtriangles.Add(vertices.Count - 5);
+		blendtriangles.Add(vertices.Count - 4);
+
+		blendtriangles.Add(vertices.Count - 3);
+		blendtriangles.Add(vertices.Count - 2);
+		blendtriangles.Add(vertices.Count - 1);
+	}	
 }

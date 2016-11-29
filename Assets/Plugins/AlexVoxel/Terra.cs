@@ -14,121 +14,244 @@ public static class Terra
 			return false;
 	}
 
-	public static bool damageSphere(World world, Vector3 center, float radius, float power)
+	public static void BlendBlock(Block target, World world, WorldPos position, float strength, float additive)
 	{
-		WorldPos current_pos;
-		WorldPos start_pos;
-		Block current_block;
-		Vector3 V_pos;
-		Vector3 V_distance;
-		Vector3 O_pos;
-		float distanceVtoC;
-		float distanceOtoC;
-		float push;
-		Vector3 V_push = new Vector3();
-		Vector3 V_offset;
-		int landing;
-		
-		int size = ((int)radius + 2) * 2; //this is to capture a cube of voxels
-		int half = size / 2;
-		
-		Block[,,] brush = new Block[size,size,size]; //this is where we will save our changes before final
-		
-		start_pos = GetBlockPos(new Vector3(center.x+half-1,center.y+half-1,center.z+half-1));
-		
-		for(int a = size-1; a > -1; a-=1) 
-			for(int b = size-1; b > -1; b-=1) 
-				for(int c = size-1; c > -1; c-=1)
-			{
-				brush[a,b,c] = new Block();
-				current_pos = GetBlockPos(new Vector3(center.x+a-half,center.y+b-half,center.z+c-half));
-				current_block = world.GetBlock(current_pos.x,current_pos.y,current_pos.z);
-				
-				V_pos = new Vector3(0.5f + current_pos.x, 0.5f + current_pos.y, 0.5f + current_pos.z);
-				
-				distanceVtoC = Vector3.Distance(V_pos, center);
+		WorldPos [] points = new WorldPos[7];
+		Block[] blocks = new Block[7];
+		Vector3 [] offsets = new Vector3[7];
+		Vector3[] globalPoints = new Vector3[7];
+		Vector3 [] relativeOffsets = new Vector3[7];
 
-				
-				push = radius/distanceVtoC;
-				V_distance = V_pos-center;
-				V_push = (V_distance)*( Mathf.Pow(push, 3));
-				V_pos = center+V_push;
-				
-				V_offset = new Vector3(V_pos.x - current_pos.x, V_pos.y - current_pos.y, V_pos.z - current_pos.z);
-				
-				landing = Terra.insideBound(V_offset, distanceVtoC, radius, radius+1.55f);
-				
-				brush[a,b,c].offx = Mathf.Clamp(V_offset.x,0.0f,1.0f);
-				brush[a,b,c].offy = Mathf.Clamp(V_offset.y,0.0f,1.0f);
-				brush[a,b,c].offz = Mathf.Clamp(V_offset.z,0.0f,1.0f);
-				
-				if(landing < 0) { //should be inside sphere
-					brush[a,b,c].material = 1;
-					landing = 0;
-				}
-				else { 
-					if(landing > 0) {
-						brush[a,b,c].material = -1; //should be outside, no change
-					}
-					else if(landing == 0)  //landed in voxel on edge
-					{ 
-						brush[a,b,c].offx = V_offset.x;
-						brush[a,b,c].offy = V_offset.y;
-						brush[a,b,c].offz = V_offset.z;
-						
-						brush[a,b,c].material = 1;
-					}
-					
-				}
-				
-				if((landing&8)>0) {
-					brush[a,b,c+1].material = 0;
-					if((landing&4)>0) {
-						brush[a,b+1,c+1].material = 0;
-						if((landing&2)>0 ) brush[a+1,b+1,c+1].material = 0;
-					}
-					if((landing&2)>0)brush[a+1,b,c+1].material = 0;
-				}
-				else if((landing&4)>0) {
-					brush[a,b+1,c].material = 0;
-					if((landing&2) >0) brush[a+1,b+1,c].material = 0;
-				}
-				else if((landing&2)>0) brush[a+1,b,c].material = 0;
-			}
-		for(int a = size-1; a > -1; a-=1) 
-			for(int b = size-1; b > -1; b-=1) 
-				for(int c = size-1; c > -1; c-=1)
-			{	
-				current_pos = GetBlockPos(new Vector3(center.x+a-half,center.y+b-half,center.z+c-half));
-				current_block = world.GetBlock(current_pos.x,current_pos.y,current_pos.z);
-				O_pos = new Vector3(current_block.offx + current_pos.x, current_block.offx + current_pos.y, current_block.offx + current_pos.z);
-				distanceOtoC = Vector3.Distance(O_pos, center);
 
-				if(brush[a,b,c].material == 0) { //set offset, don't change block
-					current_block.setoffset(brush[a,b,c].offx, brush[a,b,c].offy, brush[a,b,c].offz);
-					SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
-				}
-				else{
-					if(brush[a,b,c].material > 0) {
-						current_block.setoffset(brush[a,b,c].offx, brush[a,b,c].offy, brush[a,b,c].offz);
-						if(current_block.DamageBlock(current_pos, power*(radius-distanceOtoC)*500, V_push)) {
-							Pickup newPickup = new Pickup();
-							newPickup.reset(current_block.material, 1);
-							newPickup.setPosition(new Vector3(current_pos.x+0.5f, current_pos.y+0.5f, 1.5f), Quaternion.identity);
-							world.createPickUp(newPickup);
-							//playsound
-							current_block.material = 0;}
-						SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
-					}
-					
-					else {
-						SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
-					}
-				}
-			}
-		return true;
+		points [0] = new WorldPos(position.x,   position.y,		position.z); 	//prime
+		points [1] = new WorldPos(position.x, 	position.y+1,	position.z); 	//above
+		points [2] = new WorldPos(position.x, 	position.y-1,	position.z); 	//below
+		points [3] = new WorldPos(position.x-1, position.y,		position.z);	//west
+		points [4] = new WorldPos(position.x+1, position.y, 	position.z);	//east
+		points [5] = new WorldPos(position.x, 	position.y, 	position.z+1);  //north
+		points [6] = new WorldPos(position.x, 	position.y, 	position.z-1);	//south
+
+		Block aboveDiagonal = 	world.GetBlock (position.x+1, 	position.y+1, 	position.z+1);
+		Block diagonal = 		world.GetBlock (position.x+1, 	position.y, 	position.z+1);
+		Block aboveNorth = 		world.GetBlock (position.x, 	position.y+1, 	position.z+1);
+		Block aboveEast = 		world.GetBlock (position.x+1, 	position.y+1, 	position.z);
+		Block north = 			world.GetBlock (position.x, 	position.y, 	position.z+1);
+		Block east = 			world.GetBlock (position.x+1, 	position.y, 	position.z);
+		Block above = 			world.GetBlock (position.x, 	position.y, 	position.z);
+
+		//prepare offsets where we might use them
+		for (int a = 0; a < 7; a += 1) {
+			blocks [a] = world.GetBlock (points [a].x, points [a].y, points [a].z);
+			offsets [a] = blocks [a].getoffset ();
+			globalPoints [a] = new Vector3 (points [a].x + offsets [a].x, points [a].y + offsets [a].y, points [a].z + offsets [a].z);
+			relativeOffsets [a] = globalPoints [a] - globalPoints [0];
+		}
+
+		//This next part tests the faces that may be associated with our target, or "prime" voxel.
+		Vector3 vectorSum = new Vector3(.0f, .0f, .0f);
+		int pointCount = 1;
+		Vector3 faceDirection = new Vector3 (0f, 0f, 0f); //we will use this for adding and taking away ... hopefully
+
+		if ((target.faces&1) != 0) //top face shares with point south and point west
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [6].x, 0, relativeOffsets [6].z) + new Vector3 (relativeOffsets [3].x, 0, relativeOffsets [3].z);
+			pointCount += 2;
+			faceDirection.y += 1f;
+		}
+		else if((above.faces&2) != 0) {  //(face down of above shares same points)
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [6].x, 0, relativeOffsets [6].z) + new Vector3 (relativeOffsets [3].x, 0, relativeOffsets [3].z);
+			pointCount += 2;
+			faceDirection.y -= 1f;
+		}
+
+		if ((aboveDiagonal.faces&2) != 0) //down face (of diagonal) shares with target, east, and north
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [4].x, 0, relativeOffsets [4].z) + new Vector3 (relativeOffsets [5].x, 0, relativeOffsets [5].z);
+			pointCount += 2;
+			faceDirection.y -= 1f;
+		}
+		else if((diagonal.faces&1) != 0) //face up of below the diagonal shares same
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [4].x, 0, relativeOffsets [4].z) + new Vector3 (relativeOffsets [5].x, 0, relativeOffsets [5].z);
+			pointCount += 2;
+			faceDirection.y += 1f;
+		}
+
+		if ((aboveNorth.faces&2) != 0) //bottom face shares with point north and point west
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [5].x, 0, relativeOffsets [5].z) + new Vector3 (relativeOffsets [3].x, 0, relativeOffsets [3].z);
+			pointCount += 2;
+			faceDirection.y -= 1f;
+		}
+		else if((north.faces&1) != 0) {  //(face up of north shares same points)
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [5].x, 0, relativeOffsets [5].z) + new Vector3 (relativeOffsets [3].x, 0, relativeOffsets [3].z);
+			pointCount += 2;
+			faceDirection.y += 1f;
+		}
+
+		if ((aboveEast.faces&2) != 0) //down face of east shares with target, east, and south
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [4].x, 0, relativeOffsets [4].z) + new Vector3 (relativeOffsets [6].x, 0, relativeOffsets [6].z);
+			pointCount += 2;
+			faceDirection.y -= 1f;
+		}
+		else if((east.faces&1) != 0) //face up of east same
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [4].x, 0, relativeOffsets [4].z) + new Vector3 (relativeOffsets [6].x, 0, relativeOffsets [6].z);
+			pointCount += 2;
+			faceDirection.y += 1f;
+		}
+		////faces on top and bottom
+
+		if ((target.faces&4) != 0) //north face is shared with bottom point and west point it is also north's south face
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [2].x, relativeOffsets [2].y, 0) + new Vector3 (relativeOffsets [3].x, relativeOffsets [3].y, 0);
+			pointCount += 2;
+			faceDirection.z += 1f;
+		}
+		else if((north.faces&8) != 0) //south face of the north block
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [2].x, relativeOffsets [2].y, 0) + new Vector3 (relativeOffsets [3].x, relativeOffsets [3].y, 0);
+			pointCount += 2;
+			faceDirection.z -= 1f;
+		}
+
+		if ((aboveDiagonal.faces&8) != 0) //south facing (of diagonal) shares the face with target, and target east, and above target
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [4].x, relativeOffsets [4].y, 0) + new Vector3 (relativeOffsets [1].x, relativeOffsets [1].y, 0);
+			pointCount += 2;
+			faceDirection.z -= 1f;
+		}
+		else if((aboveEast.faces&4) != 0)  //north face of above east
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [4].x, relativeOffsets [4].y, 0) + new Vector3 (relativeOffsets [1].x, relativeOffsets [1].y, 0);
+			pointCount += 2;
+			faceDirection.z += 1f;
+		}
+
+		if ((east.faces&4) != 0) //north face of east is shared with bottom point and east point
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [2].x, relativeOffsets [2].y, 0) + new Vector3 (relativeOffsets [4].x, relativeOffsets [4].y, 0);
+			pointCount += 2;
+			faceDirection.z += 1f;
+		}
+		else if((diagonal.faces&8) != 0) //south face of block below diagonal
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [2].x, relativeOffsets [2].y, 0) + new Vector3 (relativeOffsets [4].x, relativeOffsets [4].y, 0);
+			pointCount += 2;
+			faceDirection.z -= 1f;
+		}
+
+		if ((aboveNorth.faces&8) != 0) //south facing of aboveNorth shares the face with aboveTarget
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [3].x, relativeOffsets [3].y, 0) + new Vector3 (relativeOffsets [1].x, relativeOffsets [1].y, 0);
+			pointCount += 2;
+			faceDirection.z -= 1f;
+		}
+		else if((above.faces&4) != 0)  //north face of above 
+		{
+			vectorSum = vectorSum + new Vector3 (relativeOffsets [3].x, relativeOffsets [3].y, 0) + new Vector3 (relativeOffsets [1].x, relativeOffsets [1].y, 0);
+			pointCount += 2;
+			faceDirection.z += 1f;
+		}
+		////faces on north and south
+		if ((target.faces&16) != 0) //east face of target is shared with bottom and south points 
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [2].y, relativeOffsets [2].z) + new Vector3(0, relativeOffsets [6].y, relativeOffsets [6].z) ;
+			pointCount += 2;
+			faceDirection.x += 1f;
+		}
+		else if((east.faces&32) != 0) //it is also the west face of east point
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [2].y, relativeOffsets [2].z) + new Vector3(0, relativeOffsets [6].y, relativeOffsets [6].z) ;
+			pointCount += 2;
+			faceDirection.x -= 1f;
+		}
+
+		if ((aboveDiagonal.faces&32) != 0) //west facing (of diagonal) shares target, north and above points
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [5].y, relativeOffsets [5].z) + new Vector3(0, relativeOffsets [1].y, relativeOffsets [1].z) ;
+			pointCount += 2;
+			faceDirection.x -= 1f;
+		}
+		else if((aboveNorth.faces&16) != 0) //east face of above north is same points
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [5].y, relativeOffsets [5].z) + new Vector3(0, relativeOffsets [1].y, relativeOffsets [1].z) ;
+			pointCount += 2;
+			faceDirection.x += 1f;
+		}
+
+		if ((north.faces&16) != 0) //east face of north block is shared with bottom and north points 
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [2].y, relativeOffsets [2].z) + new Vector3(0, relativeOffsets [5].y, relativeOffsets [5].z) ;
+			pointCount += 2;
+			faceDirection.x += 1f;
+		}
+		else if((diagonal.faces&32) != 0) //it is also the west face of belowDiagonal
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [2].y, relativeOffsets [2].z) + new Vector3(0, relativeOffsets [5].y, relativeOffsets [5].z) ;
+			pointCount += 2;
+			faceDirection.x -= 1f;
+		}
+
+		if ((aboveEast.faces&32) != 0) //west facing (of aboveeast) shares target, south and above points
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [6].y, relativeOffsets [6].z) + new Vector3(0, relativeOffsets [1].y, relativeOffsets [1].z) ;
+			pointCount += 2;
+			faceDirection.x -= 1f;
+		}
+		else if((above.faces&16) != 0) //east face of above is same points
+		{
+			vectorSum = vectorSum + new Vector3(0, relativeOffsets [6].y, relativeOffsets [6].z) + new Vector3(0, relativeOffsets [1].y, relativeOffsets [1].z) ;
+			pointCount += 2;
+			faceDirection.x += 1f;
+		}
+		strength = 0.45f;
+		Vector3 vectorAverage = vectorSum / pointCount;
+		faceDirection = Vector3.Min (Vector3.Max (faceDirection, new Vector3 (-1f, -1f, -1f)), new Vector3 (1f, 1f, 1f));
+		//offsets [0] = Vector3.Min (Vector3.Max ((offsets [0] * (1 - strength)) + (vectorAverage * strength), Vector3.zero), Vector3.one);
+
+		offsets [0] = offsets [0] + (vectorAverage*strength) + (faceDirection*additive);//((offsets [0] * (1f - strength)) + (vectorAverage * strength));
+//		Debug.Log (vectorSum);
+//		Debug.Log (pointCount);
+//		Debug.Log (offsets [0]);
+		//trying - if we have moved against the face, we have decreased
+		//if we have moved with the face, we have increased
+		//now how do we compare the direction with our landing???
+
+		Block newBlock;
+		Vector3 landingf = new Vector3 ((position.x + offsets [0].x), (position.y + offsets [0].y), (position.z + offsets [0].z));
+		WorldPos landing = new WorldPos ((int)landingf.x, (int)landingf.y, (int)landingf.z);
+		bool outside = false;
+
+//		newBlock = world.GetBlock (landing.x, landing.y, landing.z);
+//
+//		if ((offsets [0].y) > 1.1f) { //we have moved up (landing is > position
+//			newBlock.material = target.material;
+//		} else if ((offsets [0].y) < -0.1f) { //we are moving down
+//			target.material = blocks [2].material;
+//		}
+//		if ((offsets [0].x) > 1.1f) { //we moved east
+//			newBlock.material = target.material;
+//		} else if ((offsets [0].x) < -0.1f) { //we moved west
+//			target.material = blocks [3].material;
+//		}
+//		if ((offsets [0].z) > 1.1f) { //we moved forward (north)
+//			newBlock.material = target.material;
+//		} else if ((offsets [0].z) < -0.1f) { //we moved south
+//			target.material = blocks [6].material;
+//		} 
+//
+//		if (outside) { //if you follow the code, you see that sometimes the material is not changed, but just the offsets of the landing block
+//			newBlock.ClipOffset (offsets [0]); //sets as the remainder of the offset
+//			world.SetBlock (landing.x, landing.y, landing.z, newBlock);
+//		} 
+
+		target.SnapOffset (offsets [0]);
+		world.SetBlock (position.x, position.y, position.z, target);
+
 	}
-
+		
 	public static bool applySphere(World world, Vector3 center, float radius)
 	{
 		WorldPos current_pos;
@@ -193,21 +316,12 @@ public static class Terra
 					if ((T_pos.z - current_pos.z) < -0.15f)
 						continue;
 
-//					test_pos = GetBlockPos (T_pos);
-//					if(test_pos.Equals (current_pos) ) { //landed in block
-//						brush [a, b, c ].offx = (T_pos.x) - (current_pos.x);	//(T_pos.x - current_pos.x);
-//						brush [a, b, c ].offy = (T_pos.y) - (current_pos.y);	//(T_pos.y - current_pos.y);
-//						brush [a, b, c ].offz = (T_pos.z) - (current_pos.z);	//(T_pos.z - current_pos.z);
-//						Debug.Log(brush [a, b, c ].offx);
-//						Debug.Log(brush [a, b, c ].offy);
-//						Debug.Log(brush [a, b, c ].offz);
-//						Debug.Log("end");
-						brush [a, b, c].offx = Mathf.Clamp((T_pos.x) - (current_pos.x), 0.0f, 1.0f);
-						brush [a, b, c].offy = Mathf.Clamp((T_pos.y) - (current_pos.y), 0.0f, 1.0f);
-						brush [a, b, c].offz = Mathf.Clamp((T_pos.z) - (current_pos.z), 0.0f, 1.0f);
+					brush [a, b, c].offx = Mathf.Clamp((T_pos.x) - (current_pos.x), 0.0f, 1.0f);
+					brush [a, b, c].offy = Mathf.Clamp((T_pos.y) - (current_pos.y), 0.0f, 1.0f);
+					brush [a, b, c].offz = Mathf.Clamp((T_pos.z) - (current_pos.z), 0.0f, 1.0f);
 
-						brush [a, b, c].material = 1; //marked as "participating"
-//					}
+					brush [a, b, c].material = 1; //marked as "participating"
+
 
 				}
 
@@ -241,259 +355,62 @@ public static class Terra
 
 				}
 		//third loop to act on our markings
-		for (int a = size - 1; a > -1; a -= 1)
-			for (int b = size - 1; b > -1; b -= 1)
-				for (int c = size - 1; c > -1; c -= 1) {
-					current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
-					current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
-					int flagmat = brush [a, b, c].material;
+		if (false) {
+			for (int a = size - 1; a > -1; a -= 1)
+				for (int b = size - 1; b > -1; b -= 1)
+					for (int c = size - 1; c > -1; c -= 1) {
 
-					if (flagmat == 0) { //"Inside"
-						current_block.material = 0; 
-					} else if (flagmat == 1) { //"Participating"
-						current_block.material = 0;
-						current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
-					} else if (flagmat == -1) { //"NON-Affected"
-						current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
-						//current_block.material = 0;
-					} else {
-						//current_block.material = 0;
-					}
+						current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
+						current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
+						int flagmat = brush [a, b, c].material;
 
-					SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
-				}
-		
-		return true;
-	}
-	public static bool pushCircle(World world, Vector3 center, float radius, int material, float amount)
-	{
-		WorldPos current_pos;
-		Block current_block;
-		Vector3 V_pos;
-		Vector3 O_pos;
-		float distanceVtoC;
-		Vector3 directionVtoC;
-		Vector3 V_offset;
-		
-		int size = ((int)radius + 2) * 2; //this is to capture a cube of voxels
-		int half = size / 2;
-		
-		Block[,,] brush = new Block[size,size,size]; //this is where we will save our changes before final
-		for(int a = size-1; a > -1; a-=1) 
-			for(int b = size-1; b > -1; b-=1) 
-				for(int c = 1; c > -1; c-=1)
-			{
-				brush[a,b,c] = new Block();
-				current_pos = GetBlockPos(new Vector3(center.x+a-half,center.y+b-half,center.z+c-1));
-				current_block = world.GetBlock(current_pos.x,current_pos.y,current_pos.z);
-				
-				O_pos = new Vector3(current_block.offx + current_pos.x, current_block.offy + current_pos.y, current_block.offz + current_pos.z);
-				V_pos = new Vector3(0.5f + current_pos.x, 0.5f + current_pos.y, 0.5f + center.z);
-				
-				distanceVtoC = Vector3.Distance(V_pos, center);
-				directionVtoC = V_pos - center;
-				Vector3 bump = directionVtoC/distanceVtoC; //normalized direction
+						if (flagmat == 0) { //"Inside"
+							BlendBlock (current_block, world, current_pos, 0.2f, 0.02f);
+							//current_block.material = 0; 
+						} else if (flagmat == 1) { //"Participating" volume inside, voxel coord on the perimeter
+							BlendBlock (current_block, world, current_pos, 0.1f, 0.02f);
+							//current_block.material = 0;
+							//current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
+						} else if (flagmat == -1) { //"NON-Affected" volume outside even though cord is on perimeter
+							//current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
 
-				float amt = (radius-distanceVtoC)/radius;
-				bump = bump*amt;
-
-				V_pos = O_pos+bump;
-				
-				V_offset = new Vector3(V_pos.x - current_pos.x, V_pos.y - current_pos.y, V_pos.z - center.z);
-
-				//landing = Terra.insideBound(V_offset, distanceVtoC, radius, radius+1.55f);
-
-				brush[a,b,c].offx = Mathf.Clamp(V_offset.x,0.0f,1.0f);
-				brush[a,b,c].offy = Mathf.Clamp(V_offset.y,0.0f,1.0f);
-				brush[a,b,c].offz = Mathf.Clamp(V_offset.z,0.0f,1.0f);
-
-				current_block.setoffset(brush[a,b,c].offx, brush[a,b,c].offy, brush[a,b,c].offz);
-				SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
-
-			}
-		return true;
-	}
-	public static bool applyCircle(World world, Vector3 center, float radius, int material, float amount)
-	{
-		WorldPos current_pos;
-		Block current_block;
-		Vector3 V_pos;
-		Vector3 V_direction;
-		Vector3 O_pos;
-		float distanceVtoC;
-		float distanceOtoC;
-		float push;
-		Vector3 V_push = new Vector3 ();
-		Vector3 V_offset;
-		int landing;
-		
-		int size = ((int)radius + 2) * 2; //this is to capture a cube of voxels
-		int half = size / 2;
-		
-		Block[,,] brush = new Block[size, size, size]; //this is where we will save our changes before final
-		
-		for (int a = size-1; a > -1; a-=1) {
-			for (int b = size-1; b > -1; b-=1) {
-				for (int c = 3; c > 1; c-=1) {
-					brush [a, b, c] = new Block ();
-					current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
-					current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
-				
-					O_pos = new Vector3 (current_block.offx + current_pos.x, current_block.offy + current_pos.y, current_block.offz + current_pos.z);
-					V_pos = new Vector3 (0.5f + current_pos.x, 0.5f + current_pos.y, 0.5f + center.z);
-				
-					distanceVtoC = Vector3.Distance (V_pos, center);
-					distanceOtoC = Vector3.Distance (O_pos, center);
-				
-					push = (radius / distanceVtoC);
-				
-					V_direction = V_pos - center;
-					V_push = (V_direction) * push;
-
-
-					V_pos.Set (center.x + V_push.x, center.y + V_push.y, center.z + V_push.z);
-
-					//if (distanceOtoC > radius) V_offset = current_block.getoffset();
-					V_offset = new Vector3 (V_pos.x - current_pos.x, V_pos.y - current_pos.y, V_pos.z - center.z);
-				
-					landing = Terra.insideBound (V_offset, distanceVtoC, radius, radius + 1.55f);
-				
-				
-					brush [a, b, c].offx = Mathf.Clamp (V_offset.x, 0.0f, 1.0f);
-					brush [a, b, c].offy = Mathf.Clamp (V_offset.y, 0.0f, 1.0f);
-					brush [a, b, c].offz = Mathf.Clamp (V_offset.z, 0.0f, 1.0f);
-				
-					if (landing < 0) { //should be inside sphere
-						brush [a, b, c].material = 1;
-						landing = 0;
-					} else { 
-						if (landing > 0) {
-							brush [a, b, c].material = -1; //should be outside, no change
-						} else if (landing == 0) {  //landed in voxel on edge 
-							brush [a, b, c].offx = V_offset.x;
-							brush [a, b, c].offy = V_offset.y;
-							brush [a, b, c].offz = V_offset.z;
-							brush [a, b, c].material = 1;
-						}
-					
-					}
-
-					if ((landing & 8) > 0) {
-
-						brush [a, b, c + 1].material = 0;
-						if ((landing & 4) > 0) {
-							brush [a, b + 1, c + 1].material = 0;
-							if ((landing & 2) > 0)
-								brush [a + 1, b + 1, c + 1].material = 0;
-						}
-						if ((landing & 2) > 0)
-							brush [a + 1, b, c + 1].material = 0;
-					} else if ((landing & 4) > 0) {
-						brush [a, b + 1, c].material = 0;
-						if ((landing & 2) > 0)
-							brush [a + 1, b + 1, c].material = 0;
-					} else if ((landing & 2) > 0)
-						brush [a + 1, b, c].material = 0;
-					if (c == 0)
-						brush [a, b, c].material = 0;
-				}
-			}
-		}
-		
-		for (int a = size-1; a > -1; a-=1) {
-			for (int b = size-1; b > -1; b-=1) {
-				for (int c = 3; c > 1; c-=1) {	
-					current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
-					current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
-					if (brush [a, b, c].material == 0) { //set offset, don't change block
-						current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
-						SetBlock (world.GetChunk (current_pos.x, current_pos.y, current_pos.z), current_pos, current_block);
-					} else {
-						if (brush [a, b, c].material > 0) { //signals inside radius
-							if (material == -2) { //damage
-								if (current_block.DamageBlock (current_pos, amount, Vector3.zero)) {
-									Pickup newPickup = new Pickup ();
-									newPickup.reset (current_block.material, 1);
-									newPickup.setPosition (new Vector3 (current_pos.x + 0.5f, current_pos.y + 0.5f, 1.5f), Quaternion.identity);
-									world.createPickUp (newPickup);
-									//playsound
-									current_block.material = 0;
-								}
-								SetBlock (world.GetChunk (current_pos.x, current_pos.y, current_pos.z), current_pos, current_block);
-							} else if (material == -3) { //paint? place?
-								current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
-								current_block.material = 0;
-								SetBlock (world.GetChunk (current_pos.x, current_pos.y, current_pos.z), current_pos, current_block);
-							} else { //paint? place?
-								int vposx = (Mathf.FloorToInt (((current_pos.x / 7.0f) - ((int)(current_pos.x / 7.0f))) * 7.0f));
-								int vposy = (Mathf.FloorToInt (((current_pos.y / 7.0f) - ((int)(current_pos.y / 7.0f))) * 7.0f));
-								if (vposx < 0)
-									vposx += 7;
-								if (vposy < 0)
-									vposy += 7;
-								brush [a, b, c].varientx = vposx;
-								brush [a, b, c].varienty = vposy;
-								current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
-								current_block.material = material;
-								SetBlock (world.GetChunk (current_pos.x, current_pos.y, current_pos.z), current_pos, current_block);
-							}
 						} else {
-							SetBlock (world.GetChunk (current_pos.x, current_pos.y, current_pos.z), current_pos, current_block);
+
 						}
+
+
+						//SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
 					}
-				}
-			}
+		} else {
+			for (int a = size - 1; a > -1; a -= 1)
+				for (int b = size - 1; b > -1; b -= 1)
+					for (int c = size - 1; c > -1; c -= 1) {
+					
+						current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
+						current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
+						int flagmat = brush [a, b, c].material;
+
+						if (flagmat == 0) { //"Inside"
+							//BlendBlock (current_block, world, current_pos, 0.2f, -0.001f);
+							current_block.material = 0; 
+						} else if (flagmat == 1) { //"Participating"
+							//BlendBlock (current_block, world, current_pos, 0.1f, -0.001f);
+							current_block.material = 0;
+							current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
+						} else if (flagmat == -1) { //"NON-Affected"
+							current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
+
+						} else {
+						
+						}
+
+
+						SetBlock(world.GetChunk(current_pos.x,current_pos.y,current_pos.z), current_pos, current_block);
+					}
 		}
 		return true;
 	}
-	public static int insideBound(Vector3 offset, float distance, float radius, float bound) {
-		float push = radius/distance;
-		bool edge = true;
-		int lastinrow = 0;
-		if (distance > bound)
-			return 1;
 
-		if(offset.x<(0.0)) {
-			edge = false;
-			if(push<1.0) lastinrow |= 1; //pulling, so outside
-		}
-		else if(offset.x>1.0) {
-			edge = false;
-			if(push<1.0) lastinrow |= 2; //pulling, so outside
-		}
-
-		//now for the y coord
-		if(offset.y<(0.0)) {
-			edge = false;
-			if(push<1.0) lastinrow |= 1; //pulling, so outside
-		}
-		else if(offset.y>1.0) {
-			edge = false;
-			if(push<1.0) lastinrow |= 4; //pulling, so outside
-		}
-
-		//now for the z coord
-		if(offset.z<(0.0)) {
-			edge = false;
-			if(push<1.0) lastinrow |= 1; //pulling, so outside
-		}
-		else if(offset.z>1.0) {
-			edge = false;
-			if(push<1.0) lastinrow |= 8; //pulling, so outside
-		}
-
-		if (lastinrow > 0)
-			return lastinrow;
-
-		//if we get here, all three coords are either inside (push>1) or on the edge (within offset bounds)
-
-		if (edge) {
-			return 0; //exactly on the edge
-		}
-		else
-			return -1; //inside but not on edge
-
-	}
 
     public static WorldPos GetBlockPos(Vector3 pos)
     {

@@ -20,13 +20,14 @@ public class BlockSelect : Block
 		(Chunk chunk, int x, int y, int z, MeshData meshData)
 	{
 		meshData.useRenderDataForCol = false;
+		Vector3[] normMasks = GetNormMask (chunk, x, y, z);
 
-		meshData = FaceDataUp(chunk, x, y, z, meshData);
-		meshData = FaceDataDown(chunk, x, y, z, meshData);
-		meshData = FaceDataNorth(chunk, x, y, z, meshData);
-		meshData = FaceDataSouth(chunk, x, y, z, meshData);
-		meshData = FaceDataEast(chunk, x, y, z, meshData);
-		meshData = FaceDataWest(chunk, x, y, z, meshData);
+		meshData = FaceDataUp(chunk, x, y, z, meshData, normMasks);
+		meshData = FaceDataDown(chunk, x, y, z, meshData, normMasks);
+		meshData = FaceDataNorth(chunk, x, y, z, meshData, normMasks);
+		meshData = FaceDataSouth(chunk, x, y, z, meshData, normMasks);
+		meshData = FaceDataEast(chunk, x, y, z, meshData, normMasks);
+		meshData = FaceDataWest(chunk, x, y, z, meshData, normMasks);
 
 		return meshData;
 		

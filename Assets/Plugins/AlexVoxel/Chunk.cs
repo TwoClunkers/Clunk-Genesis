@@ -19,7 +19,7 @@ public class Chunk : MonoBehaviour
     public bool rendered;
 
     MeshFilter filter;
-    MeshCollider coll;
+	MeshCollider coll;
 
     public World world;
     public WorldPos pos;
@@ -27,6 +27,8 @@ public class Chunk : MonoBehaviour
     void Start()
     {
         filter = gameObject.GetComponent<MeshFilter>();
+
+
         coll = gameObject.GetComponent<MeshCollider>();
     }
 
@@ -152,12 +154,17 @@ public class Chunk : MonoBehaviour
     void RenderMesh(MeshData meshData)
     {
         filter.mesh.Clear();
+		filter.mesh.subMeshCount = 2;
         filter.mesh.vertices = meshData.vertices.ToArray();
-        filter.mesh.triangles = meshData.triangles.ToArray();
+		filter.mesh.SetTriangles(meshData.triangles.ToArray(), 0);
+		filter.mesh.SetTriangles(meshData.blendtriangles.ToArray(), 1);
 
         filter.mesh.uv = meshData.uv.ToArray();
-		filter.mesh.uv2 = meshData.uv1.ToArray ();
-        filter.mesh.RecalculateNormals();
+//		filter.mesh.uv2 = meshData.uv1.ToArray ();
+		filter.mesh.normals = meshData.normals.ToArray ();
+		filter.mesh.colors32 = meshData.colors.ToArray ();
+
+        //filter.mesh.RecalculateNormals();
 
         coll.sharedMesh = null;
         Mesh mesh = new Mesh();
