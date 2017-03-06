@@ -9,7 +9,7 @@ public class BlockGrass : Block
     public BlockGrass()
         : base()
     {
-		material = 7;
+		SetMaterial(7);
     }
 
     public override Tile TexturePosition(Direction direction)

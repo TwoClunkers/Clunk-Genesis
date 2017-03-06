@@ -54,10 +54,10 @@ function OnGUI() {
 	GUI.Label(Rect(Screen.width - 300,Screen.height - 40,200,40),"press i to toggle inventory");
 	
 	if(!Network.isClient && !Network.isServer){
-		if(GUI.Button(Rect(20,Screen.height-150,100,20),"Start Server")) {
+		if(GUI.Button(Rect(20,Screen.height-50,100,20),"Start Server")) {
 			startServer();
 		}
-		if(GUI.Button(Rect(20,Screen.height-170,100,20),"Refresh Hosts")) {
+		if(GUI.Button(Rect(20,Screen.height-30,100,20),"Refresh Hosts")) {
 			refreshHostsList();
 		}
 		

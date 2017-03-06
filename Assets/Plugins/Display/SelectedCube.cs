@@ -19,7 +19,7 @@ public class SelectedCube : MonoBehaviour
 	public Vector3 targetPosition;
 	BlockSelect displayBlock;
 	public GameObject handleUI;
-	public GameObject[] corner;
+	//public GameObject[] corner;
 
 	public int depth;
 	public bool mousehold = false;
@@ -36,18 +36,18 @@ public class SelectedCube : MonoBehaviour
 		camera = Camera.main;
 		mainCanvas = GameObject.FindWithTag ("UI");
 
-		corner = new GameObject[8];
-		for(int a = 0; a < 8; a+=1) 
-		{
-			//this creates a circle for each corner to act as a handle to drag
-			GameObject point = corner[a];
-			point = Instantiate (handleUI, new Vector3 (targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity) as GameObject;
-			point.transform.SetParent(mainCanvas.transform);
-
-			corner[a] = point;
-			setcorner(point, a);
-
-		}
+//		corner = new GameObject[8];
+//		for(int a = 0; a < 8; a+=1) 
+//		{
+//			//this creates a circle for each corner to act as a handle to drag
+//			GameObject point = corner[a];
+//			point = Instantiate (handleUI, new Vector3 (targetPosition.x, targetPosition.y, targetPosition.z), Quaternion.identity) as GameObject;
+//			point.transform.SetParent(mainCanvas.transform);
+//
+//			corner[a] = point;
+//			setcorner(point, a);
+//
+//		}
 			
 
 		displayBlock = new BlockSelect();
@@ -57,45 +57,45 @@ public class SelectedCube : MonoBehaviour
 
 	}
 
-	void setcorner(GameObject marker, int num) {
-
-		scriptHandle = marker.GetComponent ("CornerHandle") as CornerHandle;
-		WorldPos thisPos;
-		thisPos.x = pos.x;
-		thisPos.y = pos.y;
-		thisPos.z = pos.z;
-
-		if (num < 1) {	
-			thisPos.x = pos.x - 1;	
-		}
-		else if (num < 2) {		}
-		else if (num < 3) {	
-			thisPos.z = pos.z - 1;	
-		}
-		else if (num < 4) {	
-			thisPos.x = pos.x - 1;
-			thisPos.z = pos.z - 1;
-		}
-		else if (num < 5) {	
-			thisPos.x = pos.x - 1;
-			thisPos.y = pos.y - 1;
-			thisPos.z = pos.z - 1;
-		}
-		else if (num < 6) {		
-			thisPos.y = pos.y - 1;
-			thisPos.z = pos.z - 1;
-		}
-		else if (num < 7) {		
-			thisPos.y = pos.y - 1;
-		}
-		else if (num < 8) {		
-			thisPos.y = pos.y - 1;
-			thisPos.x = pos.x - 1;
-		}
-
-		scriptHandle.assignVoxel (world, thisPos, num);
-
-	}
+//	void setcorner(GameObject marker, int num) {
+//
+//		scriptHandle = marker.GetComponent ("CornerHandle") as CornerHandle;
+//		WorldPos thisPos;
+//		thisPos.x = pos.x;
+//		thisPos.y = pos.y;
+//		thisPos.z = pos.z;
+//
+//		if (num < 1) {	
+//			thisPos.x = pos.x - 1;	
+//		}
+//		else if (num < 2) {		}
+//		else if (num < 3) {	
+//			thisPos.z = pos.z - 1;	
+//		}
+//		else if (num < 4) {	
+//			thisPos.x = pos.x - 1;
+//			thisPos.z = pos.z - 1;
+//		}
+//		else if (num < 5) {	
+//			thisPos.x = pos.x - 1;
+//			thisPos.y = pos.y - 1;
+//			thisPos.z = pos.z - 1;
+//		}
+//		else if (num < 6) {		
+//			thisPos.y = pos.y - 1;
+//			thisPos.z = pos.z - 1;
+//		}
+//		else if (num < 7) {		
+//			thisPos.y = pos.y - 1;
+//		}
+//		else if (num < 8) {		
+//			thisPos.y = pos.y - 1;
+//			thisPos.x = pos.x - 1;
+//		}
+//
+//		scriptHandle.assignVoxel (world, thisPos, num);
+//
+//	}
 	// Update is called once per frame
 	void Update ()
 	{
@@ -111,11 +111,11 @@ public class SelectedCube : MonoBehaviour
 				depth = 2;
 
 			//create a target where we are pointing
-//			Vector3 mouse = Input.mousePosition;
-//			mouse.z = depth - (Camera.main.transform.position.z)-1;
-//
-//			targetPosition = Camera.main.ScreenToWorldPoint (mouse);
-//			targetPosition.z = depth-1;
+			Vector3 mouse = Input.mousePosition;
+			mouse.z = depth - (Camera.main.transform.position.z)-1;
+
+			targetPosition = Camera.main.ScreenToWorldPoint (mouse);
+			targetPosition.z = depth-1;
 
 			hostChunk = world.GetChunk(pos.x,pos.y,pos.z);
 			pos.x = pos.x - hostChunk.pos.x;
@@ -130,11 +130,11 @@ public class SelectedCube : MonoBehaviour
 			update = false;
 			UpdateCube();
 		}
-		for(int a = 0; a < 8; a+=1) 
-		{
-			GameObject point = corner[a];
-			setcorner(point, a);
-		}
+//		for(int a = 0; a < 8; a+=1) 
+//		{
+//			GameObject point = corner[a];
+//			setcorner(point, a);
+//		}
 	}
 
 	void UpdateCube()

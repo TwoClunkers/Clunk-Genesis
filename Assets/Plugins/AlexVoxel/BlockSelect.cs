@@ -9,7 +9,7 @@ public class BlockSelect : Block
 	public BlockSelect()
 		: base()
 	{
-		material = 1;
+		SetMaterial(1);
 		tileSize = 1.0f;
 		offx = 0.5f;
 		offy = 0.5f;

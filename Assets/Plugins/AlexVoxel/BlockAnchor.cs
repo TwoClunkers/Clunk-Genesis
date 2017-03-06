@@ -8,7 +8,7 @@ public class BlockAnchor : Block
 	public BlockAnchor()
 			: base()
 	{
-		material = 7;
+		SetMaterial(7);
 	}
 	
 	public override void Resolve

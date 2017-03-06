@@ -5,7 +5,7 @@ namespace DataObjects
 	public enum ItemGroup {
 		unused,
 		assortment,
-		material,
+		substance,
 		component,
 		part,
 		assembly,
@@ -35,5 +35,21 @@ namespace DataObjects
 		max,
 		min
 	}
+	public enum Mode { 
+		voxel, 
+		plane, 
+		articles
+	}
+	public enum Shape {	
+		sphere, 
+		cube, 
+		voxel	
+	}
+	public enum App { 
+		subtractive, 
+		additive, 
+		blend
+	}
+
 }
 

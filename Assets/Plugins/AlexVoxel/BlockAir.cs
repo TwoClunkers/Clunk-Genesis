@@ -8,7 +8,7 @@ public class BlockAir : Block
     public BlockAir()
         : base()
     {
-		material = 0;
+		SetMaterial(0);
     }
 
     public override MeshData Blockdata

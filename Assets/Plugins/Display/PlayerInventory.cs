@@ -18,6 +18,7 @@ public class PlayerInventory : MonoBehaviour
 		inventory = Instantiate(container) as GameObject;
 		mainCanvas = GameObject.FindGameObjectWithTag ("UI");
 		inventory.transform.SetParent (mainCanvas.transform, false);
+		inventory.transform.localPosition = new Vector3 (0, -150, 0);
 		containerScript = inventory.GetComponent<ContainerUI> ();
 		containerData = containerScript.storage;
 		changed = false;

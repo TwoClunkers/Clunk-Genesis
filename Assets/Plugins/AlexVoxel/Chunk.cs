@@ -20,6 +20,7 @@ public class Chunk : MonoBehaviour
 
     MeshFilter filter;
 	MeshCollider coll;
+	public MeshRenderer rend;
 
     public World world;
     public WorldPos pos;
@@ -28,7 +29,7 @@ public class Chunk : MonoBehaviour
     {
         filter = gameObject.GetComponent<MeshFilter>();
 
-
+		rend = gameObject.GetComponent<MeshRenderer>();
         coll = gameObject.GetComponent<MeshCollider>();
     }
 
@@ -41,6 +42,11 @@ public class Chunk : MonoBehaviour
             UpdateChunk();
         }
     }
+
+	public void OnSpawned()
+	{
+		update = true;
+	}
 
     public Block GetBlock(int x, int y, int z)
     {
@@ -58,7 +64,7 @@ public class Chunk : MonoBehaviour
 				for (int c = z; c < endz; c++)
 				{
 					Block check = GetBlock (a, b, c);
-					if(check.material > 0) return false;
+					if(check.IsHard()) return false;
 				}
 			}
 		}
@@ -160,9 +166,9 @@ public class Chunk : MonoBehaviour
 		filter.mesh.SetTriangles(meshData.blendtriangles.ToArray(), 1);
 
         filter.mesh.uv = meshData.uv.ToArray();
-//		filter.mesh.uv2 = meshData.uv1.ToArray ();
+		filter.mesh.uv2 = meshData.uv1.ToArray ();
 		filter.mesh.normals = meshData.normals.ToArray ();
-		filter.mesh.colors32 = meshData.colors.ToArray ();
+		//filter.mesh.colors32 = meshData.colors.ToArray ();
 
         //filter.mesh.RecalculateNormals();
 

@@ -11,6 +11,7 @@ public class World : MonoBehaviour {
 	public GameObject pickupPrefab;
 	public GameObject controllerPrefab;
 	public GameObject master;
+	public SubstanceManager subManager;
 	public string worldName = "mech";
 
 	public ItemLibrary itemLibrary; 
@@ -18,6 +19,7 @@ public class World : MonoBehaviour {
 	void Start()
 	{
 		itemLibrary = GameObject.FindGameObjectWithTag ("mc").GetComponent<ItemLibrary> ();
+		subManager = master.GetComponent<SubstanceManager> ();
 	}
 
     public void CreateChunk(int x, int y, int z)
@@ -25,10 +27,15 @@ public class World : MonoBehaviour {
         WorldPos worldPos = new WorldPos(x, y, z);
 
         //Instantiate the chunk at the coordinates using the chunk prefab
-        GameObject newChunkObject = Instantiate(
-                        chunkPrefab, new Vector3(x, y, z),
-                        Quaternion.Euler(Vector3.zero)
-                    ) as GameObject;
+//        GameObject newChunkObject = Instantiate(
+//                        chunkPrefab, new Vector3(x, y, z),
+//                        Quaternion.Euler(Vector3.zero)
+//                    ) as GameObject;
+		Transform newChunkObject = PoolManager.Pools["chunks"].Spawn
+			(chunkPrefab, 
+			new Vector3(x, y, z),
+			Quaternion.Euler(Vector3.zero)
+		);
 
         Chunk newChunk = newChunkObject.GetComponent<Chunk>(); //gets the script component
 
@@ -36,11 +43,16 @@ public class World : MonoBehaviour {
         newChunk.world = this; //tells the chunk how to get back to mommy
 		newChunk.tag = "breakable";
 
+		newChunk.rend.material.mainTexture = master.GetComponent<SubstanceManager> ().mainAtlas;
+		newChunk.rend.material.SetTexture("_BumpMap", master.GetComponent<SubstanceManager> ().normAtlas);
+		newChunk.rend.material.SetTexture("_BlendTex", master.GetComponent<SubstanceManager> ().blendAtlas);
+
+
         //Add it to the chunks dictionary with the position as the key
         chunks.Add(worldPos, newChunk);
 
         TerrainGen terrainGen = new TerrainGen(); //this has some preset values for generating 
-        newChunk = terrainGen.ChunkGen(newChunk); //this runs the generation code
+		newChunk = terrainGen.ChunkGen(newChunk, subManager); //this runs the generation code
 
         newChunk.SetBlocksUnmodified(); //this tells Serialization not to save as there was no changes
 
@@ -70,7 +82,8 @@ public class World : MonoBehaviour {
         if (chunks.TryGetValue(new WorldPos(x, y, z), out chunk))
         {
             Serialization.SaveChunk(chunk);
-            Object.Destroy(chunk.gameObject);
+            //Object.Destroy(chunk.gameObject);
+			PoolManager.Pools ["chunks"].Despawn (chunk.transform);
             chunks.Remove(new WorldPos(x, y, z));
         }
     }
@@ -105,7 +118,7 @@ public class World : MonoBehaviour {
         else
         {
 			Block block = new Block();
-			block.material = 0;
+			block.SetMaterial (0);
             return block;
         }
 

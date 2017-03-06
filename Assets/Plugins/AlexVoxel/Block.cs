@@ -11,7 +11,9 @@ public class Block
     public float tileSize = 0.03125f; //one 32th of the pic
     public bool changed = true;
 	public bool isSelected = false;
-	public int material = 1;
+	int material = 1;
+	public float matPosition_x;
+	public float matPosition_y;
 	public int varientx = 0;
 	public int varienty = 0;
 	public int varientz = 0;
@@ -35,6 +37,8 @@ public class Block
 		changed = true;
 		
 		material = target.material;
+		matPosition_x = target.matPosition_x;
+		matPosition_y = target.matPosition_y;
 		varientx = target.varientx;
 		varienty = target.varienty;
 		varientz = target.varientz;
@@ -42,6 +46,83 @@ public class Block
 		offx = target.offx;
 		offy = target.offy;
 		offz = target.offz;
+		faces = target.faces;
+
+	}
+	public virtual void SetMaterial(int substanceId, Rect substanceArea, int tilesWide, int tilesHigh)
+	{
+		//this sets the material and where to start our UI calculations
+		material = substanceId;
+		matPosition_x = substanceArea.x;
+		matPosition_y = substanceArea.y;
+
+		//used by UI calculations
+		tileSize = substanceArea.width / (tilesWide+1);
+
+		//this sets our varients within the range of this material
+		varientx = (varientx % (tilesWide));
+		varienty = (varienty % (tilesHigh));
+		varientz = (varientz % Mathf.Min(tilesHigh,tilesWide));
+
+	}
+	public virtual void SetMaterial(int substanceId)
+	{
+		//this sets the material and where to start our UI calculations
+		material = substanceId;
+		matPosition_x = 0.0f;
+		matPosition_y = 0.0f;
+
+		//used by UI calculations
+		tileSize = 0.03125f;
+
+		//this sets our varients within the range of this material
+		varientx = 0;
+		varienty = 0;
+		varientz = 0;
+	}
+	public virtual Vector2 TextureVariant(Direction direction)
+	{
+		Vector2 tile = new Vector2 ();
+
+		switch (direction)
+		{
+		case Direction.south:
+			tile.x =  ((varientx) * tileSize);
+			tile.y =  ((varienty) * tileSize);
+			return tile;
+		case Direction.down:
+			tile.x =  ((varientx) * tileSize);
+			tile.y =  ((varientz) * tileSize);
+			return tile;
+		case Direction.up:
+			tile.x =  ((varientx) * tileSize);
+			tile.y =  ((varientz) * tileSize);
+			return tile;
+		case Direction.east:
+			tile.x =  ((varientz) * tileSize);
+			tile.y =  ((varienty) * tileSize);
+			return tile;
+		case Direction.west:
+			tile.x =  ((varientz) * tileSize);
+			tile.y =  ((varienty) * tileSize);
+			return tile;
+		case Direction.topeast:
+			tile.x =  ((varientx) * tileSize);
+			tile.y =  ((varientz) * tileSize);
+			return tile;
+		case Direction.topwest:
+			tile.x =  ((varientx) * tileSize);
+			tile.y =  ((varientz) * tileSize);
+			return tile;
+		}
+
+		//default
+		tile.x = ((varientx) * tileSize);
+		tile.y = ((varienty) * tileSize);
+
+
+
+		return tile;
 
 	}
 	public virtual Tile TexturePosition(Direction direction)
@@ -49,25 +130,6 @@ public class Block
 		Tile tile = new Tile();
 		int xregion = 0;
 		int yregion = 0;
-
-		if (material < 49) { //first 40 materials have medium maps
-			xregion = Mathf.FloorToInt((material-1)/8)*4;
-			yregion = ((material-1) % 8)* 4;
-			varientx = (varientx % 3);
-			varienty = (varienty % 3);
-			varientz = (varientz % 3);
-		} else if (material < 57) { //next 32 matirials are rectangles
-			if (material < 33) { //first row of materials
-				xregion = 20;
-				yregion = (material - 17) * 2;
-			} else { //second 16 materials
-				xregion = 24;
-				yregion = (material - 33) * 2;
-			}
-			varientx = (varienty+varientx+varientz) % 3;
-			varienty = 0;
-			varientz = 0;
-		}
 
 		switch (direction)
 		{
@@ -101,43 +163,85 @@ public class Block
 				return tile;
 		}
 
-		
+		//default
+		tile.x = xregion + ((varientx) % 3);
+		tile.y = yregion + ((varienty) % 3);
+
 		return tile;
 	}
-	
+	public virtual bool IsHard ()
+	{
+		if (material > 0)
+			return true;
+		else
+			return false;
+	}
+
+	public virtual int GetMaterial()
+	{
+		return material;
+	}
+
 	public virtual Vector2[] FaceUVs(Direction direction, Vector2 point0, Vector2 point1, Vector2 point2, Vector2 point3)
 	{
 		Vector2[] UVs = new Vector2[4];
 		Tile tilePos = TexturePosition(direction); //this is the start of the texture for our material type
-		
-		
-		if (direction == Direction.up) {
-			UVs[0] = new Vector2(tileSize * tilePos.x + tileSize*point0.x,
-				tileSize * tilePos.y + tileSize*point0.y + tileSize);
+//		float x_start = tileSize * tilePos.x;
+//		float y_start = tileSize * tilePos.y;
+		float x_start = matPosition_x;
+		float y_start = matPosition_y;
 
-			UVs[1] = new Vector2(tileSize * tilePos.x + tileSize*point1.x + tileSize,
-				tileSize * tilePos.y + tileSize*point1.y + tileSize);
-
-			UVs[2] = new Vector2(tileSize * tilePos.x + tileSize*point2.x + tileSize,
-				tileSize * tilePos.y + tileSize*point2.y);
-
-			UVs[3] = new Vector2(tileSize * tilePos.x + tileSize*point3.x,
-				tileSize * tilePos.y + tileSize*point3.y);
-
+		switch (direction)
+		{
+		case Direction.south:
+			UVs[0] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+			UVs[3] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
+			return UVs;
+		case Direction.down:
+			UVs[0] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+			UVs[3] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
+			return UVs;
+		case Direction.up:
+			UVs[0] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+			UVs[3] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
+			return UVs;
+		case Direction.east:
+			UVs[0] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+			UVs[3] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
+			return UVs;
+		case Direction.west:
+			UVs[0] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+			UVs[3] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
+			return UVs;
+		case Direction.topeast:
+			UVs[1] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+			UVs[3] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+			UVs[0] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
+			return UVs;
+		case Direction.topwest:
+			UVs[3] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+			UVs[0] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+			UVs[2] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
 			return UVs;
 		}
-		UVs[0] = new Vector2(tileSize * tilePos.x + tileSize*point0.x,
-		                     tileSize * tilePos.y + tileSize*point0.y + tileSize);
-		
-		UVs[1] = new Vector2(tileSize * tilePos.x + tileSize*point1.x + tileSize,
-		                     tileSize * tilePos.y + tileSize*point1.y + tileSize);
-		
-		UVs[2] = new Vector2(tileSize * tilePos.x + tileSize*point2.x + tileSize,
-		                     tileSize * tilePos.y + tileSize*point2.y);
-		
-		UVs[3] = new Vector2(tileSize * tilePos.x + tileSize*point3.x,
-		                     tileSize * tilePos.y + tileSize*point3.y);
-		
+
+		//default
+		UVs[0] = new Vector2(x_start + tileSize*point0.x, 				y_start + tileSize*point0.y + tileSize);
+		UVs[1] = new Vector2(x_start + tileSize*point1.x + tileSize, 	y_start + tileSize*point1.y + tileSize);
+		UVs[2] = new Vector2(x_start + tileSize*point2.x + tileSize, 	y_start + tileSize*point2.y);
+		UVs[3] = new Vector2(x_start + tileSize*point3.x, 				y_start + tileSize*point3.y);
 		return UVs;
 	}
 
@@ -156,23 +260,67 @@ public class Block
 		return newUVs;
 	}
 
-	public virtual Vector2[] FaceUV1 (Direction direction, Vector2 point0, Vector2 point1, Vector2 point2, Vector2 point3)
+	public virtual Vector2[] FaceUV_fromOffsets (Direction direction, Vector3[] offsets)
 	{
 		Vector2[] UVs = new Vector2[4];
-		Tile tilePos = TexturePosition(direction); //this is the start of the texture for our material type
-		//we are going to have to find a different way to sort this mess out...
+		Vector2 variant = TextureVariant (direction);
+		//Tile tilePos = TexturePosition(direction); //this is the start of the texture for our material type
+		//		float x_start = tileSize * tilePos.x;
+		//		float y_start = tileSize * tilePos.y;
+		float x_start = matPosition_x + variant.x; //matPosition is the start of the substance
+		float y_start = matPosition_y + variant.y; //variant is the tile within the substance
 
+		switch (direction)
+		{
+		case Direction.south:
+			UVs[0] = new Vector2(x_start + tileSize*offsets[0].x, 				y_start + tileSize*offsets[0].y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*offsets[1].x + tileSize, 	y_start + tileSize*offsets[1].y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*offsets[2].x + tileSize, 	y_start + tileSize*offsets[2].y);
+			UVs[3] = new Vector2(x_start + tileSize*offsets[3].x, 				y_start + tileSize*offsets[3].y);
+			return UVs;
+		case Direction.down:
+			UVs[0] = new Vector2(x_start + tileSize*offsets[0].x, 				y_start + tileSize*offsets[0].z + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*offsets[1].x + tileSize, 	y_start + tileSize*offsets[1].z + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*offsets[2].x + tileSize, 	y_start + tileSize*offsets[2].z);
+			UVs[3] = new Vector2(x_start + tileSize*offsets[3].x, 				y_start + tileSize*offsets[3].z);
+			return UVs;
+		case Direction.up:
+			UVs[0] = new Vector2(x_start + tileSize*offsets[0].x, 				y_start + tileSize*offsets[0].z + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*offsets[1].x + tileSize, 	y_start + tileSize*offsets[1].z + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*offsets[2].x + tileSize, 	y_start + tileSize*offsets[2].z);
+			UVs[3] = new Vector2(x_start + tileSize*offsets[3].x, 				y_start + tileSize*offsets[3].z);
+			return UVs;
+		case Direction.east:
+			UVs[0] = new Vector2(x_start + tileSize*offsets[0].z, 				y_start + tileSize*offsets[0].y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*offsets[1].z + tileSize, 	y_start + tileSize*offsets[1].y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*offsets[2].z + tileSize, 	y_start + tileSize*offsets[2].y);
+			UVs[3] = new Vector2(x_start + tileSize*offsets[3].z, 				y_start + tileSize*offsets[3].y);
+			return UVs;
+		case Direction.west:
+			UVs[0] = new Vector2(x_start + tileSize*offsets[0].z, 				y_start + tileSize*offsets[0].y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*offsets[1].z + tileSize, 	y_start + tileSize*offsets[1].y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*offsets[2].z + tileSize, 	y_start + tileSize*offsets[2].y);
+			UVs[3] = new Vector2(x_start + tileSize*offsets[3].z, 				y_start + tileSize*offsets[3].y);
+			return UVs;
+		case Direction.topeast:
+			UVs[0] = new Vector2(x_start + tileSize*offsets[0].z, 				y_start + tileSize*offsets[0].y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*offsets[1].z + tileSize, 	y_start + tileSize*offsets[1].y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*offsets[2].z + tileSize, 	y_start + tileSize*offsets[2].y);
+			UVs[3] = new Vector2(x_start + tileSize*offsets[3].z, 				y_start + tileSize*offsets[3].y);
+			return UVs;
+		case Direction.topwest:
+			UVs[0] = new Vector2(x_start + tileSize*offsets[0].z, 				y_start + tileSize*offsets[0].y + tileSize);
+			UVs[1] = new Vector2(x_start + tileSize*offsets[1].z + tileSize, 	y_start + tileSize*offsets[1].y + tileSize);
+			UVs[2] = new Vector2(x_start + tileSize*offsets[2].z + tileSize, 	y_start + tileSize*offsets[2].y);
+			UVs[3] = new Vector2(x_start + tileSize*offsets[3].z, 				y_start + tileSize*offsets[3].y);
+			return UVs;
+		}
 
-
-		UVs[0] = new Vector2(tileSize * tilePos.x + tileSize*point1.x + tileSize,
-			tileSize * tilePos.y + tileSize*point1.y + tileSize);
-		UVs[1] = new Vector2(tileSize * tilePos.x + tileSize*point2.x + tileSize,
-			tileSize * tilePos.y + tileSize*point2.y);
-		UVs[2] = new Vector2(tileSize * tilePos.x + tileSize*point3.x,
-			tileSize * tilePos.y + tileSize*point3.y);
-		UVs[3] = new Vector2(tileSize * tilePos.x + tileSize*point0.x,
-			tileSize * tilePos.y + tileSize*point0.y + tileSize);
-
+		//default
+		UVs[0] = new Vector2(x_start + tileSize*offsets[0].x, 				y_start + tileSize*offsets[0].y + tileSize);
+		UVs[1] = new Vector2(x_start + tileSize*offsets[1].x + tileSize, 	y_start + tileSize*offsets[1].y + tileSize);
+		UVs[2] = new Vector2(x_start + tileSize*offsets[2].x + tileSize, 	y_start + tileSize*offsets[2].y);
+		UVs[3] = new Vector2(x_start + tileSize*offsets[3].x, 				y_start + tileSize*offsets[3].y);
 		return UVs;
 	}
 
@@ -204,12 +352,15 @@ public class Block
 		//I have broken this test out of the Blockdata routine as I think we need to know
 		//the exposed faces for later normal calculations.
 		//This way we won't have to call 6 times again!
+
 		Vector3[] normMasks = new Vector3[8];
 		faces = 0;
 
 		for (int a = 0; a < 8; a++) {
 			normMasks [a] = new Vector3 (1.0f, 1.0f, 1.0f);
 		}
+		if (!chunk)
+			return normMasks;
 
 		if (!chunk.GetBlock (x, y + 1, z).IsSolid (Direction.down)) {
 			faces += 1;
@@ -326,9 +477,9 @@ public class Block
 
 	public void setoffset (Vector3 offset)
 	{
-		offx = offset.x;
-		offy = offset.y;
-		offz = offset.z;
+		offx = Mathf.Clamp01(offset.x);
+		offy = Mathf.Clamp01(offset.y);
+		offz = Mathf.Clamp01(offset.z);
 	}
 
 	public void SnapOffset (Vector3 offset)
@@ -422,10 +573,10 @@ public class Block
 		return new Vector3(x - 1.0f + pos.x, pos.y + y - 1.0f, pos.z + z + 0.0f);
 	}
 
-	protected Vector3 GetNormFromPoint (Vector3 point, Vector3 origen, Vector3 mask)
+	protected Vector3 GetNormFromOffset (Vector3 offset, Vector3 normalMask)
 	{
-		Vector3 normal = new Vector3 ();
-		normal = Vector3.Scale(point - origen, mask);
+		Vector3 normal = new Vector3();
+		normal = Vector3.Normalize (new Vector3((offset.x)*normalMask.x, (offset.y)*normalMask.y, (offset.z)*normalMask.z));
 
 		return normal;
 	}
@@ -449,12 +600,21 @@ public class Block
 		points [2] = getPoint3 (x, y, z, offsets [2]);
 		points [3] = getPoint4 (x, y, z, offsets [3]);
 
-		meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
+		Vector3[] norms = new Vector3[4];
+		norms [0] = GetNormFromOffset (new Vector3(-0.5f, 0.5f, 0.5f), normMasks [0]);
+		norms [1] = GetNormFromOffset (new Vector3(-0.5f, 0.5f, -0.5f), normMasks [1]);
+		norms [2] = GetNormFromOffset (new Vector3(0.5f, 0.5f, -0.5f), normMasks [2]);
+		norms [3] = GetNormFromOffset (new Vector3(-0.5f, 0.5f, -0.5f), normMasks [3]);
 
-		meshData.uv.AddRange(SplitFaceUVs( FaceUVs(Direction.up, new Vector2(offsets [0].x, offsets [0].z), 
-			new Vector2 (offsets [1].x, offsets [1].z), 
-			new Vector2 (offsets [2].x, offsets [2].z), 
-			new Vector2 (offsets [3].x, offsets [3].z))));
+		meshData = AddQuadFlat (points, norms, meshData); //use our points to calculate normals and faces
+
+		meshData.uv.AddRange(SplitFaceUVs( FaceUV_fromOffsets(Direction.up, offsets)));
+		meshData.uv1.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.south, offsets)));
+
+//			new Vector2(offsets [0].x, offsets [0].z), 
+//			new Vector2 (offsets [1].x, offsets [1].z), 
+//			new Vector2 (offsets [2].x, offsets [2].z), 
+//			new Vector2 (offsets [3].x, offsets [3].z))));
 
         return meshData;
     }
@@ -475,12 +635,13 @@ public class Block
 		points [2] = getPoint7 (x, y, z, offsets [2]);
 		points [3] = getPoint8 (x, y, z, offsets [3]);
 
-		meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
+		Vector3[] norms = new Vector3[4];
 
-		meshData.uv.AddRange(SplitFaceUVs( FaceUVs(Direction.down, new Vector2(offsets [0].x, offsets [0].z), 
-			new Vector2 (offsets [1].x, offsets [1].z), 
-			new Vector2 (offsets [2].x, offsets [2].z), 
-			new Vector2 (offsets [3].x, offsets [3].z))));
+		meshData = AddQuadFlat (points, norms, meshData); //use our points to calculate normals and faces
+
+		meshData.uv.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.down, offsets)));
+		meshData.uv1.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.south, offsets)));
+
 		
         return meshData;
     }
@@ -507,21 +668,11 @@ public class Block
 		points [2] = getPoint7 (x, y, z, offsets [2]);
 		points [3] = getPoint6 (x, y, z, offsets [3]);
 
-		meshData.uv.AddRange(SplitFaceUVs( FaceUVs(Direction.east, new Vector2 (offsets [0].z, offsets [0].y), 
-			new Vector2 (offsets [1].z, offsets [1].y), 
-			new Vector2 (offsets [2].z, offsets [2].y), 
-			new Vector2 (offsets [3].z, offsets [3].y))));
-		
-		if ((faces & 1) != 0) {
-			meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
-			meshData = AddQuadFlatBlend (points, meshData); //reuse our points to make a blending face
-			meshData.uv.AddRange (SplitFaceUVs( FaceUVs(Direction.topeast, new Vector2 (offsets [1].z, offsets [1].y), 
-			new Vector2 (offsets [2].z, offsets [2].y),
-			new Vector2 (offsets [3].z, offsets [3].y),
-			new Vector2 (offsets [0].z, offsets [0].y))));
-		} else {
-			meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
-		}
+		Vector3[] norms = new Vector3[4];
+
+		meshData.uv.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.east, offsets)));
+		meshData.uv1.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.topeast, offsets)));
+		meshData = AddQuadFlat (points, norms, meshData); //use our points to calculate normals and faces
 
         return meshData;
     }
@@ -542,21 +693,11 @@ public class Block
 		points [2] = getPoint6 (x, y, z, offsets [2]);
 		points [3] = getPoint5 (x, y, z, offsets [3]);
 
-		meshData.uv.AddRange(SplitFaceUVs( FaceUVs(Direction.south, new Vector2(offsets [0].x, offsets [0].y), 
-			new Vector2 (offsets [1].x, offsets [1].y), 
-			new Vector2 (offsets [2].x, offsets [2].y), 
-			new Vector2 (offsets [3].x, offsets [3].y))));
+		Vector3[] norms = new Vector3[4];
 
-		if ((faces & 1) != 0) {
-			meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
-			meshData = AddQuadFlatBlend (points, meshData); //reuse our points to make a blending face
-			meshData.uv.AddRange (SplitFaceUVs( FaceUVs(Direction.up, new Vector2(offsets [0].x, offsets [0].y), 
-				new Vector2 (offsets [1].x, offsets [1].y), 
-				new Vector2 (offsets [2].x, offsets [2].y), 
-				new Vector2 (offsets [3].x, offsets [3].y))));
-		} else {
-			meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
-		}
+		meshData.uv.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.south, offsets)));
+		meshData.uv1.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.up, offsets)));
+		meshData = AddQuadFlat (points, norms, meshData); //use our points to calculate normals and faces
 			
         return meshData;
     }
@@ -577,26 +718,47 @@ public class Block
 		points [2] = getPoint5 (x, y, z, offsets [2]);
 		points [3] = getPoint8 (x, y, z, offsets [3]);
 
-		meshData.uv.AddRange(SplitFaceUVs( FaceUVs(Direction.west, new Vector2(offsets [0].z, offsets [0].y), 
-			new Vector2 (offsets [1].z, offsets [1].y), 
-			new Vector2 (offsets [2].z, offsets [2].y), 
-			new Vector2 (offsets [3].z, offsets [3].y))));
+		Vector3[] norms = new Vector3[4];
 
-		if ((faces & 1) != 0) {
-			meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
-			meshData = AddQuadFlatBlend (points, meshData); //reuse our points to make a blending face
-			meshData.uv.AddRange (SplitFaceUVs (FaceUVs (Direction.topwest, new Vector2 (offsets [0].z, offsets [0].y), 
-				new Vector2 (offsets [1].z, offsets [1].y), 
-				new Vector2 (offsets [2].z, offsets [2].y), 
-				new Vector2 (offsets [3].z, offsets [3].y))));
-		} else {
-			meshData = AddQuadFlat (points, meshData); //use our points to calculate normals and faces
-		}
+		meshData.uv.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.west, offsets)));
+		meshData.uv1.AddRange(SplitFaceUVs(  FaceUV_fromOffsets(Direction.topwest, offsets)));
+		meshData = AddQuadFlat (points, norms, meshData); //use our points to calculate normals and faces
 			
         return meshData;
     }
+	public virtual MeshData AddQuadSoft( Vector3[] points, Vector3[] norms, MeshData meshData) 
+	{
+		//Takes 4 points, calculates two normals for two faces
+		//Adds the points and triangles to the mesh
+		Vector3 flatnorm1 = new Vector3();
+		flatnorm1 = Vector3.Cross (points [1] - points [0], points [3] - points [0]);
+		Vector3 flatnorm2 = new Vector3();
+		flatnorm2 = Vector3.Cross (points [3] - points [2], points [1] - points [2]);
 
-	public virtual MeshData AddQuadFlatBlend( Vector3[] points, MeshData meshData) 
+		//set the vertices
+		meshData.AddVertex(points [0], (norms[0]+flatnorm1)/2);
+		meshData.AddVertex(points [1], (norms[1]+flatnorm1)/2);
+		meshData.AddVertex(points [3], (norms[3]+flatnorm1)/2);
+		meshData.AddTriangle();
+
+		meshData.AddVertex(points [1], (norms[1]+flatnorm2)/2);
+		meshData.AddVertex(points [2], (norms[2]+flatnorm2)/2);
+		meshData.AddVertex(points [3], (norms[3]+flatnorm2)/2);
+		meshData.AddTriangle();
+
+		//		Color32[] vcolors = new Color32[6];
+		//		vcolors [2] = Color.white;
+		//		vcolors [4] = Color.white;
+		//		vcolors [5] = Color.white;
+		//		vcolors [0] = Color.white;
+		//		vcolors [1] = Color.white;
+		//		vcolors [3] = Color.white;
+		//
+		//		meshData.colors.AddRange (vcolors);
+
+		return meshData;
+	}
+	public virtual MeshData AddQuadFlat( Vector3[] points, Vector3[] norms, MeshData meshData) 
 	{
 		//Takes 4 points, calculates two normals for two faces
 		//Adds the points and triangles to the mesh
@@ -609,38 +771,6 @@ public class Block
 		meshData.AddVertex(points [0], flatnorm1);
 		meshData.AddVertex(points [1], flatnorm1);
 		meshData.AddVertex(points [3], flatnorm1);
-		meshData.AddBlendTriangle ();
-
-		meshData.AddVertex(points [1], flatnorm2);
-		meshData.AddVertex(points [2], flatnorm2);
-		meshData.AddVertex(points [3], flatnorm2);
-		meshData.AddBlendTriangle ();
-
-		Color32[] vcolors = new Color32[6];
-		vcolors [2] = Color.clear;
-		vcolors [4] = Color.clear;
-		vcolors [5] = Color.clear;
-		vcolors [0] = Color.white;
-		vcolors [1] = Color.white;
-		vcolors [3] = Color.white;
-		meshData.colors.AddRange (vcolors);
-
-		return meshData;
-	}
-
-	public virtual MeshData AddQuadFlat( Vector3[] points, MeshData meshData) 
-	{
-		//Takes 4 points, calculates two normals for two faces
-		//Adds the points and triangles to the mesh
-		Vector3 flatnorm1 = new Vector3();
-		flatnorm1 = Vector3.Cross (points [1] - points [0], points [3] - points [0]);
-		Vector3 flatnorm2 = new Vector3();
-		flatnorm2 = Vector3.Cross (points [3] - points [2], points [1] - points [2]);
-
-		//set the vertices
-		meshData.AddVertex(points [0], flatnorm1);
-		meshData.AddVertex(points [1], flatnorm1);
-		meshData.AddVertex(points [3], flatnorm1);
 		meshData.AddTriangle();
 
 		meshData.AddVertex(points [1], flatnorm2);
@@ -648,80 +778,15 @@ public class Block
 		meshData.AddVertex(points [3], flatnorm2);
 		meshData.AddTriangle();
 
-		Color32[] vcolors = new Color32[6];
-		vcolors [2] = Color.white;
-		vcolors [4] = Color.white;
-		vcolors [5] = Color.white;
-		vcolors [0] = Color.white;
-		vcolors [1] = Color.white;
-		vcolors [3] = Color.white;
-
-		meshData.colors.AddRange (vcolors);
-
-		return meshData;
-	}
-
-	public virtual MeshData AddQuadRoundBlend( Vector3[] points, MeshData meshData) 
-	{
-		//Takes 4 points, calculates two normals for two faces
-		//Adds the points and triangles to the mesh
-		Vector3 flatnorm1 = new Vector3();
-		flatnorm1 = Vector3.Cross (points [1] - points [0], points [3] - points [0]);
-		Vector3 flatnorm2 = new Vector3();
-		flatnorm2 = Vector3.Cross (points [3] - points [2], points [1] - points [2]);
-
-		//set the vertices
-		meshData.AddVertex(points [0], ((points[0]-points[2])+flatnorm1));
-		meshData.AddVertex(points [1], ((points[1]-points[3])+flatnorm1));
-		meshData.AddVertex(points [3], ((points[3]-points[1])+flatnorm1));
-		meshData.AddBlendTriangle ();
-
-		meshData.AddVertex(points [1], ((points[1]-points[3])+flatnorm2));
-		meshData.AddVertex(points [2], ((points[2]-points[0])+flatnorm2));
-		meshData.AddVertex(points [3], ((points[3]-points[1])+flatnorm2));
-		meshData.AddBlendTriangle ();
-
-		Color32[] vcolors = new Color32[6];
-		vcolors [2] = Color.clear;
-		vcolors [4] = Color.clear;
-		vcolors [5] = Color.clear;
-		vcolors [0] = Color.white;
-		vcolors [1] = Color.white;
-		vcolors [3] = Color.white;
-		meshData.colors.AddRange (vcolors);
-
-		return meshData;
-	}
-
-	public virtual MeshData AddQuadRound( Vector3[] points, MeshData meshData) 
-	{
-		//Takes 4 points, calculates two normals for two faces
-		//Adds the points and triangles to the mesh
-		Vector3 flatnorm1 = new Vector3();
-		flatnorm1 = Vector3.Cross (points [1] - points [0], points [3] - points [0]);
-		Vector3 flatnorm2 = new Vector3();
-		flatnorm2 = Vector3.Cross (points [3] - points [2], points [1] - points [2]);
-
-		//set the vertices
-		meshData.AddVertex(points [0], ((points[0]-points[2])+flatnorm1));
-		meshData.AddVertex(points [1], ((points[1]-points[3])+flatnorm1));
-		meshData.AddVertex(points [3], ((points[3]-points[1])+flatnorm1));
-		meshData.AddBlendTriangle ();
-
-		meshData.AddVertex(points [1], ((points[1]-points[3])+flatnorm2));
-		meshData.AddVertex(points [2], ((points[2]-points[0])+flatnorm2));
-		meshData.AddVertex(points [3], ((points[3]-points[1])+flatnorm2));
-		meshData.AddTriangle();
-
-		Color32[] vcolors = new Color32[6];
-		vcolors [2] = Color.white;
-		vcolors [4] = Color.white;
-		vcolors [5] = Color.white;
-		vcolors [0] = Color.white;
-		vcolors [1] = Color.white;
-		vcolors [3] = Color.white;
-
-		meshData.colors.AddRange (vcolors);
+//		Color32[] vcolors = new Color32[6];
+//		vcolors [2] = Color.white;
+//		vcolors [4] = Color.white;
+//		vcolors [5] = Color.white;
+//		vcolors [0] = Color.white;
+//		vcolors [1] = Color.white;
+//		vcolors [3] = Color.white;
+//
+//		meshData.colors.AddRange (vcolors);
 
 		return meshData;
 	}

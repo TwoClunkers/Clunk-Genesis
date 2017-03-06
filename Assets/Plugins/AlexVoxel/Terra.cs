@@ -252,7 +252,7 @@ public static class Terra
 
 	}
 		
-	public static bool applySphere(World world, Vector3 center, float radius)
+	public static bool applySphere(World world, Vector3 center, float radius, int newMaterial)
 	{
 		WorldPos current_pos;
 		WorldPos start_pos;
@@ -298,9 +298,9 @@ public static class Terra
 					T_pos = center + (directionCtoV * radius);
 
 					if (distanceVtoC > (radius)) { //marked as "outside"
-						brush [a, b, c].material = -2; 
+						brush [a, b, c].SetMaterial(-2); 
 					} else if (distanceVtoC < (radius) ) { //marked as "inside"
-						brush [a, b, c].material = 0; 
+						brush [a, b, c].SetMaterial(0); 
 					} 
 
 					if ((T_pos.x - current_pos.x) > 1.15f)
@@ -320,7 +320,7 @@ public static class Terra
 					brush [a, b, c].offy = Mathf.Clamp((T_pos.y) - (current_pos.y), 0.0f, 1.0f);
 					brush [a, b, c].offz = Mathf.Clamp((T_pos.z) - (current_pos.z), 0.0f, 1.0f);
 
-					brush [a, b, c].material = 1; //marked as "participating"
+					brush [a, b, c].SetMaterial(1); //marked as "participating"
 
 
 				}
@@ -332,7 +332,7 @@ public static class Terra
 				{	
 					current_pos = GetBlockPos(new Vector3(center.x+a-half,center.y+b-half,center.z+c-half));
 					current_block = world.GetBlock(current_pos.x,current_pos.y,current_pos.z);
-					if(brush[a,b,c].material == -2) { //this is outside, so any prime voxel connected needs to NOT change material
+					if(brush[a,b,c].GetMaterial() == -2) { //this is outside, so any prime voxel connected needs to NOT change material
 						//we will need to see if any connecting voxels are "participating"
 						for (int d = 0; d < 2; d += 1) { 
 							if (a + d > (size-1))
@@ -343,10 +343,10 @@ public static class Terra
 										continue;
 									else
 										for (int f = 0; f < 2; f += 1) {
-											if (c + f > (size-1))
+											if (c + f > (size - 1))
 												continue;
-											else if (brush [d+a, e+b, f+c].material == 1)
-												brush [d+a, e+b, f+c].material = -1; //mark as "NOT-affected"
+											else if (brush [d + a, e + b, f + c].GetMaterial() == 1)
+												brush [d + a, e + b, f + c].SetMaterial (-1); //mark as "NOT-affected"
 										}
 								}
 						}
@@ -362,7 +362,7 @@ public static class Terra
 
 						current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
 						current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
-						int flagmat = brush [a, b, c].material;
+						int flagmat = brush [a, b, c].GetMaterial();
 
 						if (flagmat == 0) { //"Inside"
 							BlendBlock (current_block, world, current_pos, 0.2f, 0.02f);
@@ -388,14 +388,14 @@ public static class Terra
 					
 						current_pos = GetBlockPos (new Vector3 (center.x + a - half, center.y + b - half, center.z + c - half));
 						current_block = world.GetBlock (current_pos.x, current_pos.y, current_pos.z);
-						int flagmat = brush [a, b, c].material;
+						int flagmat = brush [a, b, c].GetMaterial();
 
 						if (flagmat == 0) { //"Inside"
 							//BlendBlock (current_block, world, current_pos, 0.2f, -0.001f);
-							current_block.material = 0; 
+							current_block.SetMaterial(newMaterial); 
 						} else if (flagmat == 1) { //"Participating"
 							//BlendBlock (current_block, world, current_pos, 0.1f, -0.001f);
-							current_block.material = 0;
+							current_block.SetMaterial(newMaterial);
 							current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
 						} else if (flagmat == -1) { //"NON-Affected"
 							current_block.setoffset (brush [a, b, c].offx, brush [a, b, c].offy, brush [a, b, c].offz);
@@ -430,26 +430,40 @@ public static class Terra
             MoveWithinBlock(hit.point.y, hit.normal.y, adjacent),
             MoveWithinBlock(hit.point.z, hit.normal.z, adjacent)
             );
-
+			
         return GetBlockPos(pos);
     }
 
     static float MoveWithinBlock(float pos, float norm, bool adjacent)
     {
-        if (pos - (int)pos == 0.5f || pos - (int)pos == -0.5f)
+		if ((pos - (int)pos == 0.5f) || (pos - (int)pos == -0.5f))
         {
-//            if (adjacent)
-//            {
-//                pos += (norm / 2);
-//            }
-//            else
-//            {
-//                pos -= (norm / 2);
-//            }
+            if (adjacent)
+            {
+                pos += (norm / 2);
+            }
+            else
+            {
+                pos -= (norm / 2);
+            }
         }
 
         return (float)pos;
     }
+
+	public static WorldPos GetAdjustedPos(WorldPos pos, Vector3 hit, Vector3 offset)
+	{
+		
+		if (hit.x > offset.x)
+			pos.x += 1;
+		if (hit.y > offset.y)
+			pos.y += 1;
+		if (hit.z > offset.z)
+			pos.z += 1;
+
+		return pos;
+
+	}
 
 	public static bool SetBlock(Chunk chunk, WorldPos pos, Block block)
 	{
@@ -474,6 +488,21 @@ public static class Terra
         return true;
     }
 
+	public static bool SetCube(Chunk chunk, WorldPos pos)
+	{
+		if (chunk == null)
+			return false;
+		for (int a = -1; a < 1; a += 1)
+			for (int b = -1; b < 1; b += 1)
+				for (int c = -1; c < 1; c += 1) {
+					Block tempBlock = chunk.world.GetBlock (pos.x + a, pos.y + b, pos.z + c);
+					tempBlock.setoffset (new Vector3 (0.5f, 0.5f, 0.5f));
+					chunk.world.SetBlock (pos.x + a, pos.y + b, pos.z + c, tempBlock);
+				}
+
+		return true;
+	}
+
 	public static bool DamageBlock(Chunk chunk, WorldPos pos, float amount, Vector3 direction)
 	{
 		if (chunk == null)
@@ -485,14 +514,14 @@ public static class Terra
 			newblock.offx = block.offx;
 			newblock.offy = block.offy;
 			newblock.offz = block.offz;
-			newblock.material = 0;
+			newblock.SetMaterial (0);
 			block = newblock;
 			block.changed = true;
 			chunk.world.SetBlock (pos.x, pos.y, pos.z, block);
 			return true;
 		} else {
 			block.changed = true;
-			block.material = 3;
+			block.SetMaterial (3);
 			chunk.world.SetBlock (pos.x, pos.y, pos.z, block);
 		}
 		return false;
@@ -509,7 +538,7 @@ public static class Terra
 		Block block = chunk.world.GetBlock(pos.x, pos.y, pos.z);
 		if(block.DamageBlock(pos,amount,direction)) {
 			block = new Block();
-			block.material = 0;
+			block.SetMaterial (0);
 			chunk.world.SetBlock(pos.x, pos.y, pos.z, block);
 			return true;
 		}
